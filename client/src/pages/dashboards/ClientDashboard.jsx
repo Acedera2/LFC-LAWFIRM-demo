@@ -2,11 +2,11 @@ import { useEffect, useMemo, useState } from "react";
 import { CalendarPlus, Clock3, FileUp, History, SearchCheck, ShieldAlert } from "lucide-react";
 import toast from "react-hot-toast";
 import AppointmentCard from "../../components/AppointmentCard";
+import EmptyState from "../../components/EmptyState";
 import LoadingSkeleton from "../../components/LoadingSkeleton";
 import PriorityBadge from "../../components/PriorityBadge";
 import StatCard from "../../components/StatCard";
 import api, { unwrap } from "../../lib/api";
-import { appointments, lawyers as fallbackLawyers } from "../../data/mockData";
 
 const consultationTypes = [
   { label: "Emergency consultation", priority: "HIGH" },
@@ -31,6 +31,8 @@ function suggestedPriorityFor(type) {
 export default function ClientDashboard() {
   const [lawyers, setLawyers] = useState([]);
   const [loadingLawyers, setLoadingLawyers] = useState(true);
+  const [appointments, setAppointments] = useState([]);
+  const [loadingAppointments, setLoadingAppointments] = useState(true);
   const [scan, setScan] = useState(null);
   const [checking, setChecking] = useState(false);
   const [files, setFiles] = useState([]);
@@ -49,18 +51,35 @@ export default function ClientDashboard() {
 
   useEffect(() => {
     let active = true;
-    api
-      .get("/lawyers")
-      .then((response) => {
-        const data = unwrap(response).lawyers || unwrap(response).data || response.data?.data || [];
-        if (active) setLawyers(data);
-      })
-      .catch(() => {
+
+    const loadLawyers = async () => {
+      try {
+        const response = await api.get("/lawyers");
+        const data = unwrap(response);
+        if (active) setLawyers(data.lawyers || []);
+      } catch (error) {
+        toast.error(error.response?.data?.message || "Unable to load lawyers");
         if (active) setLawyers([]);
-      })
-      .finally(() => {
+      } finally {
         if (active) setLoadingLawyers(false);
-      });
+      }
+    };
+
+    const loadAppointments = async () => {
+      try {
+        const response = await api.get("/appointments?limit=6");
+        const data = unwrap(response);
+        if (active) setAppointments(data.appointments || []);
+      } catch (error) {
+        toast.error(error.response?.data?.message || "Unable to load your appointments");
+        if (active) setAppointments([]);
+      } finally {
+        if (active) setLoadingAppointments(false);
+      }
+    };
+
+    loadLawyers();
+    loadAppointments();
     return () => {
       active = false;
     };
@@ -71,17 +90,11 @@ export default function ClientDashboard() {
     setScan(null);
   }, [selectedPriority]);
 
-  const lawyerOptions = lawyers.length
-    ? lawyers.map((lawyer) => ({
-        id: lawyer.id,
-        name: lawyer.user?.name || lawyer.name,
-        specialty: lawyer.specialization || lawyer.specialty
-      }))
-    : fallbackLawyers.map((lawyer) => ({
-        id: "",
-        name: lawyer.name,
-        specialty: lawyer.specialty
-      }));
+  const lawyerOptions = lawyers.map((lawyer) => ({
+    id: lawyer.id,
+    name: lawyer.user?.name || "Unknown",
+    specialty: lawyer.specialization
+  }));
 
   const checkAvailability = async () => {
     if (!form.lawyerId) {
@@ -130,18 +143,24 @@ export default function ClientDashboard() {
       setForm({ consultationType: "General consultation", priority: "REGULAR", lawyerId: "", locationMode: "IN_PERSON", subject: "", description: "", preferredStart: "", preferredEnd: "" });
       setFiles([]);
       setScan(null);
+      setAppointments((current) => [appointment, ...current].slice(0, 6));
     } catch (error) {
       toast.error(error.response?.data?.message || "Could not submit appointment inquiry");
     }
   };
 
+  const openRequests = appointments.filter((item) => ["PENDING", "RESCHEDULE_REQUESTED"].includes(item.status)).length;
+  const completedCount = appointments.filter((item) => item.status === "COMPLETED").length;
+  const nextConsult = appointments.find((item) => item.scheduledStart)?.scheduledStart || "TBD";
+  const documentCount = appointments.reduce((sum, item) => sum + (item.documents?.length || 0), 0);
+
   return (
     <div className="grid gap-6">
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-        <StatCard icon={CalendarPlus} label="Open requests" value="3" trend="1 needs staff verification" />
-        <StatCard icon={Clock3} label="Next consult" value="May 14" trend="9:00 AM with Atty. Rivera" tone="brass" />
-        <StatCard icon={FileUp} label="Documents" value="8" trend="2 uploaded this week" tone="blue" />
-        <StatCard icon={History} label="Completed" value="14" trend="Last 12 months" tone="jade" />
+        <StatCard icon={CalendarPlus} label="Open requests" value={openRequests.toString()} trend={openRequests ? `${openRequests} pending review` : "No pending requests"} />
+        <StatCard icon={Clock3} label="Next consult" value={nextConsult === "TBD" ? nextConsult : new Date(nextConsult).toLocaleDateString()} trend="Confirmed timeline" tone="brass" />
+        <StatCard icon={FileUp} label="Documents" value={documentCount.toString()} trend="Uploaded this week" tone="blue" />
+        <StatCard icon={History} label="Completed" value={completedCount.toString()} trend="Recent client progress" tone="jade" />
       </div>
 
       <div className="grid gap-6 xl:grid-cols-[1fr_0.9fr]">
@@ -173,7 +192,7 @@ export default function ClientDashboard() {
               <select value={form.lawyerId} onChange={(event) => { setForm((current) => ({ ...current, lawyerId: event.target.value })); setScan(null); }} className="focus-ring rounded-lg border border-ink-100 px-3 py-3 dark:border-white/10 dark:bg-ink-950">
                 <option value="">Let staff assign</option>
                 {lawyerOptions.map((lawyer, index) => (
-                  <option key={`${lawyer.name}-${index}`} value={lawyer.id} disabled={!lawyer.id}>
+                  <option key={`${lawyer.name}-${index}`} value={lawyer.id}>
                     {lawyer.name} {lawyer.specialty ? `- ${lawyer.specialty}` : ""}
                   </option>
                 ))}
@@ -190,14 +209,6 @@ export default function ClientDashboard() {
             <label className="grid gap-2 text-sm font-bold text-ink-700 dark:text-white">
               Preferred end
               <input required type="datetime-local" value={form.preferredEnd} onChange={(event) => setForm((current) => ({ ...current, preferredEnd: event.target.value }))} className="focus-ring rounded-lg border border-ink-100 px-3 py-3 dark:border-white/10 dark:bg-ink-950" />
-            </label>
-            <label className="grid gap-2 text-sm font-bold text-ink-700 dark:text-white">
-              Consultation mode
-              <select value={form.locationMode} onChange={(event) => setForm((current) => ({ ...current, locationMode: event.target.value }))} className="focus-ring rounded-lg border border-ink-100 px-3 py-3 dark:border-white/10 dark:bg-ink-950">
-                <option value="IN_PERSON">In-office consultation</option>
-                <option value="PHONE">Phone consultation</option>
-                <option value="FIELD">Field consultation</option>
-              </select>
             </label>
             <label className="grid gap-2 text-sm font-bold text-ink-700 dark:text-white md:col-span-2">
               Supporting details
@@ -252,10 +263,16 @@ export default function ClientDashboard() {
         <section className="rounded-lg border border-ink-100 bg-white p-5 shadow-sm dark:border-white/10 dark:bg-white/5">
           <div className="flex items-center gap-3">
             <ShieldAlert className="text-jade-700 dark:text-jade-100" size={22} />
-            <h2 className="text-lg font-extrabold text-ink-900 dark:text-white">Status and history</h2>
+            <h2 className="text-lg font-extrabold text-ink-900 dark:text-white">Latest appointments</h2>
           </div>
           <div className="mt-5 grid gap-4">
-            {loadingLawyers ? <LoadingSkeleton rows={3} /> : appointments.map((appointment) => <AppointmentCard key={appointment.id} appointment={appointment} />)}
+            {loadingAppointments ? (
+              <LoadingSkeleton rows={3} />
+            ) : appointments.length > 0 ? (
+              appointments.map((appointment) => <AppointmentCard key={appointment.id} appointment={appointment} />)
+            ) : (
+              <EmptyState title="No recent appointments" message="Your booking history will appear here after your first inquiry." />
+            )}
           </div>
         </section>
       </div>

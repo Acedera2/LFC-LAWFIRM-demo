@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+const API_URL = import.meta.env.VITE_API_URL || "/api";
 
 const api = axios.create({
   baseURL: API_URL,
@@ -22,14 +22,23 @@ function readCookie(name) {
 }
 
 let csrfPromise;
+let isRefreshing = false;
+const refreshQueue = [];
+
+function notifyRefreshQueue(error) {
+  refreshQueue.forEach((callback) => callback(error));
+  refreshQueue.length = 0;
+}
 
 async function ensureCsrfToken() {
   const existing = readCookie("lfc_csrf");
   if (existing) return decodeURIComponent(existing);
 
-  csrfPromise ||= rawApi.get("/auth/csrf").finally(() => {
-    csrfPromise = null;
-  });
+  if (!csrfPromise) {
+    csrfPromise = rawApi.get("/auth/csrf").finally(() => {
+      csrfPromise = null;
+    });
+  }
 
   const { data } = await csrfPromise;
   return data.data?.csrfToken || readCookie("lfc_csrf");
@@ -49,18 +58,45 @@ api.interceptors.response.use(
     const original = error.config;
     const status = error.response?.status;
 
-    if (status === 401 && original && !original._retry && !original.url?.includes("/auth/refresh") && !original.url?.includes("/auth/login")) {
+    if (
+      status === 401 &&
+      original &&
+      !original._retry &&
+      !original.url?.includes("/auth/refresh") &&
+      !original.url?.includes("/auth/login") &&
+      !original.url?.includes("/auth/csrf")
+    ) {
+      if (isRefreshing) {
+        return new Promise((resolve, reject) => {
+          refreshQueue.push((refreshError) => {
+            if (refreshError) {
+              reject(refreshError);
+            } else {
+              resolve(api(original));
+            }
+          });
+        });
+      }
+
       original._retry = true;
+      isRefreshing = true;
+
       try {
         await api.post("/auth/refresh");
+        notifyRefreshQueue(null);
         return api(original);
-      } catch {
+      } catch (refreshError) {
+        notifyRefreshQueue(refreshError);
         localStorage.removeItem("lfc_user");
         if (!original.url?.includes("/auth/me")) {
           window.dispatchEvent(new Event("lfc:session-expired"));
         }
+        return Promise.reject(refreshError);
+      } finally {
+        isRefreshing = false;
       }
     }
+
     return Promise.reject(error);
   }
 );
