@@ -5,20 +5,28 @@ const API_URL = import.meta.env.VITE_API_URL || "/api";
 const api = axios.create({
   baseURL: API_URL,
   timeout: 15000,
-  withCredentials: true
+  withCredentials: true,
+  headers: {
+    "Accept": "application/json"
+  }
 });
 
 const rawApi = axios.create({
   baseURL: API_URL,
   timeout: 15000,
-  withCredentials: true
+  withCredentials: true,
+  headers: {
+    "Accept": "application/json"
+  }
 });
 
 function readCookie(name) {
   return document.cookie
     .split("; ")
     .find((row) => row.startsWith(`${name}=`))
-    ?.split("=")[1];
+    ?.split("=")
+    .slice(1)
+    .join("=");
 }
 
 let csrfPromise;

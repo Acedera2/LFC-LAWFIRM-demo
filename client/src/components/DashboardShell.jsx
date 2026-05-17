@@ -12,20 +12,17 @@ const roleHome = {
   admin: "/admin"
 };
 
-const commonNav = [
-  { label: "Appointments", to: "/appointments", icon: CalendarDays },
-  { label: "Notifications", to: "/notifications", icon: Bell },
-  { label: "Analytics", to: "/analytics", icon: ChartNoAxesCombined },
-  { label: "Settings", to: "/settings", icon: Cog }
-];
-
 export default function DashboardShell() {
   const { user, logout } = useAuth();
   const role = user?.role?.slug || user?.role || "client";
   const navItems = [
     { label: "Dashboard", to: roleHome[role] || "/client", icon: LayoutDashboard },
-    ...(role === "admin" || role === "staff" ? [{ label: "People", to: "/settings?tab=users", icon: Users }] : []),
-    ...commonNav
+    ...(role === "client" ? [{ label: "Appointments", to: "/appointments", icon: CalendarDays }] : []),
+    ...(role === "staff" || role === "admin" ? [{ label: "Appointments", to: "/appointments", icon: CalendarDays }] : []),
+    { label: "Notifications", to: "/notifications", icon: Bell },
+    ...(role === "lawyer" || role === "staff" || role === "admin" ? [{ label: "Analytics", to: "/analytics", icon: ChartNoAxesCombined }] : []),
+    ...(role === "admin" ? [{ label: "People", to: "/settings?tab=users", icon: Users }] : []),
+    ...(role === "admin" ? [{ label: "Settings", to: "/settings", icon: Cog }] : [])
   ];
 
   return (

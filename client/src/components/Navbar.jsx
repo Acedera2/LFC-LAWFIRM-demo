@@ -81,13 +81,14 @@ export default function Navbar() {
           type="button"
           className="focus-ring inline-flex h-10 w-10 items-center justify-center rounded-lg border border-ink-100 bg-white text-ink-900 lg:hidden dark:border-white/10 dark:bg-white/10 dark:text-white"
           onClick={() => setOpen((current) => !current)}
-          aria-label="Open mobile menu"
+          aria-label={open ? "Close mobile menu" : "Open mobile menu"}
+          aria-expanded={open}
         >
           {open ? <X size={20} /> : <Menu size={20} />}
         </button>
       </nav>
       {open && (
-        <div className="border-t border-ink-100 bg-white px-4 py-4 shadow-soft lg:hidden dark:border-white/10 dark:bg-ink-950">
+        <div className="border-t border-ink-100 bg-white px-4 py-4 shadow-soft lg:hidden dark:border-white/10 dark:bg-ink-950 lg:shadow-none">
           <div className="grid gap-2">
             {links.map((link) => (
               <NavLink
