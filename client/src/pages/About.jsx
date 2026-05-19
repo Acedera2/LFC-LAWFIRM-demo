@@ -18,7 +18,7 @@ export default function About() {
           <p className="text-sm font-extrabold uppercase text-jade-700 dark:text-jade-100">About</p>
           <h1 className="mt-3 font-display text-4xl font-extrabold text-ink-900 dark:text-white sm:text-5xl">A legal operations platform built around trust, timing, and accountability.</h1>
           <p className="mt-6 text-lg leading-8 text-ink-600 dark:text-ink-100">
-            Legal and Field Consultancy Firms centralizes the operational work around consultation requests so clients, lawyers, staff, and administrators can coordinate without losing context.
+            LFC Legal Appointment System centralizes the operational work around consultation requests so clients, lawyers, staff, and administrators can coordinate without losing context.
           </p>
         </div>
         <div className="mt-12 grid gap-5 md:grid-cols-2">

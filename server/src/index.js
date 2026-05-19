@@ -3,7 +3,7 @@ import { env } from "./config/env.js";
 import { prisma } from "./config/prisma.js";
 
 const server = app.listen(env.port, () => {
-  console.log(`Legal and Field Consultancy Firms API listening on port ${env.port}`);
+  console.log(`LFC Legal Appointment System API listening on port ${env.port}`);
 });
 
 async function shutdown(signal) {

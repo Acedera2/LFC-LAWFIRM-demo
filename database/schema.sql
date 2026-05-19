@@ -1,5 +1,6 @@
--- Legal and Field Consultancy Firms MySQL schema snapshot.
--- Prisma schema and migrations are the deployment source of truth.
+-- LFC Legal Appointment System MySQL schema snapshot.
+CREATE DATABASE IF NOT EXISTS `legal_field_consultancy`;
+USE `legal_field_consultancy`;
 
 CREATE TABLE roles (
   id VARCHAR(32) PRIMARY KEY,

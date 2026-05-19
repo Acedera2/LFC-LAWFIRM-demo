@@ -11,13 +11,17 @@ import { sanitizeInput } from "./middleware/sanitize.js";
 import routes from "./routes/index.js";
 
 export const app = express();
-const allowedOrigins = new Set([
+const defaultOrigins = [
   env.clientUrl,
   "http://localhost:5173",
   "http://127.0.0.1:5173",
   "http://localhost:4173",
-  "http://127.0.0.1:4173"
-]);
+  "http://127.0.0.1:4173",
+  "http://localhost:3000",
+  "http://127.0.0.1:3000"
+].filter(Boolean);
+
+const allowedOrigins = new Set([...defaultOrigins, ...env.corsAllowedOrigins]);
 
 app.set("trust proxy", 1);
 app.use(helmet());
@@ -25,7 +29,7 @@ app.use(compression());
 app.use(cors({
   origin(origin, callback) {
     if (!origin || allowedOrigins.has(origin)) return callback(null, true);
-    return callback(new Error("Origin is not allowed by CORS"));
+    return callback(new Error(`Origin ${origin} is not allowed by CORS`));
   },
   methods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization", "X-CSRF-Token"],

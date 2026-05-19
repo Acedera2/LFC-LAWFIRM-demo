@@ -66,7 +66,7 @@ Environment variables:
 
 ```text
 VITE_API_URL=https://your-api-host.com/api
-VITE_APP_NAME=Legal and Field Consultancy Firms
+VITE_APP_NAME=LFC Legal Appointment System
 ```
 
 ## Production Checklist

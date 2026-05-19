@@ -19,8 +19,8 @@ export default function Contact() {
           <h1 className="mt-3 font-display text-4xl font-extrabold text-ink-900 dark:text-white sm:text-5xl">Talk with the intake team.</h1>
           <p className="mt-6 text-lg leading-8 text-ink-600 dark:text-ink-100">Send a general inquiry or create a secure account to book and track a consultation.</p>
           <div className="mt-8 grid gap-4 text-sm text-ink-600 dark:text-ink-100">
-            <span className="flex items-center gap-3"><MapPin size={18} /> 28 Justice Avenue, Metro Manila</span>
-            <span className="flex items-center gap-3"><Phone size={18} /> +63 2 8123 4567</span>
+            <span className="flex items-center gap-3"><MapPin size={18} /> Occidental Mindoro Provincial Capitol</span>
+            <span className="flex items-center gap-3"><Phone size={18} /> +63 45 123 4567</span>
             <span className="flex items-center gap-3"><Mail size={18} /> concierge@lfcfirm.com</span>
           </div>
         </section>

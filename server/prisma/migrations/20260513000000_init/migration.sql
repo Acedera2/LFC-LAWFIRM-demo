@@ -1,4 +1,4 @@
--- Initial migration for Legal and Field Consultancy Firms.
+-- Initial migration for LFC Legal Appointment System.
 
 CREATE TABLE `roles` (
   `id` VARCHAR(32) NOT NULL,

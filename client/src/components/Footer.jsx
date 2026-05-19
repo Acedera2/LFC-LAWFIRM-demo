@@ -8,7 +8,7 @@ export default function Footer() {
         <div>
           <Logo />
           <p className="mt-5 max-w-md text-sm leading-6 text-ink-500 dark:text-ink-100">
-            A modern legal operations platform for appointment intake, field consultancy scheduling, lawyer workload visibility, and conflict monitoring.
+            LFC Legal Appointment System — appointment intake, field consultancy scheduling, lawyer workload visibility, and conflict monitoring.
           </p>
           <div className="mt-6 grid gap-3 text-sm text-ink-600 dark:text-ink-100">
             <span className="flex items-center gap-3"><MapPin size={16} /> 28 Justice Avenue, Metro Manila</span>
@@ -36,7 +36,7 @@ export default function Footer() {
         ))}
       </div>
       <div className="border-t border-ink-100 py-5 text-center text-xs font-semibold text-ink-500 dark:border-white/10 dark:text-ink-100">
-        © {new Date().getFullYear()} Legal and Field Consultancy Firms. Secure scheduling for modern legal teams.
+        © {new Date().getFullYear()} LFC Legal Appointment System. Secure scheduling for modern legal teams.
       </div>
     </footer>
   );

@@ -71,7 +71,7 @@ export default function Login() {
               />
             </label>
             <button disabled={loading} className="focus-ring rounded-lg bg-ink-900 px-5 py-3 text-sm font-extrabold text-white transition hover:bg-jade-800 disabled:cursor-not-allowed disabled:opacity-70 dark:bg-jade-400 dark:text-ink-950" type="submit">
-              {loading ? "Signing in..." : "Sign in securely"}
+              {loading ? "Signing in..." : "Sign in"}
             </button>
           </form>
           <div className="mt-6">

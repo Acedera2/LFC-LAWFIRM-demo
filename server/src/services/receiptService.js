@@ -6,7 +6,7 @@ export function createAppointmentReceipt(appointment) {
 
   doc.on("data", (chunk) => chunks.push(chunk));
 
-  doc.fontSize(20).text("Legal and Field Consultancy Firms", { align: "center" });
+  doc.fontSize(20).text("LFC Legal Appointment System", { align: "center" });
   doc.moveDown(0.5);
   doc.fontSize(14).text("Appointment Receipt", { align: "center" });
   doc.moveDown(2);

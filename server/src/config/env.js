@@ -1,6 +1,6 @@
 import dotenv from "dotenv";
 
-dotenv.config();
+dotenv.config({ override: true });
 
 const required = ["DATABASE_URL", "JWT_SECRET"];
 
@@ -14,6 +14,9 @@ export const env = {
   nodeEnv: process.env.NODE_ENV || "development",
   port: Number(process.env.PORT || 5000),
   clientUrl: process.env.CLIENT_URL || "http://localhost:5173",
+  corsAllowedOrigins: process.env.CORS_ALLOWED_ORIGINS
+    ? process.env.CORS_ALLOWED_ORIGINS.split(",").map((item) => item.trim()).filter(Boolean)
+    : [],
   databaseUrl: process.env.DATABASE_URL,
   jwtSecret: process.env.JWT_SECRET || "development-only-change-me-before-deploy",
   jwtExpiresIn: process.env.JWT_EXPIRES_IN || "8h",

@@ -62,7 +62,7 @@ export default function Home() {
                 <Sparkles size={16} /> Enterprise legal scheduling SaaS
               </span>
               <h1 className="mt-6 font-display text-4xl font-extrabold leading-tight text-white sm:text-6xl lg:text-7xl">
-                Legal and Field Consultancy Firms
+                LFC Legal Appointment System
               </h1>
               <p className="mt-6 max-w-2xl text-lg leading-8 text-white/88">
                 A secure appointment, lawyer availability, document intake, conflict monitoring, and analytics platform for modern legal operations.

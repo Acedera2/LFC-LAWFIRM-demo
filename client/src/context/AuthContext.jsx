@@ -1,118 +1,123 @@
-import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import toast from "react-hot-toast";
+import api, { unwrap } from "../lib/api";
 
 const AuthContext = createContext(null);
-
-// Mock users for demo
-const mockUsers = {
-  "admin@lfcfirm.com": {
-    id: 1,
-    name: "Admin User",
-    email: "admin@lfcfirm.com",
-    role: { slug: "admin" }
-  },
-  "staff@lfcfirm.com": {
-    id: 2,
-    name: "Staff User",
-    email: "staff@lfcfirm.com",
-    role: { slug: "staff" }
-  },
-  "attorney.rivera@lfcfirm.com": {
-    id: 3,
-    name: "Atty. Elena Rivera",
-    email: "attorney.rivera@lfcfirm.com",
-    role: { slug: "lawyer" }
-  },
-  "client@demo.com": {
-    id: 4,
-    name: "Demo Client",
-    email: "client@demo.com",
-    role: { slug: "client" }
-  }
-};
+const LOCAL_STORAGE_KEY = "lfc_user";
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(() => {
-    const stored = localStorage.getItem("lfc_user");
+    if (typeof window === "undefined") return null;
+    const stored = localStorage.getItem(LOCAL_STORAGE_KEY);
     return stored ? JSON.parse(stored) : null;
   });
+  const [initializing, setInitializing] = useState(true);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    if (user) {
-      localStorage.setItem("lfc_user", JSON.stringify(user));
+  const saveUser = useCallback((nextUser) => {
+    setUser(nextUser);
+    if (typeof window === "undefined") return;
+    if (nextUser) {
+      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(nextUser));
     } else {
-      localStorage.removeItem("lfc_user");
+      localStorage.removeItem(LOCAL_STORAGE_KEY);
     }
-  }, [user]);
-
-  // For static demo, skip API check and just use stored user
-  useEffect(() => {
-    setLoading(false);
   }, []);
 
-  const login = async (payload) => {
-    setLoading(true);
-    try {
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
-      const mockUser = mockUsers[payload.email];
-      if (!mockUser) {
-        throw new Error("Invalid credentials");
+  const clearSession = useCallback(() => {
+    saveUser(null);
+  }, [saveUser]);
+
+  useEffect(() => {
+    let active = true;
+
+    const initialize = async () => {
+      try {
+        const response = await api.get("/auth/me");
+        const payload = unwrap(response);
+        if (active) {
+          saveUser(payload.user);
+        }
+      } catch {
+        if (active) {
+          clearSession();
+        }
+      } finally {
+        if (active) {
+          setInitializing(false);
+        }
       }
-      
-      setUser(mockUser);
-      toast.success(`Welcome back, ${mockUser.name}`);
-      return mockUser;
-    } finally {
-      setLoading(false);
-    }
-  };
+    };
 
-  const register = async (payload) => {
+    initialize();
+    return () => {
+      active = false;
+    };
+  }, [clearSession, saveUser]);
+
+  useEffect(() => {
+    const onSessionExpired = () => {
+      clearSession();
+      toast.error("Your session has expired. Please sign in again.");
+    };
+
+    window.addEventListener("lfc:session-expired", onSessionExpired);
+    return () => window.removeEventListener("lfc:session-expired", onSessionExpired);
+  }, [clearSession]);
+
+  const login = useCallback(async (payload) => {
     setLoading(true);
     try {
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
-      const mockUser = {
-        id: Date.now(),
-        name: payload.name,
-        email: payload.email,
-        role: { slug: "client" }
-      };
-      
-      setUser(mockUser);
-      toast.success("Your secure client workspace is ready");
-      return mockUser;
+      const response = await api.post("/auth/login", payload);
+      const payloadData = unwrap(response);
+      saveUser(payloadData.user);
+      toast.success(`Welcome back, ${payloadData.user.name}`);
+      return payloadData.user;
     } finally {
       setLoading(false);
     }
-  };
+  }, [saveUser]);
 
-  const logout = async () => {
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 200));
-    setUser(null);
-    toast.success("Signed out securely");
-  };
+  const register = useCallback(async (payload) => {
+    setLoading(true);
+    try {
+      const response = await api.post("/auth/register", payload);
+      const payloadData = unwrap(response);
+      saveUser(payloadData.user);
+      toast.success("Client account created successfully");
+      return payloadData.user;
+    } finally {
+      setLoading(false);
+    }
+  }, [saveUser]);
 
-  const value = useMemo(
+  const logout = useCallback(async () => {
+    setLoading(true);
+    try {
+      await api.post("/auth/logout");
+    } catch {
+      // Best-effort logout even if backend fails.
+    } finally {
+      clearSession();
+      setLoading(false);
+      toast.success("Signed out securely");
+    }
+  }, [clearSession]);
+
+  const contextValue = useMemo(
     () => ({
       user,
-      loading,
-      setUser,
+      loading: initializing || loading,
       isAuthenticated: Boolean(user),
       hasRole: (...roles) => roles.includes(user?.role?.slug || user?.role),
       login,
       register,
       logout
     }),
-    [user, loading]
+    [user, initializing, loading, login, logout, register]
   );
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  return <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>;
 }
 
 export function useAuth() {

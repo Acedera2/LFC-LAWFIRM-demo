@@ -1,4 +1,4 @@
-import { format, isValid } from "date-fns";
+import { format } from "date-fns";
 import { CalendarClock, ShieldAlert } from "lucide-react";
 import PriorityBadge from "./PriorityBadge";
 

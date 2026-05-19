@@ -7,7 +7,7 @@ import api, { unwrap } from "../../lib/api";
 
 export default function AdminDashboard() {
   const [summary, setSummary] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const colors = ["#34c48f", "#b9862d", "#4b7bec", "#e76f51", "#7c6cf6", "#22c55e"];
 
   useEffect(() => {
     let active = true;
@@ -19,7 +19,7 @@ export default function AdminDashboard() {
       } catch (error) {
         console.error(error);
       } finally {
-        if (active) setLoading(false);
+        if (active) setSummary((current) => current);
       }
     };
     loadSummary();

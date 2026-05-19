@@ -1,8 +1,8 @@
-# Legal and Field Consultancy Firms
+# LFC Legal Appointment System
 
 A full-stack, deployment-ready legal scheduling SaaS for law firms and field consultancy teams. It includes a polished public website, secure role-based dashboards, appointment inquiry workflows, lawyer availability, rule-based conflict monitoring, workload analytics, audit/activity logs, secure document upload support, and seed data for realistic demos.
 
-The system follows the research scope for a **Priority-Based Appointment Scheduling and Conflict Monitoring System with Web-Based Inquiry for Legal and Field Consultancy Firms**. It does not include AI automation, machine learning, payment gateways, court case management, video conferencing, mobile app features, or external government integrations.
+The system follows the research scope for a **Priority-Based Appointment Scheduling and Conflict Monitoring System with Web-Based Inquiry for LFC Legal Appointment System**. It does not include AI automation, machine learning, payment gateways, court case management, video conferencing, mobile app features, or external government integrations.
 
 ## Tech Stack
 
@@ -40,6 +40,7 @@ docs/        API, security, and deployment documentation
 4. Prepare the database:
 
    ```bash
+   cd server
    npm run prisma:generate
    npm run prisma:migrate
    npm run seed
@@ -48,11 +49,24 @@ docs/        API, security, and deployment documentation
 5. Run the full app:
 
    ```bash
+   cd ..
    npm run dev
    ```
 
 Frontend: `http://127.0.0.1:5173`  
 Backend: `http://localhost:5000/api`
+
+## GitHub Deployment
+
+GitHub is the source repository for this app. For hosting, use the client on Vercel and the API on Render or Railway.
+
+1. Create a GitHub repository and push the monorepo.
+2. Set `client/.env` and `server/.env` in your local environment only; do not commit secrets.
+3. Deploy the `server/` folder to Render or Railway with `DATABASE_URL`, `JWT_SECRET`, `REFRESH_TOKEN_SECRET`, and `CLIENT_URL` set.
+4. Deploy the `client/` folder to Vercel with `VITE_API_URL` pointing to the public API URL.
+5. Confirm the deployed frontend can reach `/api/auth/csrf`, `/api/auth/login`, and `/api/auth/me` over HTTPS.
+
+If you want a single GitHub-driven workflow, add GitHub Actions to build the client and validate the server on every push, then deploy to Vercel/Render from those providers.
 
 ## Seed Accounts
 
