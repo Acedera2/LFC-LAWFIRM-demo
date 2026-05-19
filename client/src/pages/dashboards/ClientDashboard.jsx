@@ -15,7 +15,11 @@ import EmptyState from "../../components/EmptyState";
 import LoadingSkeleton from "../../components/LoadingSkeleton";
 import PriorityBadge from "../../components/PriorityBadge";
 import StatCard from "../../components/StatCard";
+<<<<<<< HEAD
 
+=======
+import { mapAppointment } from "../../features/appointments/mappers";
+>>>>>>> fe1f118 (feat: integrate Supabase and enhance LFC scheduling system modules)
 import api, { unwrap } from "../../lib/api";
 
 const consultationTypes = [
@@ -159,10 +163,30 @@ export default function ClientDashboard() {
   }, []);
 
   useEffect(() => {
+<<<<<<< HEAD
     setForm((current) => ({
       ...current,
       priority: selectedPriority
     }));
+=======
+    let active = true;
+    api
+      .get("/appointments?limit=5")
+      .then((response) => {
+        const data = (unwrap(response).appointments || []).map(mapAppointment);
+        if (active) setAppointments(data);
+      })
+      .catch(() => {
+        if (active) setAppointments([]);
+      })
+      .finally(() => {
+        if (active) setLoadingAppointments(false);
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
+>>>>>>> fe1f118 (feat: integrate Supabase and enhance LFC scheduling system modules)
 
     setScan(null);
   }, [selectedPriority]);
@@ -236,6 +260,14 @@ export default function ClientDashboard() {
 
   const submit = async (event) => {
     event.preventDefault();
+<<<<<<< HEAD
+=======
+    try {
+      const payload = { ...form, lawyerId: form.lawyerId || undefined };
+      const response = await api.post("/appointments", payload);
+      const appointment = unwrap(response).appointment;
+      const normalized = mapAppointment(appointment);
+>>>>>>> fe1f118 (feat: integrate Supabase and enhance LFC scheduling system modules)
 
     try {
       const payload = {
@@ -295,6 +327,10 @@ export default function ClientDashboard() {
 
       setFiles([]);
       setScan(null);
+<<<<<<< HEAD
+=======
+      setAppointments((current) => [normalized, ...current].slice(0, 5));
+>>>>>>> fe1f118 (feat: integrate Supabase and enhance LFC scheduling system modules)
     } catch (error) {
       toast.error(
         error.response?.data?.message ||
@@ -303,6 +339,13 @@ export default function ClientDashboard() {
     }
   };
 
+<<<<<<< HEAD
+=======
+  const requestsOpen = appointments.filter((item) => item.status !== "COMPLETED").length;
+  const nextConsult = appointments.find((item) => item.scheduledStart || item.preferredStart);
+  const nextLabel = nextConsult ? new Date(nextConsult.scheduledStart || nextConsult.preferredStart).toLocaleString([], { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" }) : "No scheduled consult";
+
+>>>>>>> fe1f118 (feat: integrate Supabase and enhance LFC scheduling system modules)
   return (
     <div className="grid gap-6">
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">

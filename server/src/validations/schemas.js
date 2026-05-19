@@ -50,6 +50,7 @@ export const appointmentSchemas = {
       status: z.string().optional(),
       priority: z.string().optional(),
       lawyerId: z.string().optional(),
+      clientId: z.string().optional(),
       sortBy: z.enum(["createdAt", "preferredStart", "scheduledStart", "priority"]).optional(),
       sortOrder: z.enum(["asc", "desc"]).optional()
     })

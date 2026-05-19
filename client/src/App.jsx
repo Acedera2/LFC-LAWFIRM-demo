@@ -8,6 +8,7 @@ const About = lazy(() => import("./pages/About"));
 const Analytics = lazy(() => import("./pages/Analytics"));
 const AppointmentManagement = lazy(() => import("./pages/AppointmentManagement"));
 const Contact = lazy(() => import("./pages/Contact"));
+const ClientManagement = lazy(() => import("./pages/ClientManagement"));
 const Home = lazy(() => import("./pages/Home"));
 const Lawyers = lazy(() => import("./pages/Lawyers"));
 const Login = lazy(() => import("./pages/Login"));
@@ -50,6 +51,9 @@ export default function App() {
               <Route path="/appointments" element={<AppointmentManagement />} />
             </Route>
             <Route path="/notifications" element={<Notifications />} />
+            <Route element={<ProtectedRoute roles={["admin", "staff"]} />}>
+              <Route path="/clients" element={<ClientManagement />} />
+            </Route>
             <Route element={<ProtectedRoute roles={["admin", "staff", "lawyer"]} />}>
               <Route path="/analytics" element={<Analytics />} />
             </Route>

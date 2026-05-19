@@ -19,6 +19,7 @@ export default function DashboardShell() {
     { label: "Dashboard", to: roleHome[role] || "/client", icon: LayoutDashboard },
     ...(role === "client" ? [{ label: "Appointments", to: "/appointments", icon: CalendarDays }] : []),
     ...(role === "staff" || role === "admin" ? [{ label: "Appointments", to: "/appointments", icon: CalendarDays }] : []),
+    ...(role === "staff" || role === "admin" ? [{ label: "Clients", to: "/clients", icon: Users }] : []),
     { label: "Notifications", to: "/notifications", icon: Bell },
     ...(role === "lawyer" || role === "staff" || role === "admin" ? [{ label: "Analytics", to: "/analytics", icon: ChartNoAxesCombined }] : []),
     ...(role === "admin" ? [{ label: "People", to: "/settings?tab=users", icon: Users }] : []),

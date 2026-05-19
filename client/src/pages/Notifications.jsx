@@ -4,8 +4,11 @@ import toast from "react-hot-toast";
 import api, { unwrap } from "../lib/api";
 import EmptyState from "../components/EmptyState";
 import LoadingSkeleton from "../components/LoadingSkeleton";
+import { useAuth } from "../context/AuthContext";
+import { isSupabaseEnabled, mapSupabaseNotification, supabase } from "../lib/supabase";
 
 export default function Notifications() {
+  const { user } = useAuth();
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -14,26 +17,85 @@ export default function Notifications() {
 
     const loadNotifications = async () => {
       try {
+<<<<<<< HEAD
         const response = await api.get("/notifications");
         const data = unwrap(response);
         if (active) setNotifications(data.notifications || []);
       } catch (error) {
         toast.error(error.response?.data?.message || "Unable to fetch notifications");
+=======
+        if (isSupabaseEnabled && supabase && user?.id) {
+          const { data, error } = await supabase
+            .from("notifications")
+            .select("id, title, message, category, read_at, created_at")
+            .eq("profile_id", user.id)
+            .order("created_at", { ascending: false })
+            .limit(120);
+
+          if (error) throw error;
+          if (active) setNotifications((data || []).map(mapSupabaseNotification));
+          return;
+        }
+
+        const response = await api.get("/notifications");
+        if (active) setNotifications(unwrap(response).notifications || []);
+      } catch {
+        if (active) setNotifications([]);
+>>>>>>> fe1f118 (feat: integrate Supabase and enhance LFC scheduling system modules)
       } finally {
         if (active) setLoading(false);
       }
     };
+<<<<<<< HEAD
     loadNotifications();
 
+=======
+
+    loadNotifications();
+
+    let channel;
+    if (isSupabaseEnabled && supabase && user?.id) {
+      channel = supabase
+        .channel(`notifications:${user.id}`)
+        .on(
+          "postgres_changes",
+          {
+            event: "*",
+            schema: "public",
+            table: "notifications",
+            filter: `profile_id=eq.${user.id}`
+          },
+          () => {
+            loadNotifications();
+          }
+        )
+        .subscribe();
+    }
+
+>>>>>>> fe1f118 (feat: integrate Supabase and enhance LFC scheduling system modules)
     return () => {
       active = false;
+      if (channel) supabase.removeChannel(channel);
     };
-  }, []);
+  }, [user?.id]);
 
   const markAllRead = async () => {
     try {
+      if (isSupabaseEnabled && supabase && user?.id) {
+        const { error } = await supabase
+          .from("notifications")
+          .update({ read_at: new Date().toISOString() })
+          .eq("profile_id", user.id)
+          .is("read_at", null);
+        if (error) throw error;
+      } else {
       await api.patch("/notifications/read-all");
+<<<<<<< HEAD
       setNotifications((current) => current.map((notification) => ({ ...notification, readAt: new Date().toISOString() })));
+=======
+      }
+      setNotifications((current) => current.map((item) => ({ ...item, readAt: item.readAt || new Date().toISOString() })));
+>>>>>>> fe1f118 (feat: integrate Supabase and enhance LFC scheduling system modules)
       toast.success("All notifications marked as read");
     } catch (error) {
       toast.error(error.response?.data?.message || "Unable to update notifications");

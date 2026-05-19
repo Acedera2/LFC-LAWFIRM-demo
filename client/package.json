@@ -10,6 +10,7 @@
     "lint": "eslint \"src/**/*.{js,jsx}\" --max-warnings=0"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.106.0",
     "axios": "^1.7.9",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",

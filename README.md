@@ -20,6 +20,18 @@ database/    SQL schema and database notes
 docs/        API, security, and deployment documentation
 ```
 
+Client feature modules are organized under `client/src/features/`:
+
+- `appointments/` shared appointment API adapters and mappers
+- `clients/` client profile mapper utilities
+
+The dashboard now includes a dedicated clients workspace route (`/clients`) for staff/admin timeline drill-down.
+
+Optional Supabase frontend mode:
+
+- Set `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` to enable Supabase Auth + realtime notifications.
+- If these variables are empty, the app automatically falls back to existing Express API auth and notifications.
+
 ## Quick Start
 
 1. Install dependencies:
@@ -88,6 +100,7 @@ Password123!
 - [Deployment Guide](docs/DEPLOYMENT.md)
 - [Security Notes](docs/SECURITY.md)
 - [SQL Schema](database/schema.sql)
+- [Supabase Setup Guide](docs/SUPABASE_SETUP.md)
 
 ## Production Notes
 

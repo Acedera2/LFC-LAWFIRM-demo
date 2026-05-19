@@ -46,7 +46,7 @@ app.use(csrfProtection);
 app.get("/health", (req, res) => {
   res.json({
     status: "ok",
-    service: "legal-field-consultancy-api",
+    service: "lfc-legal-appointment-system-api",
     timestamp: new Date().toISOString()
   });
 });

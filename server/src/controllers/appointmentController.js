@@ -17,6 +17,7 @@ function scopedAppointmentWhere(user, query) {
   if (query.status) where.status = query.status;
   if (query.priority) where.priority = query.priority;
   if (query.lawyerId && ["admin", "staff"].includes(role)) where.lawyerId = query.lawyerId;
+  if (query.clientId && ["admin", "staff"].includes(role)) where.clientId = query.clientId;
   if (query.search) {
     where.OR = [
       { subject: { contains: query.search } },
