@@ -1,6 +1,30 @@
 import axios from "axios";
 
-const API_URL = import.meta.env.VITE_API_URL || "/api";
+function isLoopbackHost(hostname) {
+  return hostname === "localhost" || hostname === "127.0.0.1";
+}
+
+function resolveApiUrl() {
+  const configuredUrl = import.meta.env.VITE_API_URL || "/api";
+
+  if (typeof window === "undefined" || !/^https?:\/\//i.test(configuredUrl)) {
+    return configuredUrl;
+  }
+
+  try {
+    const parsedUrl = new URL(configuredUrl);
+
+    if (isLoopbackHost(window.location.hostname) && isLoopbackHost(parsedUrl.hostname)) {
+      return "/api";
+    }
+  } catch {
+    return configuredUrl;
+  }
+
+  return configuredUrl;
+}
+
+const API_URL = resolveApiUrl();
 
 const api = axios.create({
   baseURL: API_URL,

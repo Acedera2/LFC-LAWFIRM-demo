@@ -102,6 +102,27 @@ Password123!
 - [SQL Schema](database/schema.sql)
 - [Supabase Setup Guide](docs/SUPABASE_SETUP.md)
 
+## Architecture & Process
+
+See the detailed system process and architecture notes for the Priority-Based Appointment Scheduling and Conflict Monitoring System in the documentation:
+
+- [Architecture & Process](docs/ARCHITECTURE_AND_PROCESS.md)
+
+## Developer utilities
+
+To capture role-specific dashboard screenshots locally, you can use Playwright or Puppeteer. Example (Playwright):
+
+1. Install Playwright in the repo root:
+
+```bash
+npm i -D playwright
+npx playwright install
+```
+
+2. Create a small script to sign in and capture screenshots, or run Playwright's test runner to take screenshots of `/admin`, `/staff`, `/lawyer`, and `/client`.
+
+I captured screenshots during the dev session; if you want I can add a commit with automated capture scripts and the saved images (`docs/assets/`) — tell me if you'd like that and I'll create the capture script and write the images into `docs/assets/`.
+
 ## Production Notes
 
 - Do not commit `.env` files.
