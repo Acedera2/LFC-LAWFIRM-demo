@@ -16,10 +16,6 @@ import LoadingSkeleton from "../../components/LoadingSkeleton";
 import PriorityBadge from "../../components/PriorityBadge";
 import StatCard from "../../components/StatCard";
 <<<<<<< HEAD
-<<<<<<< HEAD
-=======
-import DashboardLayout from "../../components/DashboardLayout";
->>>>>>> 3e5254d (PolishedDashboardsRoleRedirectTest)
 
 =======
 import { mapAppointment } from "../../features/appointments/mappers";
@@ -314,7 +310,6 @@ const fallbackAppointments = [
 
       setFiles([]);
       setScan(null);
-<<<<<<< HEAD
 =======
       setAppointments((current) => [normalized, ...current].slice(0, 5));
 >>>>>>> fe1f118 (feat: integrate Supabase and enhance LFC scheduling system modules)
@@ -327,12 +322,6 @@ const fallbackAppointments = [
   };
 
 <<<<<<< HEAD
-=======
-  const requestsOpen = appointments.filter((item) => item.status !== "COMPLETED").length;
-  const nextConsult = appointments.find((item) => item.scheduledStart || item.preferredStart);
-  const nextLabel = nextConsult ? new Date(nextConsult.scheduledStart || nextConsult.preferredStart).toLocaleString([], { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" }) : "No scheduled consult";
-
->>>>>>> fe1f118 (feat: integrate Supabase and enhance LFC scheduling system modules)
   return (
     <DashboardLayout>
       <div className="grid gap-6">
