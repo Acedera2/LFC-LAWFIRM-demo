@@ -22,13 +22,23 @@ const defaultOrigins = [
 ].filter(Boolean);
 
 const allowedOrigins = new Set([...defaultOrigins, ...env.corsAllowedOrigins]);
+const isLoopbackOrigin = (origin) => {
+  if (env.nodeEnv === "production") return false;
+
+  try {
+    const url = new URL(origin);
+    return url.protocol === "http:" && (url.hostname === "localhost" || url.hostname === "127.0.0.1");
+  } catch {
+    return false;
+  }
+};
 
 app.set("trust proxy", 1);
 app.use(helmet());
 app.use(compression());
 app.use(cors({
   origin(origin, callback) {
-    if (!origin || allowedOrigins.has(origin)) return callback(null, true);
+    if (!origin || allowedOrigins.has(origin) || isLoopbackOrigin(origin)) return callback(null, true);
     return callback(new Error(`Origin ${origin} is not allowed by CORS`));
   },
   methods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"],

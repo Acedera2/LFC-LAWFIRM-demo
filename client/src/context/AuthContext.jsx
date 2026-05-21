@@ -30,8 +30,17 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     let active = true;
+    const protectedPrefixes = ["/client", "/lawyer", "/staff", "/admin", "/appointments", "/notifications", "/clients", "/analytics", "/settings"];
+    const shouldValidateSession = protectedPrefixes.some((prefix) => window.location.pathname.startsWith(prefix));
 
     const initialize = async () => {
+      if (!shouldValidateSession) {
+        if (active) {
+          setInitializing(false);
+        }
+        return;
+      }
+
       try {
         const response = await api.get("/auth/me");
         const payload = unwrap(response);

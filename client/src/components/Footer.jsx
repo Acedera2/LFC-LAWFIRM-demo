@@ -8,7 +8,7 @@ export default function Footer() {
         <div>
           <Logo />
           <p className="mt-5 max-w-md text-sm leading-6 text-ink-500 dark:text-ink-100">
-            LFC Legal Appointment System — appointment intake, field consultancy scheduling, lawyer workload visibility, and conflict monitoring.
+            LFC Legal Appointment System - appointment intake, field consultancy scheduling, lawyer workload visibility, and conflict monitoring.
           </p>
           <div className="mt-6 grid gap-3 text-sm text-ink-600 dark:text-ink-100">
             <span className="flex items-center gap-3"><MapPin size={16} /> 28 Justice Avenue, Metro Manila</span>

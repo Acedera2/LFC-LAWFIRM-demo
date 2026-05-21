@@ -5,16 +5,19 @@
   "type": "module",
   "main": "src/index.js",
   "scripts": {
-    "predev": "prisma generate",
     "dev": "nodemon src/index.js",
-    "prestart": "prisma generate",
+    "dev:demo": "node dev-server.js",
     "start": "node src/index.js",
     "setup": "node scripts/setup-db.js",
     "lint": "eslint \"src/**/*.js\" --max-warnings=0",
     "prisma:generate": "prisma generate",
-    "prisma:migrate": "prisma migrate dev --name init",
+    "prisma:generate:safe": "node scripts/prisma-generate-safe.cjs",
+    "prisma:migrate": "node scripts/wait-for-db.cjs && prisma migrate dev --name init",
     "prisma:deploy": "prisma migrate deploy",
-    "seed": "node prisma/seed.js"
+    "seed": "node scripts/wait-for-db.cjs && node prisma/seed.js",
+    "prisma:generate:sqlite": "prisma generate --schema=prisma/schema.sqlite.prisma",
+    "prisma:migrate:sqlite": "prisma migrate dev --schema=prisma/schema.sqlite.prisma --name init",
+    "seed:sqlite": "node prisma/seed.js"
   },
   "dependencies": {
     "@prisma/client": "^6.1.0",

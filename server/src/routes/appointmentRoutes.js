@@ -1,8 +1,6 @@
 import { Router } from "express";
 import { cancel, conflictCheck, create, getById, listAppointments, receipt, reschedule, updateStatus } from "../controllers/appointmentController.js";
-import { uploadDocuments } from "../controllers/documentController.js";
 import { authenticate, authorize } from "../middleware/auth.js";
-import { upload } from "../utils/upload.js";
 import { validate } from "../middleware/validate.js";
 import { appointmentSchemas } from "../validations/schemas.js";
 
@@ -17,6 +15,6 @@ router.patch("/:id/status", authorize("lawyer", "staff", "admin"), validate(appo
 router.patch("/:id/reschedule", authorize("client", "staff", "admin"), validate(appointmentSchemas.reschedule), reschedule);
 router.delete("/:id", authorize("client", "staff", "admin"), validate(appointmentSchemas.cancel), cancel);
 router.get("/:id/receipt", receipt);
-router.post("/:appointmentId/documents", authorize("client", "staff", "admin"), upload.array("documents", 6), uploadDocuments);
+// Document upload endpoint removed for prototype (file uploads not required)
 
 export default router;

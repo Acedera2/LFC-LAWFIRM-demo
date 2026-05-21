@@ -1,18 +1,17 @@
 import { prisma } from "../config/prisma.js";
-import { classifyPriority, detectSchedulingConflicts } from "./conflictService.js";
+import { classifyPriority, detectSchedulingConflicts, normalizePriority, priorityLabel } from "./conflictService.js";
 import { createNotification, notifyAppointmentChange, simulateEmail } from "./notificationService.js";
 import { writeAuditLog } from "./auditService.js";
 
 const appointmentInclude = {
   client: { select: { id: true, name: true, email: true, phone: true } },
   lawyer: { include: { user: { select: { id: true, name: true, email: true } } } },
-  documents: true,
-  history: { orderBy: { createdAt: "desc" }, take: 10 }
+  // Simplified include for prototype: no documents/history tables
 };
 
 export async function createAppointment({ data, actor, req }) {
   const suggestedPriority = classifyPriority(data);
-  const priority = data.priority || suggestedPriority;
+  const priority = normalizePriority(data.priority || suggestedPriority);
   const preferredStart = new Date(data.preferredStart);
   const preferredEnd = new Date(data.preferredEnd);
   const conflictScan = await detectSchedulingConflicts({
@@ -32,23 +31,14 @@ export async function createAppointment({ data, actor, req }) {
       description: data.description,
       priority,
       requestedPriority: data.priority || null,
-      priorityReason: `Rule suggestion: ${suggestedPriority}. Selected priority: ${priority}.`,
+      priorityReason: `Rule suggestion: ${priorityLabel(suggestedPriority)}. Selected priority: ${priorityLabel(priority)}.`,
       preferredStart,
       preferredEnd,
       scheduledStart: data.lawyerId && conflictScan.status !== "CONFLICT" ? preferredStart : null,
       scheduledEnd: data.lawyerId && conflictScan.status !== "CONFLICT" ? preferredEnd : null,
       locationMode: data.locationMode || "IN_PERSON",
       conflictStatus: conflictScan.status,
-      history: {
-        create: [
-          {
-            actorId: actor.id,
-            action: "INQUIRY_CREATED",
-            note: `Priority classified as ${priority}. Conflict status: ${conflictScan.status}.`,
-            metadata: { suggestedPriority, selectedPriority: priority, conflictScan }
-          }
-        ]
-      }
+      // activity/history records are simplified for prototype; use audit logs and notifications
     },
     include: appointmentInclude
   });
@@ -107,14 +97,7 @@ export async function updateAppointmentStatus({ id, data, actor, req }) {
       scheduledEnd,
       conflictStatus: conflictScan.status,
       cancellationReason: data.status === "CANCELLED" ? data.reason : existing.cancellationReason,
-      history: {
-        create: {
-          actorId: actor.id,
-          action: `STATUS_${data.status}`,
-          note: data.reason || `Appointment moved to ${data.status}.`,
-          metadata: conflictScan
-        }
-      }
+      // history simplified; use notification + audit
     },
     include: appointmentInclude
   });
@@ -140,15 +123,9 @@ export async function rescheduleAppointment({ id, data, actor, req }) {
     data: {
       preferredStart,
       preferredEnd,
-      status: "RESCHEDULE_REQUESTED",
+      status: "RESCHEDULED",
       rescheduleReason: data.reason,
-      history: {
-        create: {
-          actorId: actor.id,
-          action: "RESCHEDULE_REQUESTED",
-          note: data.reason || "Client requested a new schedule."
-        }
-      }
+      // simplified: no history table
     },
     include: appointmentInclude
   });
@@ -163,13 +140,7 @@ export async function cancelAppointment({ id, reason, actor, req }) {
     data: {
       status: "CANCELLED",
       cancellationReason: reason,
-      history: {
-        create: {
-          actorId: actor.id,
-          action: "CANCELLED",
-          note: reason || "Appointment cancelled."
-        }
-      }
+      // simplified: no history table
     },
     include: appointmentInclude
   });

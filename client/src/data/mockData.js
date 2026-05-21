@@ -34,7 +34,7 @@ export const appointments = [
     client: "Mina Santos",
     lawyer: "Atty. Elena Rivera",
     type: "Emergency consultation",
-    priority: "High Priority",
+    priority: "Urgent",
     status: "Approved",
     start: "2026-05-14T09:00:00",
     end: "2026-05-14T10:00:00",
@@ -45,7 +45,7 @@ export const appointments = [
     client: "Rafael Dizon",
     lawyer: "Atty. Marcus Chen",
     type: "Property field assessment",
-    priority: "Medium Priority",
+    priority: "Moderate",
     status: "Pending",
     start: "2026-05-14T11:30:00",
     end: "2026-05-14T12:30:00",
@@ -56,7 +56,7 @@ export const appointments = [
     client: "Janine Cruz",
     lawyer: "Atty. Sofia Bennett",
     type: "General consultation",
-    priority: "Regular Priority",
+    priority: "Regular",
     status: "Scheduled",
     start: "2026-05-15T14:00:00",
     end: "2026-05-15T15:00:00",
@@ -90,23 +90,23 @@ export const notifications = [
   },
   {
     id: 2,
-    title: "New document uploaded",
-    message: "Client Mina Santos uploaded court notice.pdf.",
-    type: "Document",
+    title: "Conflict alert cleared",
+    message: "APT-1048 was moved to an available slot for Atty. Rivera.",
+    type: "Conflict",
     read: false
   },
   {
     id: 3,
-    title: "Receipt generated",
-    message: "PDF receipt for APT-1050 is ready for download.",
-    type: "Receipt",
+    title: "Notification queued",
+    message: "Appointment reminders and updates are ready for dispatch.",
+    type: "Schedule",
     read: true
   }
 ];
 
 export const timeline = [
   { label: "Inquiry received", time: "08:18 AM", tone: "jade" },
-  { label: "Priority classified as High", time: "08:19 AM", tone: "brass" },
+  { label: "Priority classified as Urgent", time: "08:19 AM", tone: "brass" },
   { label: "Conflict scan completed", time: "08:20 AM", tone: "jade" },
   { label: "Lawyer assignment pending", time: "Now", tone: "coral" }
 ];

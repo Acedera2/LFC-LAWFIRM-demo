@@ -1,0 +1,25 @@
+{
+  "roles": [
+    { "id": "role_admin", "slug": "admin", "name": "Administrator" },
+    { "id": "role_lawyer", "slug": "lawyer", "name": "Lawyer" },
+    { "id": "role_client", "slug": "client", "name": "Client" }
+  ],
+  "users": [
+    { "id": "user_admin", "roleId": "role_admin", "name": "Admin User", "email": "admin@example.com" },
+    { "id": "user_lawyer_1", "roleId": "role_lawyer", "name": "Lawyer One", "email": "lawyer1@example.com" },
+    { "id": "user_client_1", "roleId": "role_client", "name": "Client One", "email": "client1@example.com" }
+  ],
+  "lawyers": [
+    { "id": "lawyer_1", "userId": "user_lawyer_1", "barNumber": "BAR123", "specialization": "Family Law", "bio": "Experienced family lawyer.", "status": "ACTIVE" }
+  ],
+  "availability": [
+    { "id": "av_1", "lawyerId": "lawyer_1", "type": "AVAILABLE", "startsAt": "2026-05-25T08:00:00.000Z", "endsAt": "2026-05-25T12:00:00.000Z" },
+    { "id": "av_2", "lawyerId": "lawyer_1", "type": "AVAILABLE", "startsAt": "2026-05-25T13:00:00.000Z", "endsAt": "2026-05-25T17:00:00.000Z" }
+  ],
+  "appointments": [
+    { "id": "appt_1", "clientId": "user_client_1", "lawyerId": "lawyer_1", "consultationType": "consultation", "subject": "Initial consult", "description": "Discuss case.", "priority": "REGULAR", "status": "SCHEDULED", "preferredStart": "2026-05-25T09:00:00.000Z", "preferredEnd": "2026-05-25T09:30:00.000Z", "scheduledStart": "2026-05-25T09:00:00.000Z", "scheduledEnd": "2026-05-25T09:30:00.000Z", "locationMode": "IN_PERSON", "conflictStatus": "CLEAR" }
+  ],
+  "notifications": [
+    { "id": "note_1", "userId": "user_client_1", "title": "Welcome", "message": "Welcome to the demo.", "type": "info" }
+  ]
+}

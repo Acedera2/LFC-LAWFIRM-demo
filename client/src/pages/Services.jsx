@@ -3,10 +3,10 @@ import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 
 const serviceGroups = [
-  [Gavel, "Emergency legal consultation", "High-priority intake for urgent filings, court deadlines, and time-sensitive legal questions."],
+  [Gavel, "Emergency legal consultation", "Urgent intake for court deadlines, filing issues, and time-sensitive legal concerns."],
   [BriefcaseBusiness, "Corporate compliance", "Board, contract, and regulatory consultations with reusable appointment history."],
   [FileSearch, "Field assessment", "Property, claims, and site verification appointments assigned to qualified legal-field teams."],
-  [UsersRound, "Civil mediation", "Structured follow-ups, document exchange, and lawyer-managed availability."],
+  [UsersRound, "Civil mediation", "Structured follow-ups and lawyer-managed availability for recurring client matters."],
   [Landmark, "Court preparation", "Calendar coordination for filings, evidence review, and appearance preparation."],
   [Home, "Estate and property", "Client intake for title concerns, family estate matters, and property consultation."]
 ];
@@ -18,7 +18,7 @@ export default function Services() {
       <main className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
         <div className="max-w-3xl">
           <p className="text-sm font-extrabold uppercase text-jade-700 dark:text-jade-100">Services</p>
-          <h1 className="mt-3 font-display text-4xl font-extrabold text-ink-900 dark:text-white sm:text-5xl">LFC Legal Appointment System — consultancy workflows in one scheduling system.</h1>
+          <h1 className="mt-3 font-display text-4xl font-extrabold text-ink-900 dark:text-white sm:text-5xl">LFC Legal Appointment System - consultancy workflows in one scheduling system.</h1>
         </div>
         <div className="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
           {serviceGroups.map(([Icon, title, body]) => (

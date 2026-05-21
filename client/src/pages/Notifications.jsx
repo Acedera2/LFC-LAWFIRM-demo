@@ -5,7 +5,7 @@ import api, { unwrap } from "../lib/api";
 import EmptyState from "../components/EmptyState";
 import LoadingSkeleton from "../components/LoadingSkeleton";
 import { useAuth } from "../context/AuthContext";
-import { isSupabaseEnabled, mapSupabaseNotification, supabase } from "../lib/supabase";
+import { isSupabaseEnabled, supabase } from "../lib/supabase";
 
 export default function Notifications() {
   const { user } = useAuth();
@@ -29,7 +29,6 @@ export default function Notifications() {
     loadNotifications();
     return () => {
       active = false;
-      if (channel) supabase.removeChannel(channel);
     };
   }, [user?.id]);
 
@@ -46,6 +45,7 @@ export default function Notifications() {
       await api.patch("/notifications/read-all");
       setNotifications((current) => current.map((notification) => ({ ...notification, readAt: new Date().toISOString() })));
       toast.success("All notifications marked as read");
+    }
     } catch (error) {
       toast.error(error.response?.data?.message || "Unable to update notifications");
     }

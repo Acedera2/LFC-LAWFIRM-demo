@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Save, ShieldCheck } from "lucide-react";
+import { Save, ShieldCheck, Users } from "lucide-react";
 import toast from "react-hot-toast";
 
 import api, { unwrap } from "../lib/api";
@@ -13,14 +13,14 @@ export default function Settings() {
   const { user } = useAuth();
 
   const [settings, setSettings] = useState([]);
-  const [users, setUsers] = useState([]);
+  const [users] = useState([]);
   const [meta, setMeta] = useState({ page: 1, limit: 10, totalItems: 0, totalPages: 1 });
-  const [query, setQuery] = useState("");
-  const [roleFilter, setRoleFilter] = useState("");
   const [selectedClient, setSelectedClient] = useState(null);
-  const [clientAppointments, setClientAppointments] = useState([]);
+  const [clientAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+
+  const timeline = useMemo(() => buildClientTimeline(clientAppointments), [clientAppointments]);
 
   const isAdmin = user?.role?.slug === "admin";
 
@@ -268,7 +268,7 @@ export default function Settings() {
                   {status}
                 </span>
               </div>
-            )}
+            ))}
             <div className="flex items-center justify-between text-xs font-semibold text-ink-500 dark:text-ink-100">
               <span>Total users: {meta.totalItems || users.length}</span>
               <div className="flex items-center gap-2">

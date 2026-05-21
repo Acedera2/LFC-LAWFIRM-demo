@@ -1,21 +1,31 @@
-import { addDays, addMinutes, getDay, isBefore, parseISO, setHours, setMinutes } from "date-fns";
+import { addMinutes, isBefore, parseISO } from "date-fns";
 import { prisma } from "../config/prisma.js";
 
 export function classifyPriority({ consultationType = "", description = "" }) {
   const content = `${consultationType} ${description}`.toLowerCase();
   if (/(emergency|urgent|court deadline|deadline|urgent filing|filing|injunction|hearing)/.test(content)) {
-    return "HIGH";
+    return "URGENT";
   }
   if (/(ongoing|processing|follow-up|follow up|review|case update|compliance)/.test(content)) {
-    return "MEDIUM";
+    return "MODERATE";
   }
   return "REGULAR";
 }
 
-function timeToMinutes(time) {
-  const [hours, minutes] = time.split(":").map(Number);
-  return hours * 60 + minutes;
+export function priorityLabel(priority) {
+  return {
+    URGENT: "Urgent",
+    MODERATE: "Moderate",
+    REGULAR: "Regular"
+  }[priority] || priority || "Regular";
 }
+
+export function normalizePriority(priority) {
+  if (priority === "HIGH") return "URGENT";
+  if (priority === "MEDIUM") return "MODERATE";
+  return priority || "REGULAR";
+}
+
 
 function appointmentRange(start, end) {
   const startDate = typeof start === "string" ? parseISO(start) : start;
@@ -42,59 +52,46 @@ export async function recommendAlternativeSchedules({ lawyerId, start, end, appo
   const durationMinutes = Math.max(30, Math.round((endDate.getTime() - startDate.getTime()) / 60000));
   const recommendations = [];
 
-  const schedules = await prisma.schedule.findMany({
-    where: { lawyerId, isAvailable: true },
-    orderBy: [{ dayOfWeek: "asc" }, { startTime: "asc" }]
+  // fetch future availability blocks for the lawyer
+  const availBlocks = await prisma.availability.findMany({
+    where: { lawyerId, endsAt: { gt: new Date() } },
+    orderBy: { startsAt: "asc" }
   });
 
-  for (let offset = 0; offset < 21 && recommendations.length < limit; offset += 1) {
-    const day = addDays(startDate, offset);
-    const daySchedules = schedules.filter((schedule) => schedule.dayOfWeek === getDay(day));
-
-    for (const schedule of daySchedules) {
-      const scheduleStartMinutes = timeToMinutes(schedule.startTime);
-      const scheduleEndMinutes = timeToMinutes(schedule.endTime);
-      for (let cursor = scheduleStartMinutes; cursor + durationMinutes <= scheduleEndMinutes && recommendations.length < limit; cursor += 30) {
-        let candidateStart = setMinutes(setHours(day, Math.floor(cursor / 60)), cursor % 60);
-        const candidateEnd = addMinutes(candidateStart, durationMinutes);
-
-        if (isBefore(candidateStart, new Date())) continue;
-
-        const blocked = await prisma.availability.count({
-          where: {
-            lawyerId,
-            type: { in: ["UNAVAILABLE", "RESERVED"] },
-            startsAt: { lt: candidateEnd },
-            endsAt: { gt: candidateStart }
-          }
-        });
-
-        if (blocked > 0) continue;
-
-        const dailyCount = await prisma.appointment.count({
-          where: {
-            lawyerId,
-            status: { in: ["SCHEDULED", "APPROVED", "COMPLETED"] },
-            scheduledStart: {
-              gte: new Date(candidateStart.getFullYear(), candidateStart.getMonth(), candidateStart.getDate()),
-              lt: new Date(candidateStart.getFullYear(), candidateStart.getMonth(), candidateStart.getDate() + 1)
-            }
-          }
-        });
-
-        if (dailyCount >= schedule.maxAppointments) continue;
-        if (await isSlotAvailable({ lawyerId, startDate: candidateStart, endDate: candidateEnd, appointmentId })) {
-          recommendations.push({
-            startsAt: candidateStart,
-            endsAt: candidateEnd,
-            reason: dailyCount >= Math.ceil(schedule.maxAppointments * 0.8) ? "Available with workload watch" : "Available"
-          });
-        }
+  for (const block of availBlocks) {
+    if (recommendations.length >= limit) break;
+    // iterate within the block by 30-minute steps
+    let cursor = new Date(Math.max(block.startsAt.getTime(), startDate.getTime()));
+    while (cursor.getTime() + durationMinutes * 60000 <= block.endsAt.getTime() && recommendations.length < limit) {
+      const candidateStart = new Date(cursor);
+      const candidateEnd = addMinutes(candidateStart, durationMinutes);
+      if (isBefore(candidateStart, new Date())) {
+        cursor = addMinutes(cursor, 30);
+        continue;
       }
+
+      const blocked = await prisma.availability.count({
+        where: {
+          lawyerId,
+          type: { in: ["UNAVAILABLE", "RESERVED"] },
+          startsAt: { lt: candidateEnd },
+          endsAt: { gt: candidateStart }
+        }
+      });
+      if (blocked > 0) {
+        cursor = addMinutes(cursor, 30);
+        continue;
+      }
+
+      if (await isSlotAvailable({ lawyerId, startDate: candidateStart, endDate: candidateEnd, appointmentId })) {
+        recommendations.push({ startsAt: candidateStart, endsAt: candidateEnd, reason: "Available" });
+      }
+
+      cursor = addMinutes(cursor, 30);
     }
   }
 
-  return recommendations;
+  return recommendations.slice(0, limit);
 }
 
 export async function detectSchedulingConflicts({ lawyerId, start, end, appointmentId, clientId, consultationType }) {
@@ -108,20 +105,9 @@ export async function detectSchedulingConflicts({ lawyerId, start, end, appointm
   }
 
   const { startDate, endDate } = appointmentRange(start, end);
-  const dayOfWeek = getDay(startDate);
-  const startMinutes = startDate.getHours() * 60 + startDate.getMinutes();
-  const endMinutes = endDate.getHours() * 60 + endDate.getMinutes();
+  const maxAppointments = 8; // prototype default daily capacity per lawyer
 
-  const [schedule, overlappingAppointments, sameDayCount, historicalCount, duplicateRequests, availabilityBlocks] = await Promise.all([
-    prisma.schedule.findFirst({
-      where: {
-        lawyerId,
-        dayOfWeek,
-        isAvailable: true,
-        startTime: { lte: `${String(startDate.getHours()).padStart(2, "0")}:${String(startDate.getMinutes()).padStart(2, "0")}` },
-        endTime: { gte: `${String(endDate.getHours()).padStart(2, "0")}:${String(endDate.getMinutes()).padStart(2, "0")}` }
-      }
-    }),
+  const [overlappingAppointments, sameDayCount, historicalCount, duplicateRequests, availabilityBlocks] = await Promise.all([
     prisma.appointment.findMany({
       where: {
         lawyerId,
@@ -177,13 +163,6 @@ export async function detectSchedulingConflicts({ lawyerId, start, end, appointm
   const conflicts = [];
   const warnings = [];
 
-  if (!schedule || startMinutes < timeToMinutes(schedule.startTime) || endMinutes > timeToMinutes(schedule.endTime)) {
-    conflicts.push({
-      type: "UNAVAILABLE_LAWYER",
-      message: "Selected lawyer is unavailable during this window."
-    });
-  }
-
   if (availabilityBlocks.length > 0) {
     conflicts.push({
       type: "UNAVAILABLE_LAWYER",
@@ -208,16 +187,15 @@ export async function detectSchedulingConflicts({ lawyerId, start, end, appointm
     });
   }
 
-  const maxAppointments = schedule?.maxAppointments || 8;
-  if (sameDayCount >= maxAppointments) {
+  if (sameDayCount >= 8) {
     warnings.push("Daily workload capacity has been reached for this lawyer.");
-  } else if (sameDayCount >= Math.ceil(maxAppointments * 0.8)) {
+  } else if (sameDayCount >= 6) {
     warnings.push("Lawyer workload is approaching daily capacity.");
   }
 
   const dailyAverage = historicalCount / 30;
   if (sameDayCount > Math.max(4, dailyAverage * 1.4)) {
-    warnings.push("Historical patterns suggest possible appointment congestion for this day.");
+    warnings.push("Possible appointment congestion for this day.");
   }
 
   const status = conflicts.length ? "CONFLICT" : warnings.length ? "WARNING" : "CLEAR";
@@ -231,9 +209,9 @@ export async function detectSchedulingConflicts({ lawyerId, start, end, appointm
     warnings,
     recommendations,
     metrics: {
-      sameDayCount,
-      maxAppointments,
-      thirtyDayDailyAverage: Number(dailyAverage.toFixed(2))
+        sameDayCount,
+        maxAppointments,
+        thirtyDayDailyAverage: Number(dailyAverage.toFixed(2))
     }
   };
 }

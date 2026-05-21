@@ -1,5 +1,4 @@
 import { Router } from "express";
-import analyticsRoutes from "./analyticsRoutes.js";
 import appointmentRoutes from "./appointmentRoutes.js";
 import authRoutes from "./authRoutes.js";
 import lawyerRoutes from "./lawyerRoutes.js";
@@ -15,7 +14,6 @@ router.use("/lawyers", lawyerRoutes);
 router.use("/appointments", appointmentRoutes);
 router.use("/schedules", scheduleRoutes);
 router.use("/notifications", notificationRoutes);
-router.use("/analytics", analyticsRoutes);
 router.use("/settings", settingsRoutes);
 router.use("/users", userRoutes);
 

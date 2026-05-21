@@ -28,3 +28,6 @@ export const env = {
   rateLimitMax: Number(process.env.RATE_LIMIT_MAX || 120),
   uploadDir: process.env.UPLOAD_DIR || "uploads"
 };
+
+// Allow forcing demo store mode for quick local development
+env.useDemoStore = (process.env.USE_DEMO_STORE || "false").toLowerCase() === "true";

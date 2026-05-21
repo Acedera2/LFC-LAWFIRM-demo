@@ -1,0 +1,430 @@
+Role redirect test failures: [
+  {
+    demo: 'Admin',
+    error: 'page.waitForNavigation: Timeout 10000ms exceeded.\n' +
+      '=========================== logs ===========================\n' +
+      'waiting for navigation until "networkidle"\n' +
+      '============================================================'
+  },
+  {
+    demo: 'Staff',
+    error: 'page.waitForNavigation: Timeout 10000ms exceeded.\n' +
+      '=========================== logs ===========================\n' +
+      'waiting for navigation until "networkidle"\n' +
+      '============================================================'
+  },
+  {
+    demo: 'Lawyer',
+    error: 'page.waitForNavigation: Timeout 10000ms exceeded.\n' +
+      '=========================== logs ===========================\n' +
+      'waiting for navigation until "networkidle"\n' +
+      '============================================================'
+  },
+  {
+    demo: 'Client',
+    error: 'page.waitForNavigation: Timeout 10000ms exceeded.\n' +
+      '=========================== logs ===========================\n' +
+      'waiting for navigation until "networkidle"\n' +
+      '============================================================'
+  }
+]
+ERROR Admin page.waitForNavigation: Timeout 10000ms exceeded.
+=========================== logs ===========================
+waiting for navigation until "networkidle"
+============================================================
+PAGE_URL http://127.0.0.1:5175/login
+PAGE_HTML_START
+<!DOCTYPE html><html lang="en"><head>
+    <script type="module">import { injectIntoGlobalHook } from "/@react-refresh";
+injectIntoGlobalHook(window);
+window.$RefreshReg$ = () => {};
+window.$RefreshSig$ = () => (type) => type;</script>
+
+    <script type="module" src="/@vite/client"></script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="LFC Legal Appointment System — priority-based legal appointment scheduling with conflict monitoring and lawyer availability.">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+     <title>LFC Legal Appointment System</title>
+
+      <style id="_goober"> @keyframes go2264125279{from{transform:scale(0) rotate(45deg);opacity:0;}to{transform:scale(1) rotate(45deg);opacity:1;}}@keyframes go3020080000{from{transform:scale(0);opacity:0;}to{transform:scale(1);opacity:1;}}@keyframes go463499852{from{transform:scale(0) rotate(90deg);opacity:0;}to{transform:scale(1) rotate(90deg);opacity:1;}}@keyframes go1268368563{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}@keyframes go1310225428{from{transform:scale(0) rotate(45deg);opacity:0;}to{transform:scale(1) rotate(45deg);opacity:1;}}@keyframes go651618207{0%{height:0;width:0;opacity:0;}40%{height:0;width:6px;opacity:1;}100%{opacity:1;height:10px;}}@keyframes go901347462{from{transform:scale(0.6);opacity:0.4;}to{transform:scale(1);opacity:1;}}.go4109123758{z-index:9999;}.go4109123758 > *{pointer-events:auto;}.go2072408551{display:flex;align-items:center;background:#fff;color:#363636;line-height:1.3;will-change:transform;box-shadow:0 3px 10px rgba(0, 0, 0, 0.1), 0 3px 3px rgba(0, 0, 0, 0.05);max-width:350px;pointer-events:auto;padding:8px 10px;border-radius:8px;}.go685806154{position:relative;display:flex;justify-content:center;align-items:center;min-width:20px;min-height:20px;}.go1858758034{width:12px;height:12px;box-sizing:border-box;border:2px solid;border-radius:100%;border-colo
+PAGE_HTML_END
+ERROR Staff page.waitForNavigation: Timeout 10000ms exceeded.
+=========================== logs ===========================
+waiting for navigation until "networkidle"
+============================================================
+PAGE_URL http://127.0.0.1:5175/login
+PAGE_HTML_START
+<!DOCTYPE html><html lang="en"><head>
+    <script type="module">import { injectIntoGlobalHook } from "/@react-refresh";
+injectIntoGlobalHook(window);
+window.$RefreshReg$ = () => {};
+window.$RefreshSig$ = () => (type) => type;</script>
+
+    <script type="module" src="/@vite/client"></script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="LFC Legal Appointment System — priority-based legal appointment scheduling with conflict monitoring and lawyer availability.">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+     <title>LFC Legal Appointment System</title>
+
+      <style id="_goober"> @keyframes go2264125279{from{transform:scale(0) rotate(45deg);opacity:0;}to{transform:scale(1) rotate(45deg);opacity:1;}}@keyframes go3020080000{from{transform:scale(0);opacity:0;}to{transform:scale(1);opacity:1;}}@keyframes go463499852{from{transform:scale(0) rotate(90deg);opacity:0;}to{transform:scale(1) rotate(90deg);opacity:1;}}@keyframes go1268368563{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}@keyframes go1310225428{from{transform:scale(0) rotate(45deg);opacity:0;}to{transform:scale(1) rotate(45deg);opacity:1;}}@keyframes go651618207{0%{height:0;width:0;opacity:0;}40%{height:0;width:6px;opacity:1;}100%{opacity:1;height:10px;}}@keyframes go901347462{from{transform:scale(0.6);opacity:0.4;}to{transform:scale(1);opacity:1;}}.go4109123758{z-index:9999;}.go4109123758 > *{pointer-events:auto;}.go2072408551{display:flex;align-items:center;background:#fff;color:#363636;line-height:1.3;will-change:transform;box-shadow:0 3px 10px rgba(0, 0, 0, 0.1), 0 3px 3px rgba(0, 0, 0, 0.05);max-width:350px;pointer-events:auto;padding:8px 10px;border-radius:8px;}.go685806154{position:relative;display:flex;justify-content:center;align-items:center;min-width:20px;min-height:20px;}.go1858758034{width:12px;height:12px;box-sizing:border-box;border:2px solid;border-radius:100%;border-colo
+PAGE_HTML_END
+ERROR Lawyer page.waitForNavigation: Timeout 10000ms exceeded.
+=========================== logs ===========================
+waiting for navigation until "networkidle"
+============================================================
+PAGE_URL http://127.0.0.1:5175/login
+PAGE_HTML_START
+<!DOCTYPE html><html lang="en"><head>
+    <script type="module">import { injectIntoGlobalHook } from "/@react-refresh";
+injectIntoGlobalHook(window);
+window.$RefreshReg$ = () => {};
+window.$RefreshSig$ = () => (type) => type;</script>
+
+    <script type="module" src="/@vite/client"></script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="LFC Legal Appointment System — priority-based legal appointment scheduling with conflict monitoring and lawyer availability.">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+     <title>LFC Legal Appointment System</title>
+
+      <style id="_goober"> @keyframes go2264125279{from{transform:scale(0) rotate(45deg);opacity:0;}to{transform:scale(1) rotate(45deg);opacity:1;}}@keyframes go3020080000{from{transform:scale(0);opacity:0;}to{transform:scale(1);opacity:1;}}@keyframes go463499852{from{transform:scale(0) rotate(90deg);opacity:0;}to{transform:scale(1) rotate(90deg);opacity:1;}}@keyframes go1268368563{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}@keyframes go1310225428{from{transform:scale(0) rotate(45deg);opacity:0;}to{transform:scale(1) rotate(45deg);opacity:1;}}@keyframes go651618207{0%{height:0;width:0;opacity:0;}40%{height:0;width:6px;opacity:1;}100%{opacity:1;height:10px;}}@keyframes go901347462{from{transform:scale(0.6);opacity:0.4;}to{transform:scale(1);opacity:1;}}.go4109123758{z-index:9999;}.go4109123758 > *{pointer-events:auto;}.go2072408551{display:flex;align-items:center;background:#fff;color:#363636;line-height:1.3;will-change:transform;box-shadow:0 3px 10px rgba(0, 0, 0, 0.1), 0 3px 3px rgba(0, 0, 0, 0.05);max-width:350px;pointer-events:auto;padding:8px 10px;border-radius:8px;}.go685806154{position:relative;display:flex;justify-content:center;align-items:center;min-width:20px;min-height:20px;}.go1858758034{width:12px;height:12px;box-sizing:border-box;border:2px solid;border-radius:100%;border-colo
+PAGE_HTML_END
+ERROR Client page.waitForNavigation: Timeout 10000ms exceeded.
+=========================== logs ===========================
+waiting for navigation until "networkidle"
+============================================================
+PAGE_URL http://127.0.0.1:5175/login
+PAGE_HTML_START
+<!DOCTYPE html><html lang="en"><head>
+    <script type="module">import { injectIntoGlobalHook } from "/@react-refresh";
+injectIntoGlobalHook(window);
+window.$RefreshReg$ = () => {};
+window.$RefreshSig$ = () => (type) => type;</script>
+
+    <script type="module" src="/@vite/client"></script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="LFC Legal Appointment System — priority-based legal appointment scheduling with conflict monitoring and lawyer availability.">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+     <title>LFC Legal Appointment System</title>
+
+      <style id="_goober"> @keyframes go2264125279{from{transform:scale(0) rotate(45deg);opacity:0;}to{transform:scale(1) rotate(45deg);opacity:1;}}@keyframes go3020080000{from{transform:scale(0);opacity:0;}to{transform:scale(1);opacity:1;}}@keyframes go463499852{from{transform:scale(0) rotate(90deg);opacity:0;}to{transform:scale(1) rotate(90deg);opacity:1;}}@keyframes go1268368563{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}@keyframes go1310225428{from{transform:scale(0) rotate(45deg);opacity:0;}to{transform:scale(1) rotate(45deg);opacity:1;}}@keyframes go651618207{0%{height:0;width:0;opacity:0;}40%{height:0;width:6px;opacity:1;}100%{opacity:1;height:10px;}}@keyframes go901347462{from{transform:scale(0.6);opacity:0.4;}to{transform:scale(1);opacity:1;}}.go4109123758{z-index:9999;}.go4109123758 > *{pointer-events:auto;}.go2072408551{display:flex;align-items:center;background:#fff;color:#363636;line-height:1.3;will-change:transform;box-shadow:0 3px 10px rgba(0, 0, 0, 0.1), 0 3px 3px rgba(0, 0, 0, 0.05);max-width:350px;pointer-events:auto;padding:8px 10px;border-radius:8px;}.go685806154{position:relative;display:flex;justify-content:center;align-items:center;min-width:20px;min-height:20px;}.go1858758034{width:12px;height:12px;box-sizing:border-box;border:2px solid;border-radius:100%;border-colo
+PAGE_HTML_END
+Role redirect test failures: [
+  {
+    "demo": "Admin",
+    "error": "page.waitForNavigation: Timeout 10000ms exceeded.\n=========================== logs ===========================\nwaiting for navigation until \"networkidle\"\n============================================================"
+  },
+  {
+    "demo": "Staff",
+    "error": "page.waitForNavigation: Timeout 10000ms exceeded.\n=========================== logs ===========================\nwaiting for navigation until \"networkidle\"\n============================================================"
+  },
+  {
+    "demo": "Lawyer",
+    "error": "page.waitForNavigation: Timeout 10000ms exceeded.\n=========================== logs ===========================\nwaiting for navigation until \"networkidle\"\n============================================================"
+  },
+  {
+    "demo": "Client",
+    "error": "page.waitForNavigation: Timeout 10000ms exceeded.\n=========================== logs ===========================\nwaiting for navigation until \"networkidle\"\n============================================================"
+  }
+]
+RESPONSE 200 http://127.0.0.1:5175/login
+RESPONSE 200 http://127.0.0.1:5175/src/main.jsx
+RESPONSE 200 http://127.0.0.1:5175/@vite/client
+RESPONSE 200 http://127.0.0.1:5175/@react-refresh
+RESPONSE 200 http://127.0.0.1:5175/node_modules/.vite/deps/react_jsx-dev-runtime.js?v=8bad175b
+RESPONSE 200 http://127.0.0.1:5175/node_modules/.vite/deps/react.js?v=8bad175b
+RESPONSE 200 http://127.0.0.1:5175/node_modules/.vite/deps/react-dom_client.js?v=8bad175b
+RESPONSE 200 http://127.0.0.1:5175/node_modules/.vite/deps/react-hot-toast.js?v=8bad175b
+RESPONSE 200 http://127.0.0.1:5175/src/App.jsx
+RESPONSE 200 http://127.0.0.1:5175/src/context/AuthContext.jsx
+RESPONSE 200 http://127.0.0.1:5175/src/styles/index.css
+RESPONSE 200 http://127.0.0.1:5175/@fs/C:/projects/lfc-demo/node_modules/vite/dist/client/env.mjs
+CONSOLE debug [vite] connecting...
+RESPONSE 200 http://127.0.0.1:5175/node_modules/.vite/deps/react-router-dom.js?v=8bad175b
+RESPONSE 200 http://127.0.0.1:5175/node_modules/.vite/deps/chunk-DC5AMYBS.js?v=8bad175b
+RESPONSE 200 http://127.0.0.1:5175/node_modules/.vite/deps/chunk-QDUQBZZD.js?v=8bad175b
+CONSOLE debug [vite] connected.
+RESPONSE 200 http://127.0.0.1:5175/src/components/DashboardShell.jsx
+RESPONSE 200 http://127.0.0.1:5175/src/components/ErrorBoundary.jsx
+RESPONSE 200 http://127.0.0.1:5175/src/components/ProtectedRoute.jsx
+RESPONSE 200 http://127.0.0.1:5175/src/components/LoadingSkeleton.jsx
+RESPONSE 200 http://127.0.0.1:5175/src/lib/api.js
+RESPONSE 200 http://127.0.0.1:5175/node_modules/.vite/deps/clsx.js?v=8bad175b
+RESPONSE 200 http://127.0.0.1:5175/src/components/Logo.jsx
+RESPONSE 200 http://127.0.0.1:5175/src/components/ThemeToggle.jsx
+RESPONSE 200 http://127.0.0.1:5175/node_modules/.vite/deps/axios.js?v=8bad175b
+RESPONSE 200 http://127.0.0.1:5175/node_modules/.vite/deps/chunk-MKYRKYXK.js?v=8bad175b
+RESPONSE 200 http://127.0.0.1:5175/src/hooks/useTheme.js
+RESPONSE 200 http://127.0.0.1:5175/node_modules/.vite/deps/chunk-5QRMYROG.js?v=8bad175b
+RESPONSE 200 http://127.0.0.1:5175/node_modules/.vite/deps/lucide-react.js?v=8bad175b
+CONSOLE info %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold
+RESPONSE 200 http://127.0.0.1:5175/src/pages/Login.jsx
+RESPONSE 200 http://127.0.0.1:5175/src/components/Footer.jsx
+RESPONSE 200 http://127.0.0.1:5175/src/components/Navbar.jsx
+RESPONSE 401 http://127.0.0.1:5175/api/auth/me
+CONSOLE error Failed to load resource: the server responded with a status of 401 (Unauthorized)
+RESPONSE 401 http://127.0.0.1:5175/api/auth/me
+CONSOLE error Failed to load resource: the server responded with a status of 401 (Unauthorized)
+RESPONSE 500 http://127.0.0.1:5175/api/auth/refresh
+CONSOLE error Failed to load resource: the server responded with a status of 500 (Internal Server Error)
+RESPONSE 200 http://127.0.0.1:5175/hero-legal-suite.svg
+RESPONSE 200 https://fonts.googleapis.com/css2?family=Fraunces:wght@700;800&family=Inter:wght@400;500;600;700;800&display=swap
+RESPONSE 200 https://fonts.gstatic.com/s/inter/v20/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1ZL7.woff2
+RESPONSE 200 https://fonts.gstatic.com/s/fraunces/v38/6NUu8FyLNQOQZAnv9bYEvDiIdE9Ea92uemAk_WBq8U_9v0c2Wa0K7iN7hzFUPJH58nib14c7qv8.woff2
+RESPONSE 200 http://127.0.0.1:5175/api/auth/csrf
+RESPONSE 500 http://127.0.0.1:5175/api/auth/login
+CONSOLE error Failed to load resource: the server responded with a status of 500 (Internal Server Error)
+ERROR Admin page.waitForNavigation: Timeout 10000ms exceeded.
+=========================== logs ===========================
+waiting for navigation until "networkidle"
+============================================================
+PAGE_URL http://127.0.0.1:5175/login
+PAGE_HTML_START
+<!DOCTYPE html><html lang="en"><head>
+    <script type="module">import { injectIntoGlobalHook } from "/@react-refresh";
+injectIntoGlobalHook(window);
+window.$RefreshReg$ = () => {};
+window.$RefreshSig$ = () => (type) => type;</script>
+
+    <script type="module" src="/@vite/client"></script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="LFC Legal Appointment System — priority-based legal appointment scheduling with conflict monitoring and lawyer availability.">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+     <title>LFC Legal Appointment System</title>
+
+      <style id="_goober"> @keyframes go2264125279{from{transform:scale(0) rotate(45deg);opacity:0;}to{transform:scale(1) rotate(45deg);opacity:1;}}@keyframes go3020080000{from{transform:scale(0);opacity:0;}to{transform:scale(1);opacity:1;}}@keyframes go463499852{from{transform:scale(0) rotate(90deg);opacity:0;}to{transform:scale(1) rotate(90deg);opacity:1;}}@keyframes go1268368563{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}@keyframes go1310225428{from{transform:scale(0) rotate(45deg);opacity:0;}to{transform:scale(1) rotate(45deg);opacity:1;}}@keyframes go651618207{0%{height:0;width:0;opacity:0;}40%{height:0;width:6px;opacity:1;}100%{opacity:1;height:10px;}}@keyframes go901347462{from{transform:scale(0.6);opacity:0.4;}to{transform:scale(1);opacity:1;}}.go4109123758{z-index:9999;}.go4109123758 > *{pointer-events:auto;}.go2072408551{display:flex;align-items:center;background:#fff;color:#363636;line-height:1.3;will-change:transform;box-shadow:0 3px 10px rgba(0, 0, 0, 0.1), 0 3px 3px rgba(0, 0, 0, 0.05);max-width:350px;pointer-events:auto;padding:8px 10px;border-radius:8px;}.go685806154{position:relative;display:flex;justify-content:center;align-items:center;min-width:20px;min-height:20px;}.go1858758034{width:12px;height:12px;box-sizing:border-box;border:2px solid;border-radius:100%;border-colo
+PAGE_HTML_END
+RESPONSE 200 http://127.0.0.1:5175/login
+RESPONSE 304 http://127.0.0.1:5175/@vite/client
+RESPONSE 304 http://127.0.0.1:5175/src/main.jsx
+RESPONSE 304 http://127.0.0.1:5175/@react-refresh
+RESPONSE 200 http://127.0.0.1:5175/node_modules/.vite/deps/react_jsx-dev-runtime.js?v=8bad175b
+RESPONSE 200 http://127.0.0.1:5175/node_modules/.vite/deps/react.js?v=8bad175b
+RESPONSE 200 http://127.0.0.1:5175/node_modules/.vite/deps/react-dom_client.js?v=8bad175b
+RESPONSE 200 http://127.0.0.1:5175/node_modules/.vite/deps/react-router-dom.js?v=8bad175b
+RESPONSE 200 http://127.0.0.1:5175/node_modules/.vite/deps/react-hot-toast.js?v=8bad175b
+RESPONSE 200 http://127.0.0.1:5175/node_modules/.vite/deps/chunk-QDUQBZZD.js?v=8bad175b
+RESPONSE 200 http://127.0.0.1:5175/node_modules/.vite/deps/chunk-DC5AMYBS.js?v=8bad175b
+RESPONSE 200 http://127.0.0.1:5175/node_modules/.vite/deps/chunk-5QRMYROG.js?v=8bad175b
+RESPONSE 304 http://127.0.0.1:5175/@fs/C:/projects/lfc-demo/node_modules/vite/dist/client/env.mjs
+RESPONSE 304 http://127.0.0.1:5175/src/App.jsx
+RESPONSE 304 http://127.0.0.1:5175/src/components/ErrorBoundary.jsx
+RESPONSE 304 http://127.0.0.1:5175/src/context/AuthContext.jsx
+CONSOLE debug [vite] connecting...
+CONSOLE debug [vite] connected.
+RESPONSE 304 http://127.0.0.1:5175/src/styles/index.css
+RESPONSE 304 http://127.0.0.1:5175/src/components/DashboardShell.jsx
+RESPONSE 200 http://127.0.0.1:5175/node_modules/.vite/deps/lucide-react.js?v=8bad175b
+RESPONSE 200 http://127.0.0.1:5175/node_modules/.vite/deps/clsx.js?v=8bad175b
+RESPONSE 200 http://127.0.0.1:5175/node_modules/.vite/deps/chunk-MKYRKYXK.js?v=8bad175b
+RESPONSE 304 http://127.0.0.1:5175/src/components/ProtectedRoute.jsx
+RESPONSE 304 http://127.0.0.1:5175/src/components/LoadingSkeleton.jsx
+RESPONSE 304 http://127.0.0.1:5175/src/lib/api.js
+RESPONSE 200 http://127.0.0.1:5175/node_modules/.vite/deps/axios.js?v=8bad175b
+RESPONSE 304 http://127.0.0.1:5175/src/components/Logo.jsx
+RESPONSE 304 http://127.0.0.1:5175/src/components/ThemeToggle.jsx
+RESPONSE 304 http://127.0.0.1:5175/src/hooks/useTheme.js
+CONSOLE info %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold
+RESPONSE 200 https://fonts.googleapis.com/css2?family=Fraunces:wght@700;800&family=Inter:wght@400;500;600;700;800&display=swap
+RESPONSE 200 https://fonts.gstatic.com/s/fraunces/v38/6NUu8FyLNQOQZAnv9bYEvDiIdE9Ea92uemAk_WBq8U_9v0c2Wa0K7iN7hzFUPJH58nib14c7qv8.woff2
+RESPONSE 200 https://fonts.gstatic.com/s/inter/v20/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1ZL7.woff2
+RESPONSE 304 http://127.0.0.1:5175/src/pages/Login.jsx
+RESPONSE 304 http://127.0.0.1:5175/src/components/Footer.jsx
+RESPONSE 401 http://127.0.0.1:5175/api/auth/me
+CONSOLE error Failed to load resource: the server responded with a status of 401 (Unauthorized)
+RESPONSE 304 http://127.0.0.1:5175/src/components/Navbar.jsx
+RESPONSE 401 http://127.0.0.1:5175/api/auth/me
+CONSOLE error Failed to load resource: the server responded with a status of 401 (Unauthorized)
+RESPONSE 500 http://127.0.0.1:5175/api/auth/refresh
+CONSOLE error Failed to load resource: the server responded with a status of 500 (Internal Server Error)
+RESPONSE 304 http://127.0.0.1:5175/hero-legal-suite.svg
+RESPONSE 200 http://127.0.0.1:5175/api/auth/csrf
+RESPONSE 500 http://127.0.0.1:5175/api/auth/login
+CONSOLE error Failed to load resource: the server responded with a status of 500 (Internal Server Error)
+ERROR Staff page.waitForNavigation: Timeout 10000ms exceeded.
+=========================== logs ===========================
+waiting for navigation until "networkidle"
+============================================================
+PAGE_URL http://127.0.0.1:5175/login
+PAGE_HTML_START
+<!DOCTYPE html><html lang="en"><head>
+    <script type="module">import { injectIntoGlobalHook } from "/@react-refresh";
+injectIntoGlobalHook(window);
+window.$RefreshReg$ = () => {};
+window.$RefreshSig$ = () => (type) => type;</script>
+
+    <script type="module" src="/@vite/client"></script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="LFC Legal Appointment System — priority-based legal appointment scheduling with conflict monitoring and lawyer availability.">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+     <title>LFC Legal Appointment System</title>
+
+      <style id="_goober"> @keyframes go2264125279{from{transform:scale(0) rotate(45deg);opacity:0;}to{transform:scale(1) rotate(45deg);opacity:1;}}@keyframes go3020080000{from{transform:scale(0);opacity:0;}to{transform:scale(1);opacity:1;}}@keyframes go463499852{from{transform:scale(0) rotate(90deg);opacity:0;}to{transform:scale(1) rotate(90deg);opacity:1;}}@keyframes go1268368563{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}@keyframes go1310225428{from{transform:scale(0) rotate(45deg);opacity:0;}to{transform:scale(1) rotate(45deg);opacity:1;}}@keyframes go651618207{0%{height:0;width:0;opacity:0;}40%{height:0;width:6px;opacity:1;}100%{opacity:1;height:10px;}}@keyframes go901347462{from{transform:scale(0.6);opacity:0.4;}to{transform:scale(1);opacity:1;}}.go4109123758{z-index:9999;}.go4109123758 > *{pointer-events:auto;}.go2072408551{display:flex;align-items:center;background:#fff;color:#363636;line-height:1.3;will-change:transform;box-shadow:0 3px 10px rgba(0, 0, 0, 0.1), 0 3px 3px rgba(0, 0, 0, 0.05);max-width:350px;pointer-events:auto;padding:8px 10px;border-radius:8px;}.go685806154{position:relative;display:flex;justify-content:center;align-items:center;min-width:20px;min-height:20px;}.go1858758034{width:12px;height:12px;box-sizing:border-box;border:2px solid;border-radius:100%;border-colo
+PAGE_HTML_END
+RESPONSE 200 http://127.0.0.1:5175/login
+RESPONSE 304 http://127.0.0.1:5175/@vite/client
+RESPONSE 304 http://127.0.0.1:5175/src/main.jsx
+RESPONSE 200 http://127.0.0.1:5175/node_modules/.vite/deps/react_jsx-dev-runtime.js?v=8bad175b
+RESPONSE 200 http://127.0.0.1:5175/node_modules/.vite/deps/react.js?v=8bad175b
+RESPONSE 200 http://127.0.0.1:5175/node_modules/.vite/deps/react-dom_client.js?v=8bad175b
+RESPONSE 200 http://127.0.0.1:5175/node_modules/.vite/deps/react-router-dom.js?v=8bad175b
+RESPONSE 200 http://127.0.0.1:5175/node_modules/.vite/deps/react-hot-toast.js?v=8bad175b
+RESPONSE 200 http://127.0.0.1:5175/node_modules/.vite/deps/chunk-QDUQBZZD.js?v=8bad175b
+RESPONSE 200 http://127.0.0.1:5175/node_modules/.vite/deps/chunk-DC5AMYBS.js?v=8bad175b
+RESPONSE 200 http://127.0.0.1:5175/node_modules/.vite/deps/chunk-5QRMYROG.js?v=8bad175b
+RESPONSE 304 http://127.0.0.1:5175/@react-refresh
+RESPONSE 304 http://127.0.0.1:5175/@fs/C:/projects/lfc-demo/node_modules/vite/dist/client/env.mjs
+RESPONSE 304 http://127.0.0.1:5175/src/App.jsx
+CONSOLE debug [vite] connecting...
+RESPONSE 304 http://127.0.0.1:5175/src/components/ErrorBoundary.jsx
+RESPONSE 304 http://127.0.0.1:5175/src/context/AuthContext.jsx
+CONSOLE debug [vite] connected.
+RESPONSE 304 http://127.0.0.1:5175/src/styles/index.css
+RESPONSE 304 http://127.0.0.1:5175/src/components/DashboardShell.jsx
+RESPONSE 200 http://127.0.0.1:5175/node_modules/.vite/deps/lucide-react.js?v=8bad175b
+RESPONSE 200 http://127.0.0.1:5175/node_modules/.vite/deps/clsx.js?v=8bad175b
+RESPONSE 304 http://127.0.0.1:5175/src/components/ProtectedRoute.jsx
+RESPONSE 304 http://127.0.0.1:5175/src/lib/api.js
+RESPONSE 304 http://127.0.0.1:5175/src/components/LoadingSkeleton.jsx
+RESPONSE 200 http://127.0.0.1:5175/node_modules/.vite/deps/chunk-MKYRKYXK.js?v=8bad175b
+RESPONSE 200 http://127.0.0.1:5175/node_modules/.vite/deps/axios.js?v=8bad175b
+RESPONSE 304 http://127.0.0.1:5175/src/components/Logo.jsx
+RESPONSE 304 http://127.0.0.1:5175/src/components/ThemeToggle.jsx
+RESPONSE 304 http://127.0.0.1:5175/src/hooks/useTheme.js
+CONSOLE info %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold
+RESPONSE 200 https://fonts.googleapis.com/css2?family=Fraunces:wght@700;800&family=Inter:wght@400;500;600;700;800&display=swap
+RESPONSE 200 https://fonts.gstatic.com/s/fraunces/v38/6NUu8FyLNQOQZAnv9bYEvDiIdE9Ea92uemAk_WBq8U_9v0c2Wa0K7iN7hzFUPJH58nib14c7qv8.woff2
+RESPONSE 200 https://fonts.gstatic.com/s/inter/v20/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1ZL7.woff2
+RESPONSE 304 http://127.0.0.1:5175/src/pages/Login.jsx
+RESPONSE 304 http://127.0.0.1:5175/src/components/Footer.jsx
+RESPONSE 304 http://127.0.0.1:5175/src/components/Navbar.jsx
+RESPONSE 401 http://127.0.0.1:5175/api/auth/me
+CONSOLE error Failed to load resource: the server responded with a status of 401 (Unauthorized)
+RESPONSE 401 http://127.0.0.1:5175/api/auth/me
+CONSOLE error Failed to load resource: the server responded with a status of 401 (Unauthorized)
+RESPONSE 500 http://127.0.0.1:5175/api/auth/refresh
+CONSOLE error Failed to load resource: the server responded with a status of 500 (Internal Server Error)
+RESPONSE 304 http://127.0.0.1:5175/hero-legal-suite.svg
+RESPONSE 200 http://127.0.0.1:5175/api/auth/csrf
+RESPONSE 500 http://127.0.0.1:5175/api/auth/login
+CONSOLE error Failed to load resource: the server responded with a status of 500 (Internal Server Error)
+ERROR Lawyer page.waitForNavigation: Timeout 10000ms exceeded.
+=========================== logs ===========================
+waiting for navigation until "networkidle"
+============================================================
+PAGE_URL http://127.0.0.1:5175/login
+PAGE_HTML_START
+<!DOCTYPE html><html lang="en"><head>
+    <script type="module">import { injectIntoGlobalHook } from "/@react-refresh";
+injectIntoGlobalHook(window);
+window.$RefreshReg$ = () => {};
+window.$RefreshSig$ = () => (type) => type;</script>
+
+    <script type="module" src="/@vite/client"></script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="LFC Legal Appointment System — priority-based legal appointment scheduling with conflict monitoring and lawyer availability.">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+     <title>LFC Legal Appointment System</title>
+
+      <style id="_goober"> @keyframes go2264125279{from{transform:scale(0) rotate(45deg);opacity:0;}to{transform:scale(1) rotate(45deg);opacity:1;}}@keyframes go3020080000{from{transform:scale(0);opacity:0;}to{transform:scale(1);opacity:1;}}@keyframes go463499852{from{transform:scale(0) rotate(90deg);opacity:0;}to{transform:scale(1) rotate(90deg);opacity:1;}}@keyframes go1268368563{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}@keyframes go1310225428{from{transform:scale(0) rotate(45deg);opacity:0;}to{transform:scale(1) rotate(45deg);opacity:1;}}@keyframes go651618207{0%{height:0;width:0;opacity:0;}40%{height:0;width:6px;opacity:1;}100%{opacity:1;height:10px;}}@keyframes go901347462{from{transform:scale(0.6);opacity:0.4;}to{transform:scale(1);opacity:1;}}.go4109123758{z-index:9999;}.go4109123758 > *{pointer-events:auto;}.go2072408551{display:flex;align-items:center;background:#fff;color:#363636;line-height:1.3;will-change:transform;box-shadow:0 3px 10px rgba(0, 0, 0, 0.1), 0 3px 3px rgba(0, 0, 0, 0.05);max-width:350px;pointer-events:auto;padding:8px 10px;border-radius:8px;}.go685806154{position:relative;display:flex;justify-content:center;align-items:center;min-width:20px;min-height:20px;}.go1858758034{width:12px;height:12px;box-sizing:border-box;border:2px solid;border-radius:100%;border-colo
+PAGE_HTML_END
+RESPONSE 200 http://127.0.0.1:5175/login
+RESPONSE 200 http://127.0.0.1:5175/@vite/client
+RESPONSE 200 http://127.0.0.1:5175/src/main.jsx
+RESPONSE 200 http://127.0.0.1:5175/node_modules/.vite/deps/react_jsx-dev-runtime.js?v=8bad175b
+RESPONSE 200 http://127.0.0.1:5175/node_modules/.vite/deps/react.js?v=8bad175b
+RESPONSE 200 http://127.0.0.1:5175/node_modules/.vite/deps/react-dom_client.js?v=8bad175b
+RESPONSE 200 http://127.0.0.1:5175/node_modules/.vite/deps/react-router-dom.js?v=8bad175b
+RESPONSE 200 http://127.0.0.1:5175/node_modules/.vite/deps/react-hot-toast.js?v=8bad175b
+RESPONSE 200 http://127.0.0.1:5175/node_modules/.vite/deps/chunk-QDUQBZZD.js?v=8bad175b
+RESPONSE 200 http://127.0.0.1:5175/node_modules/.vite/deps/chunk-DC5AMYBS.js?v=8bad175b
+RESPONSE 200 http://127.0.0.1:5175/node_modules/.vite/deps/chunk-5QRMYROG.js?v=8bad175b
+RESPONSE 200 http://127.0.0.1:5175/@react-refresh
+RESPONSE 200 http://127.0.0.1:5175/@fs/C:/projects/lfc-demo/node_modules/vite/dist/client/env.mjs
+RESPONSE 200 http://127.0.0.1:5175/src/components/ErrorBoundary.jsx
+CONSOLE debug [vite] connecting...
+RESPONSE 200 http://127.0.0.1:5175/src/context/AuthContext.jsx
+RESPONSE 200 http://127.0.0.1:5175/src/App.jsx
+RESPONSE 200 http://127.0.0.1:5175/src/styles/index.css
+CONSOLE debug [vite] connected.
+RESPONSE 200 http://127.0.0.1:5175/src/lib/api.js
+RESPONSE 200 http://127.0.0.1:5175/node_modules/.vite/deps/axios.js?v=8bad175b
+RESPONSE 200 http://127.0.0.1:5175/src/components/DashboardShell.jsx
+RESPONSE 200 http://127.0.0.1:5175/node_modules/.vite/deps/lucide-react.js?v=8bad175b
+RESPONSE 200 http://127.0.0.1:5175/node_modules/.vite/deps/clsx.js?v=8bad175b
+RESPONSE 200 http://127.0.0.1:5175/node_modules/.vite/deps/chunk-MKYRKYXK.js?v=8bad175b
+RESPONSE 200 http://127.0.0.1:5175/src/components/LoadingSkeleton.jsx
+RESPONSE 200 http://127.0.0.1:5175/src/components/ProtectedRoute.jsx
+RESPONSE 200 http://127.0.0.1:5175/src/components/Logo.jsx
+RESPONSE 200 http://127.0.0.1:5175/src/components/ThemeToggle.jsx
+RESPONSE 200 http://127.0.0.1:5175/src/hooks/useTheme.js
+CONSOLE info %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold
+RESPONSE 200 https://fonts.googleapis.com/css2?family=Fraunces:wght@700;800&family=Inter:wght@400;500;600;700;800&display=swap
+RESPONSE 200 https://fonts.gstatic.com/s/fraunces/v38/6NUu8FyLNQOQZAnv9bYEvDiIdE9Ea92uemAk_WBq8U_9v0c2Wa0K7iN7hzFUPJH58nib14c7qv8.woff2
+RESPONSE 200 https://fonts.gstatic.com/s/inter/v20/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1ZL7.woff2
+RESPONSE 200 http://127.0.0.1:5175/src/pages/Login.jsx
+RESPONSE 200 http://127.0.0.1:5175/src/components/Footer.jsx
+RESPONSE 200 http://127.0.0.1:5175/src/components/Navbar.jsx
+RESPONSE 401 http://127.0.0.1:5175/api/auth/me
+CONSOLE error Failed to load resource: the server responded with a status of 401 (Unauthorized)
+RESPONSE 401 http://127.0.0.1:5175/api/auth/me
+CONSOLE error Failed to load resource: the server responded with a status of 401 (Unauthorized)
+RESPONSE 500 http://127.0.0.1:5175/api/auth/refresh
+CONSOLE error Failed to load resource: the server responded with a status of 500 (Internal Server Error)
+RESPONSE 304 http://127.0.0.1:5175/hero-legal-suite.svg
+RESPONSE 200 http://127.0.0.1:5175/api/auth/csrf
+RESPONSE 500 http://127.0.0.1:5175/api/auth/login
+CONSOLE error Failed to load resource: the server responded with a status of 500 (Internal Server Error)
+ERROR Client page.waitForNavigation: Timeout 10000ms exceeded.
+=========================== logs ===========================
+waiting for navigation until "networkidle"
+============================================================
+PAGE_URL http://127.0.0.1:5175/login
+PAGE_HTML_START
+<!DOCTYPE html><html lang="en"><head>
+    <script type="module">import { injectIntoGlobalHook } from "/@react-refresh";
+injectIntoGlobalHook(window);
+window.$RefreshReg$ = () => {};
+window.$RefreshSig$ = () => (type) => type;</script>
+
+    <script type="module" src="/@vite/client"></script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="LFC Legal Appointment System — priority-based legal appointment scheduling with conflict monitoring and lawyer availability.">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+     <title>LFC Legal Appointment System</title>
+
+      <style id="_goober"> @keyframes go2264125279{from{transform:scale(0) rotate(45deg);opacity:0;}to{transform:scale(1) rotate(45deg);opacity:1;}}@keyframes go3020080000{from{transform:scale(0);opacity:0;}to{transform:scale(1);opacity:1;}}@keyframes go463499852{from{transform:scale(0) rotate(90deg);opacity:0;}to{transform:scale(1) rotate(90deg);opacity:1;}}@keyframes go1268368563{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}@keyframes go1310225428{from{transform:scale(0) rotate(45deg);opacity:0;}to{transform:scale(1) rotate(45deg);opacity:1;}}@keyframes go651618207{0%{height:0;width:0;opacity:0;}40%{height:0;width:6px;opacity:1;}100%{opacity:1;height:10px;}}@keyframes go901347462{from{transform:scale(0.6);opacity:0.4;}to{transform:scale(1);opacity:1;}}.go4109123758{z-index:9999;}.go4109123758 > *{pointer-events:auto;}.go2072408551{display:flex;align-items:center;background:#fff;color:#363636;line-height:1.3;will-change:transform;box-shadow:0 3px 10px rgba(0, 0, 0, 0.1), 0 3px 3px rgba(0, 0, 0, 0.05);max-width:350px;pointer-events:auto;padding:8px 10px;border-radius:8px;}.go685806154{position:relative;display:flex;justify-content:center;align-items:center;min-width:20px;min-height:20px;}.go1858758034{width:12px;height:12px;box-sizing:border-box;border:2px solid;border-radius:100%;border-colo
+PAGE_HTML_END
+Role redirect test failures: [
+  {
+    "demo": "Admin",
+    "error": "page.waitForNavigation: Timeout 10000ms exceeded.\n=========================== logs ===========================\nwaiting for navigation until \"networkidle\"\n============================================================"
+  },
+  {
+    "demo": "Staff",
+    "error": "page.waitForNavigation: Timeout 10000ms exceeded.\n=========================== logs ===========================\nwaiting for navigation until \"networkidle\"\n============================================================"
+  },
+  {
+    "demo": "Lawyer",
+    "error": "page.waitForNavigation: Timeout 10000ms exceeded.\n=========================== logs ===========================\nwaiting for navigation until \"networkidle\"\n============================================================"
+  },
+  {
+    "demo": "Client",
+    "error": "page.waitForNavigation: Timeout 10000ms exceeded.\n=========================== logs ===========================\nwaiting for navigation until \"networkidle\"\n============================================================"
+  }
+]

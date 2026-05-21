@@ -2,7 +2,11 @@ import { z } from "zod";
 
 const id = z.string().min(8);
 const dateString = z.string().datetime().or(z.string().min(10));
-const priority = z.enum(["HIGH", "MEDIUM", "REGULAR"]);
+const priority = z.enum(["HIGH", "MEDIUM", "REGULAR", "URGENT", "MODERATE"]).transform((value) => {
+  if (value === "URGENT") return "HIGH";
+  if (value === "MODERATE") return "MEDIUM";
+  return value;
+});
 const appointmentWindow = z
   .object({
     preferredStart: dateString,

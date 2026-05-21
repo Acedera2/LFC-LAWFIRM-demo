@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Download, Filter, RefreshCcw, Search } from "lucide-react";
+import { AlertTriangle, Download, RefreshCcw, Search } from "lucide-react";
 import toast from "react-hot-toast";
 import AppointmentCard from "../components/AppointmentCard";
 import CalendarGrid from "../components/CalendarGrid";
@@ -9,6 +9,18 @@ import Modal from "../components/Modal";
 import PriorityBadge from "../components/PriorityBadge";
 import api, { unwrap } from "../lib/api";
 
+const statusLabels = {
+  PENDING: "Pending",
+  RESCHEDULE_REQUESTED: "Reschedule requested",
+  RESCHEDULED: "Rescheduled",
+  SCHEDULED: "Scheduled",
+  APPROVED: "Approved",
+  REJECTED: "Rejected",
+  COMPLETED: "Completed",
+  CANCEL_REQUESTED: "Cancellation requested",
+  CANCELLED: "Cancelled"
+};
+
 export default function AppointmentManagement() {
   const [query, setQuery] = useState("");
   const [status, setStatus] = useState("");
@@ -16,8 +28,6 @@ export default function AppointmentManagement() {
   const [meta, setMeta] = useState({ page: 1, limit: 10, totalItems: 0, totalPages: 1 });
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState(null);
-  const [appointments, setAppointments] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
@@ -42,10 +52,23 @@ export default function AppointmentManagement() {
   const filtered = useMemo(
     () => appointments.filter((appointment) => {
       const searchText = `${appointment.client?.name || appointment.client || ""} ${appointment.lawyer?.user?.name || appointment.lawyer?.name || appointment.lawyer || ""} ${appointment.consultationType || appointment.subject || appointment.type || ""}`.toLowerCase();
-      return searchText.includes(query.toLowerCase());
+      const matchesSearch = searchText.includes(query.toLowerCase());
+      const matchesStatus = !status || appointment.status === status || appointment.conflictStatus === status;
+      return matchesSearch && matchesStatus;
     }),
-    [appointments, query]
+    [appointments, query, status]
   );
+
+  const summary = useMemo(() => appointments.reduce((acc, appointment) => {
+    const statusKey = appointment.status || "PENDING";
+    const conflictKey = appointment.conflictStatus || "PENDING_ASSIGNMENT";
+    acc.total += 1;
+    acc[statusKey] = (acc[statusKey] || 0) + 1;
+    acc[conflictKey] = (acc[conflictKey] || 0) + 1;
+    return acc;
+  }, { total: 0 }), [appointments]);
+
+  const calendarAppointments = filtered.slice(0, 30);
 
   const refreshQueue = async () => {
     setRefreshing(true);
@@ -87,19 +110,41 @@ export default function AppointmentManagement() {
           <select value={status} onChange={(event) => { setMeta((current) => ({ ...current, page: 1 })); setStatus(event.target.value); }} className="focus-ring inline-flex items-center justify-center gap-2 rounded-lg border border-ink-100 px-4 py-3 text-sm font-bold dark:border-white/10 dark:bg-ink-950">
             <option value="">All status</option>
             <option value="PENDING">Submitted</option>
+            <option value="RESCHEDULE_REQUESTED">Reschedule requested</option>
             <option value="SCHEDULED">Scheduled</option>
             <option value="APPROVED">Approved</option>
+            <option value="REJECTED">Rejected</option>
             <option value="COMPLETED">Completed</option>
             <option value="CANCELLED">Cancelled</option>
+            <option value="CONFLICT">Conflict</option>
           </select>
+        </div>
+      </div>
+
+      <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+        <div className="rounded-lg border border-ink-100 bg-white p-4 dark:border-white/10 dark:bg-white/5">
+          <p className="text-sm font-semibold text-ink-500 dark:text-ink-100">All appointments</p>
+          <p className="mt-2 text-2xl font-extrabold text-ink-900 dark:text-white">{summary.total}</p>
+        </div>
+        <div className="rounded-lg border border-ink-100 bg-white p-4 dark:border-white/10 dark:bg-white/5">
+          <p className="text-sm font-semibold text-ink-500 dark:text-ink-100">Pending requests</p>
+          <p className="mt-2 text-2xl font-extrabold text-ink-900 dark:text-white">{summary.PENDING || 0}</p>
+        </div>
+        <div className="rounded-lg border border-ink-100 bg-white p-4 dark:border-white/10 dark:bg-white/5">
+          <p className="text-sm font-semibold text-ink-500 dark:text-ink-100">Approved / scheduled</p>
+          <p className="mt-2 text-2xl font-extrabold text-ink-900 dark:text-white">{(summary.APPROVED || 0) + (summary.SCHEDULED || 0)}</p>
+        </div>
+        <div className="rounded-lg border border-ink-100 bg-white p-4 dark:border-white/10 dark:bg-white/5">
+          <p className="text-sm font-semibold text-ink-500 dark:text-ink-100">Conflict alerts</p>
+          <p className="mt-2 text-2xl font-extrabold text-ink-900 dark:text-white">{summary.CONFLICT || 0}</p>
         </div>
       </div>
 
       <div className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
         <ChartCard title="Calendar scheduling view" subtitle="Visual review for overlapping or congested appointment windows.">
-          <CalendarGrid />
+          <CalendarGrid appointments={calendarAppointments} />
         </ChartCard>
-        <ChartCard title="Appointment queue" subtitle="Click a request to inspect history, status, and supporting documents.">
+        <ChartCard title="Appointment queue" subtitle="Click a request to inspect history, status, and conflict notes.">
           <div className="grid gap-4">
             {loading ? (
               <div className="grid gap-3">
@@ -141,7 +186,7 @@ export default function AppointmentManagement() {
                     <td className="px-4 py-4 text-ink-600 dark:text-ink-100">{appointment.client?.name || appointment.client || "—"}</td>
                     <td className="px-4 py-4 text-ink-600 dark:text-ink-100">{appointment.lawyer?.user?.name || appointment.lawyer?.name || "Unassigned"}</td>
                     <td className="px-4 py-4"><PriorityBadge priority={appointment.priority} /></td>
-                    <td className="px-4 py-4 font-bold text-ink-600 dark:text-ink-100">{appointment.status}</td>
+                    <td className="px-4 py-4 font-bold text-ink-600 dark:text-ink-100">{statusLabels[appointment.status] || appointment.status}</td>
                     <td className="px-4 py-4 text-ink-600 dark:text-ink-100">{appointment.conflictStatus || "Pending"}</td>
                   </tr>
                 ) : (
@@ -174,6 +219,7 @@ export default function AppointmentManagement() {
             <div className="rounded-lg bg-ink-50 p-4 dark:bg-white/5">
               <p className="font-extrabold text-ink-900 dark:text-white">{selected.consultationType || selected.subject || "Appointment details"}</p>
               <p className="mt-1 text-sm text-ink-500 dark:text-ink-100">{selected.client?.name || selected.client} with {selected.lawyer?.user?.name || selected.lawyer?.name || "Unassigned"}</p>
+                <p className="mt-2 text-sm text-ink-500 dark:text-ink-100">Status: <span className="font-bold">{statusLabels[selected.status] || selected.status}</span></p>
             </div>
             <div className="grid gap-3">
               {(selected.history || []).map((item) => (
@@ -186,6 +232,15 @@ export default function AppointmentManagement() {
                 </div>
               ))}
             </div>
+              <div className="rounded-lg border border-ink-100 bg-ink-50 p-4 text-sm text-ink-600 dark:border-white/10 dark:bg-white/5 dark:text-ink-100">
+                <div className="flex items-start gap-3">
+                  <AlertTriangle size={18} className="mt-0.5 text-brass-700" />
+                  <div>
+                    <p className="font-bold text-ink-900 dark:text-white">Policy note</p>
+                    <p className="mt-1">Pending requests, approved schedules, and conflict alerts are reviewed from this single queue before staff confirms the final calendar slot.</p>
+                  </div>
+                </div>
+              </div>
           </div>
         ) : (
           <EmptyState title="Select an appointment" message="Open a request from the queue to review details and history." />

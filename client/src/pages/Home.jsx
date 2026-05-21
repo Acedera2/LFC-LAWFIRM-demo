@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+// Removed animations for prototype simplicity
 import { ArrowRight, CalendarCheck, CheckCircle2, FileText, Scale, ShieldCheck, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
 import Footer from "../components/Footer";
@@ -26,15 +26,15 @@ const testimonials = [
     role: "Operations director"
   },
   {
-    quote: "The intake process is secure, guided, and respectful. I could upload documents and track every step without calling repeatedly.",
+    quote: "The intake process is secure, guided, and respectful. I could track every step without repeated calls or manual follow-ups.",
     name: "Janine Cruz",
     role: "Client"
   }
 ];
 
 const faqs = [
-  ["How does priority classification work?", "Emergency matters, court deadlines, and urgent filings are flagged as high priority. Follow-ups and active processing become medium priority, while general consultations stay regular."],
-  ["Can clients upload legal documents?", "Yes. Authenticated clients can upload supporting files to appointment records, and staff can verify them before assignment."],
+  ["How does priority classification work?", "Emergency matters, court deadlines, and urgent filings are classified as Urgent. Follow-ups and active processing become Moderate, while general consultations stay Regular."],
+  ["Do clients need to upload documents to book?", "No. The appointment workflow is inquiry-first and conflict-aware, so booking can proceed without a file upload step."],
   ["Does the system prevent double booking?", "The API scans scheduled start and end times, lawyer availability windows, daily capacity, and historical congestion patterns before confirmation."],
   ["Can the platform be deployed?", "Yes. The client is ready for Vercel, the API for Render or Railway, and the database for PlanetScale or any MySQL-compatible host."]
 ];
@@ -57,15 +57,15 @@ export default function Home() {
         <section className="relative min-h-[calc(100vh-72px)] overflow-hidden bg-hero-room bg-cover bg-center">
           <div className="absolute inset-0 bg-gradient-to-t from-ink-950/70 via-transparent to-transparent" />
           <div className="relative mx-auto flex min-h-[calc(100vh-72px)] max-w-7xl flex-col justify-center px-4 py-20 sm:px-6 lg:px-8">
-            <motion.div initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.65 }} className="max-w-3xl">
+            <div className="max-w-3xl">
               <span className="inline-flex items-center gap-2 rounded-lg border border-white/20 bg-white/12 px-3 py-2 text-sm font-bold text-white backdrop-blur-xl">
                 <Sparkles size={16} /> Enterprise legal scheduling SaaS
               </span>
               <h1 className="mt-6 font-display text-4xl font-extrabold leading-tight text-white sm:text-6xl lg:text-7xl">
                 LFC Legal Appointment System
               </h1>
-              <p className="mt-6 max-w-2xl text-lg leading-8 text-white/88">
-                A secure appointment, lawyer availability, document intake, conflict monitoring, and analytics platform for modern legal operations.
+              <p className="mt-6 max-w-2xl text-lg leading-8 text-white">
+                A secure appointment, lawyer availability, conflict monitoring, and analytics platform for modern legal operations.
               </p>
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                 <Link to="/register" className="focus-ring inline-flex items-center justify-center gap-2 rounded-lg bg-jade-400 px-5 py-3 text-sm font-extrabold text-ink-950 transition hover:bg-jade-100">
@@ -75,12 +75,12 @@ export default function Home() {
                   Staff portal
                 </Link>
               </div>
-            </motion.div>
+            </div>
             <div className="mt-12 grid max-w-4xl gap-3 sm:grid-cols-3">
               {[
                 ["98%", "appointment completion readiness"],
                 ["24/7", "client inquiry intake"],
-                ["4 roles", "client, lawyer, staff, admin"]
+                ["Centralized", "one calendar across every role"]
               ].map(([value, label]) => (
                 <div key={label} className="glass-panel rounded-lg p-4 text-white">
                   <p className="text-2xl font-extrabold">{value}</p>
@@ -119,7 +119,7 @@ export default function Home() {
 
         <section className="py-20 dark:bg-ink-900/40" id="services">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <SectionHeader eyebrow="Services offered" title="From intake to resolution, every consultation is traceable." subtitle="Handle priority matters, field review, lawyer assignment, document verification, and client notifications without separate spreadsheets." />
+            <SectionHeader eyebrow="Services offered" title="From intake to resolution, every consultation is traceable." subtitle="Handle priority matters, field review, lawyer assignment, and client notifications without separate spreadsheets." />
             <div className="mt-12 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
               {services.map((service) => (
                 <div key={service} className="rounded-lg border border-ink-100 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-soft dark:border-white/10 dark:bg-white/5">
@@ -152,6 +152,40 @@ export default function Home() {
           </div>
         </section>
 
+        <section className="bg-ink-950 py-20 text-white" id="contact">
+          <div className="mx-auto grid max-w-7xl gap-10 px-4 sm:px-6 lg:grid-cols-[0.95fr_1.05fr] lg:px-8">
+            <div>
+              <p className="text-sm font-extrabold uppercase text-jade-100">Contact</p>
+              <h2 className="mt-3 font-display text-3xl font-extrabold sm:text-4xl">Submit an inquiry and let staff route the request.</h2>
+              <p className="mt-4 max-w-2xl text-white/75">Clients can ask about consultation availability, priority needs, and preferred lawyers without starting from a phone log or spreadsheet.</p>
+              <div className="mt-8 grid gap-3 text-sm text-white/80">
+                <span>concierge@lfcfirm.com</span>
+                <span>+63 45 123 4567</span>
+                <span>Occidental Mindoro Provincial Capitol</span>
+              </div>
+            </div>
+            <form className="rounded-lg border border-white/10 bg-white/5 p-6 backdrop-blur-xl" onSubmit={(event) => { event.preventDefault(); event.currentTarget.reset(); }}>
+              <div className="grid gap-4 md:grid-cols-2">
+                <label className="grid gap-2 text-sm font-bold text-white">
+                  Full name
+                  <input required className="focus-ring rounded-lg border border-white/10 bg-ink-950 px-3 py-3 font-medium text-white" />
+                </label>
+                <label className="grid gap-2 text-sm font-bold text-white">
+                  Email
+                  <input required type="email" className="focus-ring rounded-lg border border-white/10 bg-ink-950 px-3 py-3 font-medium text-white" />
+                </label>
+              </div>
+              <label className="mt-4 grid gap-2 text-sm font-bold text-white">
+                Inquiry
+                <textarea required rows="6" className="focus-ring rounded-lg border border-white/10 bg-ink-950 px-3 py-3 font-medium text-white" />
+              </label>
+              <button className="focus-ring mt-5 rounded-lg bg-jade-400 px-5 py-3 text-sm font-extrabold text-ink-950 transition hover:bg-jade-100" type="submit">
+                Send inquiry
+              </button>
+            </form>
+          </div>
+        </section>
+
         <section className="py-20">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="rounded-lg bg-ink-900 p-8 text-white shadow-soft md:p-12">
@@ -159,7 +193,7 @@ export default function Home() {
                 <div>
                   <p className="text-sm font-extrabold uppercase text-jade-100">Appointment inquiry CTA</p>
                   <h2 className="mt-3 font-display text-3xl font-extrabold sm:text-4xl">Start with the right priority, lawyer, and schedule window.</h2>
-                  <p className="mt-4 max-w-2xl text-white/75">Clients can create secure accounts, request preferred times, upload supporting documents, and follow appointment status in one place.</p>
+                  <p className="mt-4 max-w-2xl text-white/75">Clients can create secure accounts, request preferred times, and follow appointment status in one place.</p>
                 </div>
                 <Link to="/register" className="focus-ring inline-flex items-center justify-center gap-2 rounded-lg bg-brass-300 px-5 py-3 text-sm font-extrabold text-ink-950 transition hover:bg-brass-100">
                   Open client intake <FileText size={18} />

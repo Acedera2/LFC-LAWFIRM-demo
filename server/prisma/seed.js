@@ -92,26 +92,6 @@ async function main() {
   );
 
   for (const { lawyer } of lawyerUsers) {
-    for (const dayOfWeek of [1, 2, 3, 4, 5]) {
-      await prisma.schedule.upsert({
-        where: {
-          lawyerId_dayOfWeek_startTime: {
-            lawyerId: lawyer.id,
-            dayOfWeek,
-            startTime: "09:00"
-          }
-        },
-        update: {},
-        create: {
-          lawyerId: lawyer.id,
-          dayOfWeek,
-          startTime: "09:00",
-          endTime: "17:00",
-          maxAppointments: 8
-        }
-      });
-    }
-
     await prisma.availability.deleteMany({ where: { lawyerId: lawyer.id } });
     await prisma.availability.createMany({
       data: [
@@ -120,8 +100,7 @@ async function main() {
           type: "AVAILABLE",
           startsAt: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 2, 9, 0),
           endsAt: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 2, 17, 0),
-          reason: "Standard consultation window",
-          maxAppointments: 8
+          reason: "Standard consultation window"
         },
         {
           lawyerId: lawyer.id,
@@ -150,19 +129,14 @@ async function main() {
       consultationType: "Emergency consultation",
       subject: "Urgent filing review",
       description: "Client needs review for a court filing deadline.",
-      priority: "HIGH",
+      priority: "URGENT",
       status: "APPROVED",
       preferredStart: tomorrow,
       preferredEnd: tomorrowEnd,
       scheduledStart: tomorrow,
       scheduledEnd: tomorrowEnd,
       conflictStatus: "CLEAR",
-      history: {
-        create: [
-          { actorId: client.id, action: "INQUIRY_CREATED", note: "Client submitted urgent filing request." },
-          { actorId: staff.id, action: "STATUS_APPROVED", note: "Staff verified schedule and assigned counsel." }
-        ]
-      }
+      
     }
   });
 
@@ -184,38 +158,7 @@ async function main() {
     ],
     skipDuplicates: true
   });
-
-  await prisma.systemSetting.upsert({
-    where: { key: "defaultSessionHours" },
-    update: { value: 8, updatedById: admin.id },
-    create: { key: "defaultSessionHours", value: 8, updatedById: admin.id }
-  });
-
-  await prisma.analyticsSnapshot.createMany({
-    data: [
-      { metric: "appointment_completion_rate", value: 92.5, dimension: { period: "month" } },
-      { metric: "conflict_frequency", value: 6.2, dimension: { period: "month" } },
-      { metric: "peak_consultation_hour", value: 10, dimension: { hour: "10:00" } }
-    ]
-  });
-
-  await prisma.auditLog.create({
-    data: {
-      userId: admin.id,
-      action: "SEED_DATABASE",
-      entity: "System",
-      metadata: { seed: "initial demo data" }
-    }
-  });
-
-  await prisma.activityLog.create({
-    data: {
-      userId: admin.id,
-      action: "SEED_DATABASE",
-      summary: "Initial demo data was created for deployment validation.",
-      metadata: { users: 6, lawyers: lawyerUsers.length }
-    }
-  });
+ 
 }
 
 main()

@@ -1,24 +1,25 @@
 import { useEffect, useState } from "react";
 import Footer from "../components/Footer";
-import LoadingSkeleton from "../components/LoadingSkeleton";
 import Navbar from "../components/Navbar";
 import { unwrap } from "../lib/api";
 import api from "../lib/api";
 import EmptyState from "../components/EmptyState";
+import { lawyers as fallbackLawyers } from "../data/mockData";
 
 export default function Lawyers() {
-  const [lawyers, setLawyers] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [lawyers, setLawyers] = useState(fallbackLawyers);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     let active = true;
     api
       .get("/lawyers")
       .then((response) => {
-        if (active) setLawyers(unwrap(response).lawyers || []);
+        const payload = unwrap(response);
+        if (active && payload.lawyers?.length) setLawyers(payload.lawyers);
       })
       .catch(() => {
-        if (active) setLawyers([]);
+        if (active) setLawyers(fallbackLawyers);
       })
       .finally(() => {
         if (active) setLoading(false);
@@ -39,17 +40,22 @@ export default function Lawyers() {
         <div className="mt-12">
           {loading ? (
             <div className="grid gap-5 md:grid-cols-3">
-              <LoadingSkeleton rows={3} />
+              <div className="h-16 rounded-lg bg-ink-100 dark:bg-white/10" />
+              <div className="h-16 rounded-lg bg-ink-100 dark:bg-white/10" />
+              <div className="h-16 rounded-lg bg-ink-100 dark:bg-white/10" />
             </div>
           ) : lawyers.length === 0 ? (
             <EmptyState title="No lawyers available" message="Consultant profiles will appear when the intake team adds counsel to the platform." />
           ) : (
             <div className="grid gap-5 md:grid-cols-3">
               {lawyers.map((lawyer) => {
-                const name = lawyer.user?.name || "Unknown counsel";
+                const name = lawyer.user?.name || lawyer.name || "Unknown counsel";
                 const specialty = lawyer.specialization || "Legal consultation";
-                const availability = lawyer.schedules?.length ? "Standard availability" : "No schedule defined";
-                const load = lawyer._count?.appointments ? Math.min(100, 10 + lawyer._count.appointments * 8) : 22;
+                const status = lawyer.status === "ACTIVE" ? "Available" : lawyer.status === "ON_LEAVE" ? "Limited availability" : lawyer.availability ? "Available" : "Unavailable";
+                const availability = lawyer.schedules?.length
+                  ? `${status} - schedule configured`
+                  : lawyer.availability || `${status} - no schedule defined`;
+                const load = lawyer._count?.appointments ? Math.min(100, 10 + lawyer._count.appointments * 8) : lawyer.workload || 22;
                 const initials = name
                   .split(" ")
                   .map((part) => part[0])
@@ -62,6 +68,7 @@ export default function Lawyers() {
                     <h2 className="mt-5 text-xl font-extrabold text-ink-900 dark:text-white">{name}</h2>
                     <p className="mt-1 text-sm font-semibold text-jade-700 dark:text-jade-100">{specialty}</p>
                     <dl className="mt-5 grid gap-3 text-sm text-ink-600 dark:text-ink-100">
+                      <div className="flex justify-between gap-4"><dt className="text-ink-500 dark:text-ink-100">Status</dt><dd className="font-bold text-ink-900 dark:text-white">{status}</dd></div>
                       <div className="flex justify-between gap-4"><dt className="text-ink-500 dark:text-ink-100">Availability</dt><dd className="font-bold text-ink-900 dark:text-white">{availability}</dd></div>
                       <div className="flex justify-between gap-4"><dt className="text-ink-500 dark:text-ink-100">Load</dt><dd className="font-bold text-ink-900 dark:text-white">{load}%</dd></div>
                       <div className="overflow-hidden rounded-full bg-ink-100 dark:bg-white/10">

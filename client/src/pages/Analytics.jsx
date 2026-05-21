@@ -30,12 +30,33 @@ export default function Analytics() {
   const daily = summary?.dailyAppointments || [];
   const peakHours = summary?.peakConsultationHours || [];
   const overview = summary?.overview || {};
+  const services = summary?.mostRequestedServices || [];
+  const lawyers = summary?.appointmentsPerLawyer || [];
+  const statusBreakdown = summary?.statusBreakdown || [];
 
   return (
     <div className="grid gap-6">
       <div>
         <p className="text-sm font-extrabold uppercase text-jade-700 dark:text-jade-100">Analytics</p>
         <h1 className="mt-1 text-2xl font-extrabold text-ink-900 dark:text-white">Scheduling intelligence and firm performance</h1>
+      </div>
+      <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+        <div className="rounded-lg border border-ink-100 bg-white p-4 dark:border-white/10 dark:bg-white/5">
+          <p className="text-sm font-semibold text-ink-500 dark:text-ink-100">Most requested service</p>
+          <p className="mt-2 text-lg font-extrabold text-ink-900 dark:text-white">{services[0]?.service || "—"}</p>
+        </div>
+        <div className="rounded-lg border border-ink-100 bg-white p-4 dark:border-white/10 dark:bg-white/5">
+          <p className="text-sm font-semibold text-ink-500 dark:text-ink-100">Peak appointment date</p>
+          <p className="mt-2 text-lg font-extrabold text-ink-900 dark:text-white">{daily[0]?.date || "—"}</p>
+        </div>
+        <div className="rounded-lg border border-ink-100 bg-white p-4 dark:border-white/10 dark:bg-white/5">
+          <p className="text-sm font-semibold text-ink-500 dark:text-ink-100">Busiest lawyer</p>
+          <p className="mt-2 text-lg font-extrabold text-ink-900 dark:text-white">{lawyers[0]?.lawyerName || "—"}</p>
+        </div>
+        <div className="rounded-lg border border-ink-100 bg-white p-4 dark:border-white/10 dark:bg-white/5">
+          <p className="text-sm font-semibold text-ink-500 dark:text-ink-100">Status mix</p>
+          <p className="mt-2 text-lg font-extrabold text-ink-900 dark:text-white">{statusBreakdown[0]?.status || "—"}</p>
+        </div>
       </div>
       <div className="grid gap-6 xl:grid-cols-2">
         <ChartCard title="Daily and monthly appointments" subtitle="Live appointment volume from the last 30 days.">
@@ -61,6 +82,34 @@ export default function Analytics() {
                 <Tooltip />
                 <Line type="monotone" dataKey="value" stroke="#b9862d" strokeWidth={3} />
               </LineChart>
+            </ResponsiveContainer>
+          </div>
+        </ChartCard>
+      </div>
+      <div className="grid gap-6 xl:grid-cols-2">
+        <ChartCard title="Most requested services" subtitle="Historical booking demand by consultation type.">
+          <div className="h-80">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={services.slice(0, 6)} layout="vertical">
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(76,89,104,0.16)" />
+                <XAxis type="number" />
+                <YAxis type="category" dataKey="service" width={160} />
+                <Tooltip />
+                <Bar dataKey="count" fill="#4278f5" radius={[0, 8, 8, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </ChartCard>
+        <ChartCard title="Lawyer workload" subtitle="Appointment volume per lawyer.">
+          <div className="h-80">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={lawyers.slice(0, 6)}>
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(76,89,104,0.16)" />
+                <XAxis dataKey="lawyerName" />
+                <YAxis />
+                <Tooltip />
+                <Bar dataKey="appointments" fill="#12805c" radius={[8, 8, 0, 0]} />
+              </BarChart>
             </ResponsiveContainer>
           </div>
         </ChartCard>

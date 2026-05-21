@@ -1,4 +1,4 @@
-import { Award, Building2, Clock, ShieldCheck } from "lucide-react";
+import { Award, Building2, Clock, ShieldCheck, Target } from "lucide-react";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 
@@ -20,6 +20,16 @@ export default function About() {
           <p className="mt-6 text-lg leading-8 text-ink-600 dark:text-ink-100">
             LFC Legal Appointment System centralizes the operational work around consultation requests so clients, lawyers, staff, and administrators can coordinate without losing context.
           </p>
+          <div className="mt-8 rounded-lg border border-ink-100 bg-white p-6 shadow-sm dark:border-white/10 dark:bg-white/5">
+            <div className="flex items-start gap-3">
+              <Target className="mt-1 text-jade-700 dark:text-jade-100" size={24} />
+              <div>
+                <p className="font-extrabold text-ink-900 dark:text-white">Mission</p>
+                <p className="mt-1 text-sm leading-6 text-ink-500 dark:text-ink-100">Provide a centralized, secure, conflict-aware appointment system that reduces manual coordination and improves response time for legal and field consultancy work.</p>
+              </div>
+            </div>
+            <p className="mt-4 text-sm leading-6 text-ink-500 dark:text-ink-100">Consultation services include urgent legal intake, routine advisory sessions, field verification, and follow-up coordination for recurring client matters.</p>
+          </div>
         </div>
         <div className="mt-12 grid gap-5 md:grid-cols-2">
           {values.map(([Icon, title, body]) => (

@@ -1,16 +1,20 @@
 const statusLabelMap = {
   PENDING: "Submitted",
   RESCHEDULE_REQUESTED: "Reschedule Requested",
+  RESCHEDULED: "Rescheduled",
   SCHEDULED: "Scheduled",
   APPROVED: "Approved",
   REJECTED: "Rejected",
   COMPLETED: "Completed",
+  CANCEL_REQUESTED: "Cancellation Requested",
   CANCELLED: "Cancelled"
 };
 
 const priorityLabelMap = {
   HIGH: "Urgent",
+  URGENT: "Urgent",
   MEDIUM: "Moderate",
+  MODERATE: "Moderate",
   REGULAR: "Regular"
 };
 

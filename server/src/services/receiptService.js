@@ -1,4 +1,5 @@
 import PDFDocument from "pdfkit";
+import { priorityLabel } from "./conflictService.js";
 
 export function createAppointmentReceipt(appointment) {
   const doc = new PDFDocument({ size: "A4", margin: 48 });
@@ -14,7 +15,7 @@ export function createAppointmentReceipt(appointment) {
   doc.text(`Client: ${appointment.client?.name || "Client"}`);
   doc.text(`Lawyer: ${appointment.lawyer?.user?.name || "Pending assignment"}`);
   doc.text(`Consultation: ${appointment.consultationType}`);
-  doc.text(`Priority: ${appointment.priority}`);
+  doc.text(`Priority: ${priorityLabel(appointment.priority)}`);
   doc.text(`Status: ${appointment.status}`);
   doc.text(`Preferred Start: ${appointment.preferredStart}`);
   doc.text(`Scheduled Start: ${appointment.scheduledStart || "Pending"}`);

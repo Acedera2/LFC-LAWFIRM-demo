@@ -220,6 +220,33 @@ Browser:
 
 5. Keep both terminals open while developing
 
+## 💻 Run a local MySQL quickly (recommended)
+
+If you don't have MySQL running locally, you can start one via Docker Compose included in this repo:
+
+1. From the repo root, start MySQL:
+
+```powershell
+docker-compose up -d
+```
+
+2. Update `server/.env` (the repo already points to root:root credentials for convenience) and run the safe prisma generator which attempts to remove tmp locks on Windows:
+
+```powershell
+cd server
+npm run prisma:generate:safe
+npm run prisma:migrate
+npm run seed
+```
+
+3. Start the dev servers:
+
+```powershell
+npm run dev
+```
+
+This will start the backend at `http://localhost:5000` and the client on a vite port (usually `5173`).
+
 ═══════════════════════════════════════════════════════════════════════════
 
 ## 🆘 QUICK TROUBLESHOOTING

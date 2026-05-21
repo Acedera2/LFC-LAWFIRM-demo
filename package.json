@@ -8,8 +8,9 @@
     "server"
   ],
   "scripts": {
-    "postinstall": "npm run prisma:generate --workspace server",
+    "postinstall": "npm run prisma:generate:safe --workspace server || true",
     "dev": "concurrently -n server,client -c cyan,magenta \"npm run dev --workspace server\" \"npm run dev --workspace client\"",
+    "dev:demo": "concurrently -n server,client -c cyan,magenta \"npm run dev:demo --workspace server\" \"npm run dev --workspace client\"",
     "build": "npm run build --workspace client",
     "start": "npm run start --workspace server",
     "lint": "npm run lint --workspace client && npm run lint --workspace server",
@@ -19,7 +20,7 @@
     "test:role-redirects": "node scripts/verify-role-redirects.js"
   },
   "devDependencies": {
-    "concurrently": "^9.1.2",
+    "concurrently": "^9.2.1",
     "playwright": "^1.60.0"
   },
   "engines": {
