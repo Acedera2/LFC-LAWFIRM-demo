@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import fs from "fs";
 import path from "path";
+import cookieParser from "cookie-parser";
 import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -11,8 +12,9 @@ const raw = fs.readFileSync(dataPath, "utf8");
 const store = JSON.parse(raw);
 
 const app = express();
-app.use(cors({ origin: true }));
+app.use(cors({ origin: true, credentials: true }));
 app.use(express.json());
+app.use(cookieParser());
 
 app.get("/health", (req, res) => res.json({ ok: true, now: new Date().toISOString() }));
 
@@ -53,6 +55,46 @@ app.post("/api/appointments/conflict-check", (req, res) => {
 
 app.get("/api/notifications", (req, res) => {
   res.json(store.notifications);
+});
+
+// Simple demo auth endpoints
+function findUserByEmail(email) {
+  return store.users.find(u => u.email.toLowerCase() === (email || "").toLowerCase());
+}
+
+function cryptoRandom() {
+  return Math.random().toString(36).slice(2);
+}
+
+app.get('/auth/csrf', (req, res) => {
+  const token = cryptoRandom();
+  res.cookie('lfc_csrf', encodeURIComponent(token), { httpOnly: false });
+  res.json({ data: { csrfToken: token } });
+});
+
+app.post('/auth/login', (req, res) => {
+  const { email, password } = req.body || {};
+  const user = findUserByEmail(email);
+  // demo password for seeded accounts is Password123!
+  if (!user || password !== 'Password123!') {
+    return res.status(401).json({ message: 'Invalid email or password' });
+  }
+  // set a demo cookie to persist session across requests
+  res.cookie('demo_user', user.id, { httpOnly: true });
+  res.json({ data: { user: { ...user, role: store.roles.find(r => r.id === user.roleId) } } });
+});
+
+app.post('/auth/logout', (req, res) => {
+  res.clearCookie('demo_user');
+  res.json({ message: 'Signed out' });
+});
+
+app.get('/auth/me', (req, res) => {
+  const userId = req.cookies?.demo_user;
+  if (!userId) return res.status(401).json({ message: 'Not authenticated' });
+  const user = store.users.find(u => u.id === userId);
+  if (!user) return res.status(401).json({ message: 'Not authenticated' });
+  res.json({ data: { user: { ...user, role: store.roles.find(r => r.id === user.roleId) } } });
 });
 
 const basePort = Number(process.env.PORT || 5000);

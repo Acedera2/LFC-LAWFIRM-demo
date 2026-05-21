@@ -238,3 +238,24 @@ Quick local dev checklist (Windows):
 6. Run migrations & seed: `npm run prisma:migrate && npm run seed`.
 
 If you still see `prisma generate` fail after retries, pause OneDrive and re-run the safe script, or run `npm run prisma:generate` manually in the elevated shell to inspect CLI output. Moving the repo out of a synced folder is the most reliable long-term fix.
+
+Demo mode and client API URL
+---------------------------------
+When running in demo fallback (no MySQL), the demo server starts on the first available port starting at 5000 (5000, 5001, ...). The client needs to point to the demo server API URL when running separately. For quick local runs set `client/.env.local`:
+
+```
+VITE_API_URL="http://localhost:5004"
+```
+
+Adjust the port if your demo server uses a different one (check the terminal output when you run `npm run dev`). Alternatively, run both client and server under the same host/origin and configure a proxy so the client can use a relative `/api` path.
+
+Testing login (demo mode)
+---------------------------------
+- Start dev servers: `npm run dev` (server will auto-fallback to demo if DB unavailable).
+- Open the app and use the Login page Demo accounts buttons (password: `Password123!`).
+- Or test via curl/PowerShell against `http://localhost:5004/auth/login` (adjust port as necessary).
+
+Smoke test command
+---------------------------------
+- Run the demo smoke test script: `npm run smoke:demo`
+- The script searches ports `5000-5010`, logs in with the admin demo account, creates an appointment, and runs a conflict check.
