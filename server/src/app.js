@@ -9,6 +9,7 @@ import { apiRateLimiter } from "./middleware/rateLimiter.js";
 import { requestLogger } from "./middleware/requestLogger.js";
 import { sanitizeInput } from "./middleware/sanitize.js";
 import routes from "./routes/index.js";
+import authRoutes from "./routes/authRoutes.js";
 
 export const app = express();
 const defaultOrigins = [
@@ -61,6 +62,7 @@ app.get("/health", (req, res) => {
   });
 });
 
+app.use("/auth", authRoutes);
 app.use("/api", routes);
 app.use(notFoundHandler);
 app.use(errorHandler);
