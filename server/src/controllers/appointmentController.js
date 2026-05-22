@@ -53,6 +53,21 @@ export const listAppointments = asyncHandler(async (req, res) => {
 });
 
 export const create = asyncHandler(async (req, res) => {
+  if (process.env.NODE_ENV !== "production") {
+    try {
+      console.debug("[appointments] create request", {
+        ip: req.ip,
+        path: req.path,
+        method: req.method,
+        cookies: req.headers.cookie,
+        actor: req.user ? { id: req.user.id, role: req.user.role?.slug } : null,
+        payload: req.validated?.body
+      });
+    } catch (e) {
+      // ignore logging errors
+    }
+  }
+
   const appointment = await createAppointment({ data: req.validated.body, actor: req.user, req });
   created(res, { appointment });
 });

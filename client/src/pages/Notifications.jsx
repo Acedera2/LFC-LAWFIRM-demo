@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Bell, CheckCheck, ShieldAlert } from "lucide-react";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 import api, { unwrap } from "../lib/api";
 import EmptyState from "../components/EmptyState";
 import LoadingSkeleton from "../components/LoadingSkeleton";
@@ -9,6 +10,7 @@ import { isSupabaseEnabled, supabase } from "../lib/supabase";
 
 export default function Notifications() {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -21,6 +23,11 @@ export default function Notifications() {
         const data = unwrap(response);
         if (active) setNotifications(data.notifications || []);
       } catch (error) {
+        if (error.response?.status === 401) {
+          toast.error("Please sign in to view notifications");
+          navigate("/login", { state: { from: "/notifications" } });
+          return;
+        }
         toast.error(error.response?.data?.message || "Unable to fetch notifications");
       } finally {
         if (active) setLoading(false);
@@ -42,11 +49,16 @@ export default function Notifications() {
           .is("read_at", null);
         if (error) throw error;
       } else {
-      await api.patch("/notifications/read-all");
-      setNotifications((current) => current.map((notification) => ({ ...notification, readAt: new Date().toISOString() })));
-      toast.success("All notifications marked as read");
-    }
+        await api.patch("/notifications/read-all");
+        setNotifications((current) => current.map((notification) => ({ ...notification, readAt: new Date().toISOString() })));
+        toast.success("All notifications marked as read");
+      }
     } catch (error) {
+      if (error.response?.status === 401) {
+        toast.error("Please sign in to update notifications");
+        navigate("/login", { state: { from: "/notifications" } });
+        return;
+      }
       toast.error(error.response?.data?.message || "Unable to update notifications");
     }
   };

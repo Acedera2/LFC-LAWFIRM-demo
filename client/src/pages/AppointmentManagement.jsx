@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { AlertTriangle, Download, RefreshCcw, Search } from "lucide-react";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 import AppointmentCard from "../components/AppointmentCard";
 import CalendarGrid from "../components/CalendarGrid";
 import ChartCard from "../components/ChartCard";
@@ -22,6 +23,7 @@ const statusLabels = {
 };
 
 export default function AppointmentManagement() {
+  const navigate = useNavigate();
   const [query, setQuery] = useState("");
   const [status, setStatus] = useState("");
   const [appointments, setAppointments] = useState([]);
@@ -38,6 +40,11 @@ export default function AppointmentManagement() {
         const data = unwrap(response);
         if (active) setAppointments(data.appointments || []);
       } catch (error) {
+        if (error.response?.status === 401) {
+          toast.error("Please sign in to view appointments");
+          navigate("/login", { state: { from: "/appointments" } });
+          return;
+        }
         toast.error(error.response?.data?.message || "Unable to load appointments");
       } finally {
         if (active) setLoading(false);
@@ -78,6 +85,11 @@ export default function AppointmentManagement() {
       setAppointments(data.appointments || []);
       toast.success("Appointment queue refreshed");
     } catch (error) {
+      if (error.response?.status === 401) {
+        toast.error("Please sign in to refresh appointments");
+        navigate("/login", { state: { from: "/appointments" } });
+        return;
+      }
       toast.error(error.response?.data?.message || "Unable to refresh appointments");
     } finally {
       setRefreshing(false);

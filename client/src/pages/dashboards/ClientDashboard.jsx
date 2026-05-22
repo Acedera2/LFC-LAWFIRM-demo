@@ -18,6 +18,7 @@ import PriorityBadge from "../../components/PriorityBadge";
 import StatCard from "../../components/StatCard";
 import { mapAppointment } from "../../features/appointments/mappers";
 import api, { unwrap } from "../../lib/api";
+import { useNavigate } from "react-router-dom";
 
 const consultationTypes = [
   { label: "Emergency consultation", priority: "URGENT" },
@@ -106,6 +107,8 @@ export default function ClientDashboard() {
   const nextConsult = appointments.find((item) => item.scheduledStart || item.preferredStart);
   const nextLabel = nextConsult ? new Date(nextConsult.scheduledStart || nextConsult.preferredStart).toLocaleString([], { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" }) : "No scheduled consult";
 
+  const navigate = useNavigate();
+
   const checkAvailability = async () => {
     if (!form.lawyerId) { toast.error("Select a lawyer first"); return; }
     if (!form.preferredDate) { toast.error("Select a date to check availability"); return; }
@@ -144,7 +147,15 @@ export default function ClientDashboard() {
       setForm({ consultationType: "General consultation", priority: "REGULAR", lawyerId: "", locationMode: "IN_PERSON", subject: "", description: "", preferredDate: "" });
       setScan(null);
       if (normalized) setAppointments((current) => [normalized, ...current].slice(0, 5));
-    } catch (error) { toast.error(error.response?.data?.message || "Could not submit appointment"); }
+    } catch (error) {
+      const status = error?.response?.status;
+      if (status === 401) {
+        toast.error("Please sign in to submit an appointment");
+        navigate('/login', { state: { from: '/client' } });
+        return;
+      }
+      toast.error(error.response?.data?.message || "Could not submit appointment");
+    }
   };
 
   const requestCancellation = async (event) => {
@@ -159,6 +170,11 @@ export default function ClientDashboard() {
       setCancellationTarget(null);
       setCancellationReason("");
     } catch (error) {
+      if (error?.response?.status === 401) {
+        toast.error("Please sign in to request a cancellation");
+        navigate('/login', { state: { from: '/client' } });
+        return;
+      }
       toast.error(error.response?.data?.message || "Could not request cancellation");
     }
   };

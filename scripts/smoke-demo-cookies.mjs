@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 // Cookie-aware ESM smoke test for demo server
-const ports = Array.from({ length: 11 }, (_, i) => 5000 + i);
+const ports = process.env.DEMO_SERVER_PORT
+  ? [Number(process.env.DEMO_SERVER_PORT)]
+  : Array.from({ length: 21 }, (_, i) => 5000 + i);
 
 function parseSetCookie(setCookieHeaders) {
   const cookies = {};
