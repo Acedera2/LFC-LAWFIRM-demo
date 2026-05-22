@@ -13,7 +13,7 @@ export default function StaffDashboard() {
   useEffect(() => {
     let active = true;
 
-    Promise.all([api.get("/appointments?limit=10"), api.get("/users?role=client")])
+    Promise.all([api.get("/api/appointments?limit=10"), api.get("/api/users?role=client")])
       .then(([apptsResp, clientsResp]) => {
         if (!active) return;
         setAppointments((unwrap(apptsResp).appointments || []).map(mapAppointment).filter(Boolean));

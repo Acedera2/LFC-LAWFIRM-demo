@@ -42,7 +42,7 @@ export function AuthProvider({ children }) {
       }
 
       try {
-        const response = await api.get("/auth/me");
+        const response = await api.get("/api/auth/me");
         const payload = unwrap(response);
         if (active) {
           saveUser(payload.user);
@@ -77,7 +77,7 @@ export function AuthProvider({ children }) {
   const login = useCallback(async (payload) => {
     setLoading(true);
     try {
-      const response = await api.post("/auth/login", payload);
+      const response = await api.post("/api/auth/login", payload);
       const payloadData = unwrap(response);
       saveUser(payloadData.user);
       toast.success(`Welcome back, ${payloadData.user.name}`);
@@ -90,7 +90,7 @@ export function AuthProvider({ children }) {
   const register = useCallback(async (payload) => {
     setLoading(true);
     try {
-      const response = await api.post("/auth/register", payload);
+      const response = await api.post("/api/auth/register", payload);
       const payloadData = unwrap(response);
       saveUser(payloadData.user);
       toast.success("Client account created successfully");
@@ -103,7 +103,7 @@ export function AuthProvider({ children }) {
   const logout = useCallback(async () => {
     setLoading(true);
     try {
-      await api.post("/auth/logout");
+      await api.post("/api/auth/logout");
     } catch {
       // Best-effort logout even if backend fails.
     } finally {

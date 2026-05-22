@@ -29,6 +29,11 @@ async function startWithPrisma() {
 
 async function start() {
   // Honor explicit environment toggle to force demo store
+  // If there's no DATABASE_URL configured, default to demo store for local dev
+  if (!env.databaseUrl) {
+    env.useDemoStore = true;
+  }
+
   if (env.useDemoStore) {
     console.log('USE_DEMO_STORE=true, starting demo store without attempting Prisma.');
     try {

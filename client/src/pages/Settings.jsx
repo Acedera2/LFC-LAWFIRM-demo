@@ -29,7 +29,7 @@ export default function Settings() {
 
     const loadSettings = async () => {
       try {
-        const response = await api.get("/settings");
+        const response = await api.get("/api/settings");
         const data = unwrap(response);
 
         if (active) {

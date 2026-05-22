@@ -13,7 +13,7 @@ export default function LawyerDashboard() {
   useEffect(() => {
     let active = true;
 
-    Promise.all([api.get("/appointments?role=lawyer&limit=10"), api.get("/messages?unread=true")])
+    Promise.all([api.get("/api/appointments?role=lawyer&limit=10"), api.get("/api/messages?unread=true")])
       .then(([apptsResp, msgsResp]) => {
         if (!active) return;
         setAppointments((unwrap(apptsResp).appointments || []).map(mapAppointment).filter(Boolean));

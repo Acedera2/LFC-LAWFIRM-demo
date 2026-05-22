@@ -12,7 +12,8 @@ export function csrfProtection(req, res, next) {
     return next();
   }
 
-  if (req.path === "/api/auth/csrf") {
+  // Allow both API-rooted and root-mounted CSRF endpoints (demo server mounts both)
+  if (req.path === "/api/auth/csrf" || req.path === "/auth/csrf") {
     return next();
   }
 

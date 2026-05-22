@@ -73,8 +73,7 @@ export default function ClientDashboard() {
     locationMode: "IN_PERSON",
     subject: "",
     description: "",
-    preferredStart: "",
-    preferredEnd: ""
+    preferredDate: ""
   });
 
   const selectedPriority = useMemo(() => suggestedPriorityFor(form.consultationType), [form.consultationType]);
@@ -82,7 +81,7 @@ export default function ClientDashboard() {
   useEffect(() => {
     let active = true;
 
-    Promise.all([api.get("/lawyers"), api.get("/appointments?limit=5")])
+    Promise.all([api.get("/api/lawyers"), api.get("/api/appointments?limit=5")])
       .then(([lawyersResponse, appointmentsResponse]) => {
         if (!active) return;
         setLawyers(unwrap(lawyersResponse).lawyers || lawyersResponse.data?.data || []);
@@ -109,25 +108,40 @@ export default function ClientDashboard() {
 
   const checkAvailability = async () => {
     if (!form.lawyerId) { toast.error("Select a lawyer first"); return; }
-    if (!form.preferredStart || !form.preferredEnd) { toast.error("Select preferred schedule"); return; }
+    if (!form.preferredDate) { toast.error("Select a date to check availability"); return; }
     setChecking(true);
     try {
-      const response = await api.post("/appointments/conflict-check", { lawyerId: form.lawyerId, consultationType: form.consultationType, preferredStart: form.preferredStart, preferredEnd: form.preferredEnd });
+      // build day range for the selected date (local start to end of day)
+      const start = new Date(form.preferredDate);
+      start.setHours(0, 0, 0, 0);
+      const end = new Date(form.preferredDate);
+      end.setHours(23, 59, 59, 999);
+      const response = await api.post("/api/appointments/conflict-check", { lawyerId: form.lawyerId, consultationType: form.consultationType, preferredStart: start.toISOString(), preferredEnd: end.toISOString() });
       const data = unwrap(response);
-      setScan(data.conflictScan);
-      toast.success(data.conflictScan?.status === "CLEAR" ? "Schedule available" : "Conflict scan completed");
-    } catch (error) { toast.error(error.response?.data?.message || "Could not check schedule"); } finally { setChecking(false); }
+      // the demo API returns { conflict, available } — adapt into a scan-like object
+      setScan({ status: data.available ? "CLEAR" : "CONFLICT", reason: data.conflict ? "Conflicting appointment exists" : null, suggestions: [] });
+      toast.success(data.available ? "Lawyer appears available on selected date" : "Lawyer has conflicts on selected date");
+    } catch (error) { toast.error(error.response?.data?.message || "Could not check availability"); } finally { setChecking(false); }
   };
 
   const submit = async (event) => {
     event.preventDefault();
     try {
+      // translate preferredDate into a day range for backend
       const payload = { ...form, lawyerId: form.lawyerId || undefined };
-      const response = await api.post("/appointments", payload);
+      if (form.preferredDate) {
+        const start = new Date(form.preferredDate);
+        start.setHours(0, 0, 0, 0);
+        const end = new Date(form.preferredDate);
+        end.setHours(23, 59, 59, 999);
+        payload.preferredStart = start.toISOString();
+        payload.preferredEnd = end.toISOString();
+      }
+      const response = await api.post("/api/appointments", payload);
       const appointment = unwrap(response).appointment;
       const normalized = mapAppointment(appointment);
       toast.success("Appointment inquiry submitted");
-      setForm({ consultationType: "General consultation", priority: "REGULAR", lawyerId: "", locationMode: "IN_PERSON", subject: "", description: "", preferredStart: "", preferredEnd: "" });
+      setForm({ consultationType: "General consultation", priority: "REGULAR", lawyerId: "", locationMode: "IN_PERSON", subject: "", description: "", preferredDate: "" });
       setScan(null);
       if (normalized) setAppointments((current) => [normalized, ...current].slice(0, 5));
     } catch (error) { toast.error(error.response?.data?.message || "Could not submit appointment"); }
@@ -137,7 +151,7 @@ export default function ClientDashboard() {
     event.preventDefault();
     if (!cancellationTarget) return;
     try {
-      await api.delete(`/appointments/${cancellationTarget.id}`, {
+      await api.delete(`/api/appointments/${cancellationTarget.id}`, {
         data: { reason: cancellationReason || "Client requested cancellation" }
       });
       toast.success("Cancellation request sent to staff");
@@ -171,13 +185,9 @@ export default function ClientDashboard() {
 
             <form onSubmit={submit} className="mt-6 grid gap-4">
               <label className="grid gap-2">
-                <span className="text-sm font-bold">Preferred start</span>
-                <input type="datetime-local" value={form.preferredStart} onChange={(event) => setForm((current) => ({ ...current, preferredStart: event.target.value }))} className="rounded-2xl border border-ink-100 px-4 py-3 dark:border-white/10 dark:bg-ink-950" />
-              </label>
-
-              <label className="grid gap-2">
-                <span className="text-sm font-bold">Preferred end</span>
-                <input type="datetime-local" value={form.preferredEnd} onChange={(event) => setForm((current) => ({ ...current, preferredEnd: event.target.value }))} className="rounded-2xl border border-ink-100 px-4 py-3 dark:border-white/10 dark:bg-ink-950" />
+                <span className="text-sm font-bold">Appointment date</span>
+                <input type="date" value={form.preferredDate} onChange={(event) => setForm((current) => ({ ...current, preferredDate: event.target.value }))} className="rounded-2xl border border-ink-100 px-4 py-3 dark:border-white/10 dark:bg-ink-950" />
+                <p className="text-xs text-ink-500 mt-1">Select a date and click "Check availability" to see if your preferred lawyer is free.</p>
               </label>
 
               <label className="grid gap-2">

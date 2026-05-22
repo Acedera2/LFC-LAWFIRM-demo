@@ -12,7 +12,7 @@ export default function Analytics() {
     let active = true;
     const loadSummary = async () => {
       try {
-        const response = await api.get("/analytics/summary");
+        const response = await api.get("/api/analytics/summary");
         const data = unwrap(response);
         if (active) setSummary(data);
       } catch (error) {

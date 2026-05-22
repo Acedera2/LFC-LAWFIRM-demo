@@ -66,36 +66,48 @@ function cryptoRandom() {
   return Math.random().toString(36).slice(2);
 }
 
-app.get('/auth/csrf', (req, res) => {
-  const token = cryptoRandom();
-  res.cookie('lfc_csrf', encodeURIComponent(token), { httpOnly: false });
-  res.json({ data: { csrfToken: token } });
-});
+function setAuthCookies(res, user) {
+  // set demo session cookie and return user payload
+  const cookieOpts = { httpOnly: true, secure: false, sameSite: 'lax', path: '/' };
+  res.cookie('demo_user', user.id, cookieOpts);
+  return { data: { user: { ...user, role: store.roles.find(r => r.id === user.roleId) } } };
+}
 
-app.post('/auth/login', (req, res) => {
-  const { email, password } = req.body || {};
-  const user = findUserByEmail(email);
-  // demo password for seeded accounts is Password123!
-  if (!user || password !== 'Password123!') {
-    return res.status(401).json({ message: 'Invalid email or password' });
-  }
-  // set a demo cookie to persist session across requests
-  res.cookie('demo_user', user.id, { httpOnly: true });
-  res.json({ data: { user: { ...user, role: store.roles.find(r => r.id === user.roleId) } } });
-});
+function mountAuthRoutes(prefix = '') {
+  app.get(`${prefix}/auth/csrf`, (req, res) => {
+    const token = cryptoRandom();
+    // CSRF cookie is readable by client-side JS
+    res.cookie('lfc_csrf', encodeURIComponent(token), { httpOnly: false, secure: false, sameSite: 'lax', path: '/' });
+    res.json({ data: { csrfToken: token } });
+  });
 
-app.post('/auth/logout', (req, res) => {
-  res.clearCookie('demo_user');
-  res.json({ message: 'Signed out' });
-});
+  app.post(`${prefix}/auth/login`, (req, res) => {
+    const { email, password } = req.body || {};
+    const user = findUserByEmail(email);
+    // demo password for seeded accounts is Password123!
+    if (!user || password !== 'Password123!') {
+      return res.status(401).json({ message: 'Invalid email or password' });
+    }
+    res.json(setAuthCookies(res, user));
+  });
 
-app.get('/auth/me', (req, res) => {
-  const userId = req.cookies?.demo_user;
-  if (!userId) return res.status(401).json({ message: 'Not authenticated' });
-  const user = store.users.find(u => u.id === userId);
-  if (!user) return res.status(401).json({ message: 'Not authenticated' });
-  res.json({ data: { user: { ...user, role: store.roles.find(r => r.id === user.roleId) } } });
-});
+  app.post(`${prefix}/auth/logout`, (req, res) => {
+    res.clearCookie('demo_user');
+    res.json({ message: 'Signed out' });
+  });
+
+  app.get(`${prefix}/auth/me`, (req, res) => {
+    const userId = req.cookies?.demo_user;
+    if (!userId) return res.status(401).json({ message: 'Not authenticated' });
+    const user = store.users.find(u => u.id === userId);
+    if (!user) return res.status(401).json({ message: 'Not authenticated' });
+    res.json({ data: { user: { ...user, role: store.roles.find(r => r.id === user.roleId) } } });
+  });
+}
+
+// mount auth routes at both root and /api for compatibility with client
+mountAuthRoutes('');
+mountAuthRoutes('/api');
 
 const basePort = Number(process.env.PORT || 5000);
 function listenWithRetry(app, port, attempts = 5) {

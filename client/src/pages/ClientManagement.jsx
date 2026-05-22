@@ -54,7 +54,7 @@ export default function ClientManagement() {
 
     let active = true;
     api
-      .get("/appointments", {
+      .get("/api/appointments", {
         params: {
           clientId: selectedClient.id,
           limit: 40,

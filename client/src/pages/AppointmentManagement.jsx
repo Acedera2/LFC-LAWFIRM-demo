@@ -34,7 +34,7 @@ export default function AppointmentManagement() {
     let active = true;
     const loadAppointments = async () => {
       try {
-        const response = await api.get("/appointments?limit=50");
+        const response = await api.get("/api/appointments?limit=50");
         const data = unwrap(response);
         if (active) setAppointments(data.appointments || []);
       } catch (error) {
@@ -73,7 +73,7 @@ export default function AppointmentManagement() {
   const refreshQueue = async () => {
     setRefreshing(true);
     try {
-      const response = await api.get("/appointments?limit=50");
+      const response = await api.get("/api/appointments?limit=50");
       const data = unwrap(response);
       setAppointments(data.appointments || []);
       toast.success("Appointment queue refreshed");

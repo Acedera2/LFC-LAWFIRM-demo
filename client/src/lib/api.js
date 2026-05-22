@@ -5,23 +5,9 @@ function isLoopbackHost(hostname) {
 }
 
 function resolveApiUrl() {
-  const configuredUrl = import.meta.env.VITE_API_URL || "/api";
-
-  if (typeof window === "undefined" || !/^https?:\/\//i.test(configuredUrl)) {
-    return configuredUrl;
-  }
-
-  try {
-    const parsedUrl = new URL(configuredUrl);
-
-    if (isLoopbackHost(window.location.hostname) && isLoopbackHost(parsedUrl.hostname)) {
-      return "/api";
-    }
-  } catch {
-    return configuredUrl;
-  }
-
-  return configuredUrl;
+  const configuredUrl = import.meta.env.VITE_API_URL;
+  if (configuredUrl) return configuredUrl;
+  return "/api";
 }
 
 const API_URL = resolveApiUrl();
@@ -67,7 +53,7 @@ async function ensureCsrfToken() {
   if (existing) return decodeURIComponent(existing);
 
   if (!csrfPromise) {
-    csrfPromise = rawApi.get("/auth/csrf").finally(() => {
+    csrfPromise = rawApi.get("/api/auth/csrf").finally(() => {
       csrfPromise = null;
     });
   }
@@ -78,7 +64,7 @@ async function ensureCsrfToken() {
 
 api.interceptors.request.use(async (config) => {
   const method = (config.method || "get").toLowerCase();
-  if (!["get", "head", "options"].includes(method) && !config.url?.includes("/auth/csrf")) {
+  if (!["get", "head", "options"].includes(method) && !config.url?.includes("auth/csrf")) {
     config.headers["X-CSRF-Token"] = await ensureCsrfToken();
   }
   return config;
@@ -94,9 +80,9 @@ api.interceptors.response.use(
       status === 401 &&
       original &&
       !original._retry &&
-      !original.url?.includes("/auth/refresh") &&
-      !original.url?.includes("/auth/login") &&
-      !original.url?.includes("/auth/csrf")
+      !original.url?.includes("auth/refresh") &&
+      !original.url?.includes("auth/login") &&
+      !original.url?.includes("auth/csrf")
     ) {
       if (isRefreshing) {
         return new Promise((resolve, reject) => {
@@ -114,13 +100,13 @@ api.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        await api.post("/auth/refresh");
+        await api.post("/api/auth/refresh");
         notifyRefreshQueue(null);
         return api(original);
       } catch (refreshError) {
         notifyRefreshQueue(refreshError);
         localStorage.removeItem("lfc_user");
-        if (!original.url?.includes("/auth/me")) {
+        if (!original.url?.includes("auth/me")) {
           window.dispatchEvent(new Event("lfc:session-expired"));
         }
         return Promise.reject(refreshError);

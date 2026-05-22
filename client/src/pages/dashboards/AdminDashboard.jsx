@@ -10,7 +10,7 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     let active = true;
-    api.get("/admin/metrics")
+    api.get("/api/admin/metrics")
       .then((res) => { if (!active) return; setMetrics(unwrap(res)); })
       .catch(() => { if (!active) setMetrics({}); })
       .finally(() => { if (active) setLoading(false); });
