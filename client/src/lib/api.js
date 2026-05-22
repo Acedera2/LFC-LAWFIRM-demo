@@ -2,8 +2,8 @@ import axios from "axios";
 
 function resolveApiUrl() {
   const configuredUrl = import.meta.env.VITE_API_URL;
-  if (configuredUrl) return configuredUrl;
-  return "/api";
+  if (configuredUrl) return configuredUrl.replace(/\/$/, "");
+  return "";
 }
 
 const API_URL = resolveApiUrl();
@@ -49,7 +49,7 @@ async function ensureCsrfToken() {
   if (existing) return decodeURIComponent(existing);
 
   if (!csrfPromise) {
-    csrfPromise = rawApi.get("/api/auth/csrf").finally(() => {
+    csrfPromise = rawApi.get("/auth/csrf").finally(() => {
       csrfPromise = null;
     });
   }
@@ -96,7 +96,7 @@ api.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        await api.post("/api/auth/refresh");
+        await api.post("/auth/refresh");
         notifyRefreshQueue(null);
         return api(original);
       } catch (refreshError) {
