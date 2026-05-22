@@ -9,7 +9,7 @@
   ],
   "scripts": {
     "postinstall": "npm run prisma:generate:safe --workspace server || true",
-    "dev": "concurrently -n server,client -c cyan,magenta \"npm run dev --workspace server\" \"npm run dev --workspace client\"",
+    "dev": "concurrently -n server,client -c cyan,magenta \"npm run dev:demo --workspace server\" \"npm run dev --workspace client\"",
     "dev:demo": "concurrently -n server,client -c cyan,magenta \"npm run dev:demo --workspace server\" \"npm run dev --workspace client\"",
     "smoke:demo": "node scripts/smoke-demo.mjs",
     "smoke:demo:cookies": "node scripts/smoke-demo-cookies.mjs",
