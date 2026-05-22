@@ -187,7 +187,7 @@ export default function ClientDashboard() {
               <label className="grid gap-2">
                 <span className="text-sm font-bold">Appointment date</span>
                 <input type="date" value={form.preferredDate} onChange={(event) => setForm((current) => ({ ...current, preferredDate: event.target.value }))} className="rounded-2xl border border-ink-100 px-4 py-3 dark:border-white/10 dark:bg-ink-950" />
-                <p className="text-xs text-ink-500 mt-1">Select a date and click "Check availability" to see if your preferred lawyer is free.</p>
+                <p className="text-xs text-ink-500 mt-1">Select a date and click &quot;Check availability&quot; to see if your preferred lawyer is free.</p>
               </label>
 
               <label className="grid gap-2">

@@ -1,9 +1,5 @@
 import axios from "axios";
 
-function isLoopbackHost(hostname) {
-  return hostname === "localhost" || hostname === "127.0.0.1";
-}
-
 function resolveApiUrl() {
   const configuredUrl = import.meta.env.VITE_API_URL;
   if (configuredUrl) return configuredUrl;

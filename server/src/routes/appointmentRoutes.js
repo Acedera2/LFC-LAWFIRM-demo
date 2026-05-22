@@ -11,7 +11,13 @@ router.get("/", validate(appointmentSchemas.list), listAppointments);
 router.post("/", authorize("client", "staff", "admin"), validate(appointmentSchemas.create), create);
 router.post("/conflict-check", authorize("client", "staff", "admin"), validate(appointmentSchemas.conflictCheck), conflictCheck);
 router.get("/:id", getById);
-router.patch("/:id/status", authorize("lawyer", "staff", "admin"), validate(appointmentSchemas.updateStatus), updateStatus);
+// Only staff and admin may perform status approvals/administrative status updates
+router.patch("/:id/status", authorize("staff", "admin"), validate(appointmentSchemas.updateStatus), updateStatus);
+// Lawyers can accept assigned appointments (confirm scheduling) via a dedicated endpoint
+router.patch("/:id/accept", authorize("lawyer"), async (req, res, next) => {
+	const { acceptAppointment } = await import("../controllers/appointmentController.js");
+	return acceptAppointment(req, res, next);
+});
 router.patch("/:id/reschedule", authorize("client", "staff", "admin"), validate(appointmentSchemas.reschedule), reschedule);
 router.delete("/:id", authorize("client", "staff", "admin"), validate(appointmentSchemas.cancel), cancel);
 router.get("/:id/receipt", receipt);

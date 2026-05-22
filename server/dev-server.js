@@ -57,6 +57,66 @@ app.get("/api/notifications", (req, res) => {
   res.json(store.notifications);
 });
 
+app.patch("/api/appointments/:id/status", (req, res) => {
+  const userId = req.cookies?.demo_user;
+  const user = store.users.find((u) => u.id === userId);
+  if (!user) return res.status(401).json({ message: "Not authenticated" });
+  const role = store.roles.find((r) => r.id === user.roleId)?.slug;
+
+  if (!["staff", "admin"].includes(role)) return res.status(403).json({ message: "Forbidden" });
+
+  const appt = store.appointments.find((a) => a.id === req.params.id);
+  if (!appt) return res.status(404).send("Appointment not found");
+
+  const { status, scheduledStart, scheduledEnd, lawyerId } = req.body || {};
+  if (status) appt.status = status;
+  if (scheduledStart) appt.scheduledStart = scheduledStart;
+  if (scheduledEnd) appt.scheduledEnd = scheduledEnd;
+  if (lawyerId) appt.lawyerId = lawyerId;
+
+  res.json({ data: { appointment: appt } });
+});
+
+app.patch("/api/appointments/:id/accept", (req, res) => {
+  const userId = req.cookies?.demo_user;
+  const user = store.users.find((u) => u.id === userId);
+  if (!user) return res.status(401).json({ message: "Not authenticated" });
+  const role = store.roles.find((r) => r.id === user.roleId)?.slug;
+
+  if (role !== "lawyer") return res.status(403).json({ message: "Forbidden" });
+
+  const lawyer = store.lawyers.find((l) => l.userId === user.id);
+  const appt = store.appointments.find((a) => a.id === req.params.id);
+  if (!appt) return res.status(404).send("Appointment not found");
+  if (!lawyer || appt.lawyerId !== lawyer.id) return res.status(403).json({ message: "You are not assigned to this appointment" });
+
+  appt.status = "CONFIRMED";
+  appt.scheduledStart = appt.scheduledStart || appt.preferredStart;
+  appt.scheduledEnd = appt.scheduledEnd || appt.preferredEnd;
+
+  res.json({ data: { appointment: appt } });
+});
+
+app.delete("/api/appointments/:id", (req, res) => {
+  const userId = req.cookies?.demo_user;
+  const user = store.users.find((u) => u.id === userId);
+  if (!user) return res.status(401).json({ message: "Not authenticated" });
+  const role = store.roles.find((r) => r.id === user.roleId)?.slug;
+
+  const apptIndex = store.appointments.findIndex((a) => a.id === req.params.id);
+  if (apptIndex === -1) return res.status(404).send("Appointment not found");
+  const appt = store.appointments[apptIndex];
+
+  // clients can cancel own appointment; staff/admin can cancel any
+  if (role === "client" && appt.clientId !== user.id) return res.status(403).json({ message: "Forbidden" });
+
+  // mark cancelled
+  appt.status = "CANCELLED";
+  appt.cancellationReason = req.body?.reason || "Cancelled via demo";
+
+  res.json({ data: { appointment: appt } });
+});
+
 // Simple demo auth endpoints
 function findUserByEmail(email) {
   return store.users.find(u => u.email.toLowerCase() === (email || "").toLowerCase());

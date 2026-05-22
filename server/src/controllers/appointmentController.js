@@ -91,6 +91,32 @@ export const cancel = asyncHandler(async (req, res) => {
   ok(res, { appointment });
 });
 
+export const acceptAppointment = asyncHandler(async (req, res) => {
+  const id = req.params.id || req.validated?.params?.id;
+  const existing = await prisma.appointment.findUnique({ where: { id } });
+  if (!existing) throw new HttpError(404, "Appointment not found");
+  // ensure lawyer owns the appointment
+  const role = req.user.role.slug;
+  if (role !== "lawyer" || existing.lawyerId !== req.user.lawyerProfile?.id) {
+    throw new HttpError(403, "You do not have permission to accept this appointment");
+  }
+
+  // Use the service to perform status update (runs conflict detection and notifications)
+  const appointment = await updateAppointmentStatus({
+    id,
+    data: {
+      status: "CONFIRMED",
+      lawyerId: existing.lawyerId,
+      scheduledStart: existing.scheduledStart || existing.preferredStart,
+      scheduledEnd: existing.scheduledEnd || existing.preferredEnd
+    },
+    actor: req.user,
+    req
+  });
+
+  ok(res, { appointment });
+});
+
 export const conflictCheck = asyncHandler(async (req, res) => {
   const data = req.validated.body;
   const scan = await detectSchedulingConflicts({
