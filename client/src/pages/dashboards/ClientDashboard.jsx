@@ -82,7 +82,7 @@ export default function ClientDashboard() {
   useEffect(() => {
     let active = true;
 
-    Promise.all([api.get("/api/lawyers"), api.get("/api/appointments?limit=5")])
+    Promise.all([api.get("/lawyers"), api.get("/appointments?limit=5")])
       .then(([lawyersResponse, appointmentsResponse]) => {
         if (!active) return;
         setLawyers(unwrap(lawyersResponse).lawyers || lawyersResponse.data?.data || []);
@@ -119,7 +119,7 @@ export default function ClientDashboard() {
       start.setHours(0, 0, 0, 0);
       const end = new Date(form.preferredDate);
       end.setHours(23, 59, 59, 999);
-      const response = await api.post("/api/appointments/conflict-check", { lawyerId: form.lawyerId, consultationType: form.consultationType, preferredStart: start.toISOString(), preferredEnd: end.toISOString() });
+      const response = await api.post("/appointments/conflict-check", { lawyerId: form.lawyerId, consultationType: form.consultationType, preferredStart: start.toISOString(), preferredEnd: end.toISOString() });
       const data = unwrap(response);
       // the demo API returns { conflict, available } — adapt into a scan-like object
       setScan({ status: data.available ? "CLEAR" : "CONFLICT", reason: data.conflict ? "Conflicting appointment exists" : null, suggestions: [] });
@@ -140,7 +140,7 @@ export default function ClientDashboard() {
         payload.preferredStart = start.toISOString();
         payload.preferredEnd = end.toISOString();
       }
-      const response = await api.post("/api/appointments", payload);
+      const response = await api.post("/appointments", payload);
       const appointment = unwrap(response).appointment;
       const normalized = mapAppointment(appointment);
       toast.success("Appointment inquiry submitted");
@@ -162,7 +162,7 @@ export default function ClientDashboard() {
     event.preventDefault();
     if (!cancellationTarget) return;
     try {
-      await api.delete(`/api/appointments/${cancellationTarget.id}`, {
+      await api.delete(`/appointments/${cancellationTarget.id}`, {
         data: { reason: cancellationReason || "Client requested cancellation" }
       });
       toast.success("Cancellation request sent to staff");
