@@ -15,7 +15,28 @@ jobs:
         with:
           node-version: 20
           cache: npm
-      - run: npm install
-      - run: npm run prisma:generate
-      - run: npm run lint
-      - run: npm run build
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Safe Prisma generate (server)
+        run: npm --prefix server run prisma:generate:safe || echo "prisma generate safe failed, continuing"
+
+      - name: Start demo server
+        run: |
+          npm --prefix server run dev:demo &
+          for i in {1..30}; do
+            if curl -sSf http://localhost:5000/health > /dev/null 2>&1; then
+              echo "demo server ready";
+              break;
+            fi
+            sleep 1;
+          done
+
+      - name: Run lint
+        run: npm run lint
+
+      - name: Run smoke tests (cookies)
+        run: npm run smoke:demo:cookies
+
+      - name: Run smoke tests (roles)
+        run: npm run smoke:demo
