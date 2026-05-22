@@ -66,10 +66,12 @@ async function run() {
     console.log('Conflict check result:', JSON.stringify(conflictBody));
 
     console.log('Smoke test completed successfully');
-    process.exit(0);
+    await new Promise(r => setTimeout(r, 150));
+    setImmediate(() => process.exit(0));
   } catch (err) {
     console.error('Smoke test failed:', err.message || err);
-    process.exit(1);
+    await new Promise(r => setTimeout(r, 150));
+    setImmediate(() => process.exit(1));
   }
 }
 

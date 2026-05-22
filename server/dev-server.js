@@ -8,8 +8,13 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const dataPath = path.resolve(__dirname, "dev-data.json");
-const raw = fs.readFileSync(dataPath, "utf8");
-const store = JSON.parse(raw);
+let store = { lawyers: [], appointments: [], users: [], roles: [], notifications: [], availability: [] };
+try {
+  const raw = fs.readFileSync(dataPath, "utf8");
+  store = JSON.parse(raw);
+} catch (err) {
+  console.warn(`dev-server: unable to read dev-data.json at ${dataPath}, starting with empty demo store`);
+}
 
 const app = express();
 app.use(cors({ origin: true, credentials: true }));
@@ -170,23 +175,47 @@ mountAuthRoutes('');
 mountAuthRoutes('/api');
 
 const basePort = Number(process.env.PORT || 5000);
-function listenWithRetry(app, port, attempts = 5) {
-  return new Promise((resolve, reject) => {
-    const server = app.listen(port, () => {
+async function probeHealth(port) {
+  try {
+    const url = `http://127.0.0.1:${port}/health`;
+    const res = await fetch(url, { method: 'GET', headers: { 'Accept': 'application/json' } });
+    if (res.ok) {
+      const body = await res.json().catch(() => null);
+      if (body && body.ok) return true;
+    }
+  } catch (e) {
+    // ignore
+  }
+  return false;
+}
+
+async function listenWithRetry(app, port, attempts = 8) {
+  for (let i = 0; i <= attempts; i++) {
+    try {
+      const server = await new Promise((resolve, reject) => {
+        const s = app.listen(port, () => resolve(s));
+        s.on('error', reject);
+      });
       console.log(`Demo server listening on port ${port}`);
-      resolve(server);
-    });
-    server.on('error', (err) => {
-      if (err.code === 'EADDRINUSE' && attempts > 0) {
-        console.warn(`Port ${port} in use, trying ${port + 1}`);
-        setTimeout(() => {
-          listenWithRetry(app, port + 1, attempts - 1).then(resolve).catch(reject);
-        }, 200);
-      } else {
-        reject(err);
+      return server;
+    } catch (err) {
+      if (err.code === 'EADDRINUSE') {
+        console.warn(`Port ${port} in use.`);
+        // If something is already listening and responds to /health, assume it's the demo server and exit successfully
+        const healthy = await probeHealth(port);
+        if (healthy) {
+          console.log(`Detected existing demo server on port ${port}; exiting (no new server started).`);
+          process.exit(0);
+        }
+        // otherwise try next port
+        port += 1;
+        await new Promise(r => setTimeout(r, 300));
+        continue;
       }
-    });
-  });
+      throw err;
+    }
+  }
+  throw new Error('listenWithRetry: exhausted port attempts');
 }
 
 listenWithRetry(app, basePort).catch(err => {

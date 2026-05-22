@@ -111,4 +111,4 @@ async function run() {
   process.exit(0);
 }
 
-run().catch(err => { console.error('Error:', err); process.exit(1); });
+run().catch(async (err) => { console.error('Error:', err); await new Promise(r => setTimeout(r, 150)); setImmediate(() => process.exit(1)); });
