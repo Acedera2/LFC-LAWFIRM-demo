@@ -49,7 +49,23 @@ async function ensureCsrfToken() {
   if (existing) return decodeURIComponent(existing);
 
   if (!csrfPromise) {
-    csrfPromise = rawApi.get("/auth/csrf").finally(() => {
+    csrfPromise = (async () => {
+      const endpoints = ["/auth/csrf", "/api/auth/csrf"];
+      let lastError;
+
+      for (const endpoint of endpoints) {
+        try {
+          return await rawApi.get(endpoint);
+        } catch (error) {
+          lastError = error;
+          if (error.response?.status !== 404) {
+            throw error;
+          }
+        }
+      }
+
+      throw lastError;
+    })().finally(() => {
       csrfPromise = null;
     });
   }

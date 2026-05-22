@@ -4,6 +4,24 @@ import api, { unwrap } from "../lib/api";
 
 const AuthContext = createContext(null);
 const LOCAL_STORAGE_KEY = "lfc_user";
+const AUTH_PREFIXES = ["/auth", "/api/auth"];
+
+async function requestAuth(method, path, data) {
+  let lastError;
+
+  for (const prefix of AUTH_PREFIXES) {
+    try {
+      return await api.request({ method, url: `${prefix}${path}`, data });
+    } catch (error) {
+      lastError = error;
+      if (error.response?.status !== 404) {
+        throw error;
+      }
+    }
+  }
+
+  throw lastError;
+}
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(() => {
@@ -42,7 +60,7 @@ export function AuthProvider({ children }) {
       }
 
       try {
-        const response = await api.get("/auth/me");
+        const response = await requestAuth("get", "/me");
         const payload = unwrap(response);
         if (active) {
           saveUser(payload.user);
@@ -77,7 +95,7 @@ export function AuthProvider({ children }) {
   const login = useCallback(async (payload) => {
     setLoading(true);
     try {
-      const response = await api.post("/auth/login", payload);
+      const response = await requestAuth("post", "/login", payload);
       const payloadData = unwrap(response);
       saveUser(payloadData.user);
       toast.success(`Welcome back, ${payloadData.user.name}`);
@@ -90,7 +108,7 @@ export function AuthProvider({ children }) {
   const register = useCallback(async (payload) => {
     setLoading(true);
     try {
-      const response = await api.post("/auth/register", payload);
+      const response = await requestAuth("post", "/register", payload);
       const payloadData = unwrap(response);
       saveUser(payloadData.user);
       toast.success("Client account created successfully");
@@ -103,7 +121,7 @@ export function AuthProvider({ children }) {
   const logout = useCallback(async () => {
     setLoading(true);
     try {
-      await api.post("/auth/logout");
+      await requestAuth("post", "/logout");
     } catch {
       // Best-effort logout even if backend fails.
     } finally {
