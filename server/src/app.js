@@ -62,7 +62,11 @@ app.get("/health", (req, res) => {
   });
 });
 
+// Mount auth routes at both `/auth` and `/api/auth` so client code
+// that calls either path (some clients use `/auth/*`, others `/api/auth/*`)
+// will work consistently.
 app.use("/auth", authRoutes);
+app.use("/api/auth", authRoutes);
 app.use("/api", routes);
 app.use(notFoundHandler);
 app.use(errorHandler);
