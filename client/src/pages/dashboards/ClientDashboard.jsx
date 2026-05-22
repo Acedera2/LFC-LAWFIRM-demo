@@ -147,6 +147,9 @@ export default function ClientDashboard() {
       setForm({ consultationType: "General consultation", priority: "REGULAR", lawyerId: "", locationMode: "IN_PERSON", subject: "", description: "", preferredDate: "" });
       setScan(null);
       if (normalized) setAppointments((current) => [normalized, ...current].slice(0, 5));
+
+      const refreshResponse = await api.get("/appointments?limit=5");
+      setAppointments((unwrap(refreshResponse).appointments || []).map(mapAppointment).filter(Boolean));
     } catch (error) {
       const status = error?.response?.status;
       if (status === 401) {
