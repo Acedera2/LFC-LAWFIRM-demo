@@ -1,0 +1,4 @@
+{
+  "status": 200,
+  "setCookie": "demo_user=user_staff; Path=/; HttpOnly; SameSite=Lax"
+}

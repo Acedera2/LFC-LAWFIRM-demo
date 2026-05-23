@@ -1,0 +1,11 @@
+{
+  "status": 200,
+  "body": {
+    "data": {
+      "setting": {
+        "key": "maxBookingDays",
+        "value": 120
+      }
+    }
+  }
+}

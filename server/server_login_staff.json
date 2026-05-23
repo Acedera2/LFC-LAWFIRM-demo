@@ -1,0 +1,19 @@
+{
+  "status": 200,
+  "setCookie": "demo_user=user_staff; Path=/; HttpOnly; SameSite=Lax",
+  "body": {
+    "data": {
+      "user": {
+        "id": "user_staff",
+        "roleId": "role_staff",
+        "name": "Jessa Valdez",
+        "email": "staff@lfcfirm.com",
+        "role": {
+          "id": "role_staff",
+          "slug": "staff",
+          "name": "Staff"
+        }
+      }
+    }
+  }
+}

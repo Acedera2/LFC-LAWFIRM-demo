@@ -1,0 +1,425 @@
+{
+  "status": 200,
+  "body": {
+    "data": {
+      "notifications": [
+        {
+          "id": "note_1",
+          "userId": "user_client_1",
+          "title": "Welcome",
+          "message": "Welcome to the demo.",
+          "type": "info",
+          "readAt": "2026-05-23T02:28:28.224Z"
+        },
+        {
+          "id": "note_demo_user_client_1_002",
+          "userId": "user_client_1",
+          "title": "Step 2 of 3: Schedule checked for Lila Santos",
+          "message": "Staff reviewed the requested date and matched it to a lawyer schedule. This example is shown for Lila Santos so the demo is easy to explain.",
+          "type": "APPOINTMENT",
+          "readAt": "2026-05-23T02:26:21.271Z"
+        },
+        {
+          "id": "note_demo_user_client_1_003",
+          "userId": "user_client_1",
+          "title": "Step 3 of 3: Lawyer review complete for Lila Santos",
+          "message": "The inquiry moved from intake to review and is ready for follow-up. This example is shown for Lila Santos so the demo is easy to explain.",
+          "type": "APPOINTMENT",
+          "readAt": "2026-05-23T02:28:28.224Z"
+        },
+        {
+          "id": "note_demo_user_client_1_004",
+          "userId": "user_client_1",
+          "title": "Schedule conflict found for Lila Santos",
+          "message": "A timing conflict was detected and the request is waiting for a revised slot. This example is shown for Lila Santos so the demo is easy to explain.",
+          "type": "CONFLICT",
+          "readAt": "2026-05-23T02:26:21.271Z"
+        },
+        {
+          "id": "note_demo_user_client_1_005",
+          "userId": "user_client_1",
+          "title": "Appointment rescheduled for Lila Santos",
+          "message": "The request moved to a new date and is back in the review process. This example is shown for Lila Santos so the demo is easy to explain.",
+          "type": "APPOINTMENT",
+          "readAt": "2026-05-23T02:28:28.224Z"
+        },
+        {
+          "id": "note_demo_user_client_1_006",
+          "userId": "user_client_1",
+          "title": "Request cancelled for Lila Santos",
+          "message": "The appointment was cancelled and the workflow was closed. This example is shown for Lila Santos so the demo is easy to explain.",
+          "type": "APPOINTMENT",
+          "readAt": "2026-05-23T02:26:21.271Z"
+        },
+        {
+          "id": "note_demo_user_client_1_007",
+          "userId": "user_client_1",
+          "title": "Consultation completed for Lila Santos",
+          "message": "The workflow reached the completed stage and is now part of the history. This example is shown for Lila Santos so the demo is easy to explain.",
+          "type": "APPOINTMENT",
+          "readAt": "2026-05-23T02:28:28.224Z"
+        },
+        {
+          "id": "note_demo_user_client_1_008",
+          "userId": "user_client_1",
+          "title": "Step 1 of 3: Inquiry submitted for Lila Santos",
+          "message": "The client submitted the request and it is waiting for staff review. This example is shown for Lila Santos so the demo is easy to explain.",
+          "type": "APPOINTMENT",
+          "readAt": "2026-05-23T02:26:21.271Z"
+        },
+        {
+          "id": "note_demo_user_client_1_009",
+          "userId": "user_client_1",
+          "title": "Step 2 of 3: Schedule checked for Lila Santos",
+          "message": "Staff reviewed the requested date and matched it to a lawyer schedule. This example is shown for Lila Santos so the demo is easy to explain.",
+          "type": "APPOINTMENT",
+          "readAt": "2026-05-23T02:28:28.224Z"
+        },
+        {
+          "id": "note_demo_user_client_1_010",
+          "userId": "user_client_1",
+          "title": "Step 3 of 3: Lawyer review complete for Lila Santos",
+          "message": "The inquiry moved from intake to review and is ready for follow-up. This example is shown for Lila Santos so the demo is easy to explain.",
+          "type": "APPOINTMENT",
+          "readAt": "2026-05-23T02:26:21.271Z"
+        },
+        {
+          "id": "note_demo_user_client_1_011",
+          "userId": "user_client_1",
+          "title": "Schedule conflict found for Lila Santos",
+          "message": "A timing conflict was detected and the request is waiting for a revised slot. This example is shown for Lila Santos so the demo is easy to explain.",
+          "type": "CONFLICT",
+          "readAt": "2026-05-23T02:28:28.224Z"
+        },
+        {
+          "id": "note_demo_user_client_1_012",
+          "userId": "user_client_1",
+          "title": "Appointment rescheduled for Lila Santos",
+          "message": "The request moved to a new date and is back in the review process. This example is shown for Lila Santos so the demo is easy to explain.",
+          "type": "APPOINTMENT",
+          "readAt": "2026-05-23T02:26:21.271Z"
+        },
+        {
+          "id": "note_demo_user_client_1_013",
+          "userId": "user_client_1",
+          "title": "Request cancelled for Lila Santos",
+          "message": "The appointment was cancelled and the workflow was closed. This example is shown for Lila Santos so the demo is easy to explain.",
+          "type": "APPOINTMENT",
+          "readAt": "2026-05-23T02:28:28.224Z"
+        },
+        {
+          "id": "note_demo_user_client_1_014",
+          "userId": "user_client_1",
+          "title": "Consultation completed for Lila Santos",
+          "message": "The workflow reached the completed stage and is now part of the history. This example is shown for Lila Santos so the demo is easy to explain.",
+          "type": "APPOINTMENT",
+          "readAt": "2026-05-23T02:26:21.271Z"
+        },
+        {
+          "id": "note_demo_user_client_1_015",
+          "userId": "user_client_1",
+          "title": "Step 1 of 3: Inquiry submitted for Lila Santos",
+          "message": "The client submitted the request and it is waiting for staff review. This example is shown for Lila Santos so the demo is easy to explain.",
+          "type": "APPOINTMENT",
+          "readAt": "2026-05-23T02:28:28.224Z"
+        },
+        {
+          "id": "note_demo_user_client_1_016",
+          "userId": "user_client_1",
+          "title": "Step 2 of 3: Schedule checked for Lila Santos",
+          "message": "Staff reviewed the requested date and matched it to a lawyer schedule. This example is shown for Lila Santos so the demo is easy to explain.",
+          "type": "APPOINTMENT",
+          "readAt": "2026-05-23T02:26:21.271Z"
+        },
+        {
+          "id": "note_demo_user_client_1_017",
+          "userId": "user_client_1",
+          "title": "Step 3 of 3: Lawyer review complete for Lila Santos",
+          "message": "The inquiry moved from intake to review and is ready for follow-up. This example is shown for Lila Santos so the demo is easy to explain.",
+          "type": "APPOINTMENT",
+          "readAt": "2026-05-23T02:28:28.224Z"
+        },
+        {
+          "id": "note_demo_user_client_1_018",
+          "userId": "user_client_1",
+          "title": "Schedule conflict found for Lila Santos",
+          "message": "A timing conflict was detected and the request is waiting for a revised slot. This example is shown for Lila Santos so the demo is easy to explain.",
+          "type": "CONFLICT",
+          "readAt": "2026-05-23T02:26:21.271Z"
+        },
+        {
+          "id": "note_demo_user_client_1_019",
+          "userId": "user_client_1",
+          "title": "Appointment rescheduled for Lila Santos",
+          "message": "The request moved to a new date and is back in the review process. This example is shown for Lila Santos so the demo is easy to explain.",
+          "type": "APPOINTMENT",
+          "readAt": "2026-05-23T02:28:28.224Z"
+        },
+        {
+          "id": "note_demo_user_client_1_020",
+          "userId": "user_client_1",
+          "title": "Request cancelled for Lila Santos",
+          "message": "The appointment was cancelled and the workflow was closed. This example is shown for Lila Santos so the demo is easy to explain.",
+          "type": "APPOINTMENT",
+          "readAt": "2026-05-23T02:26:21.271Z"
+        },
+        {
+          "id": "note_demo_user_client_1_021",
+          "userId": "user_client_1",
+          "title": "Consultation completed for Lila Santos",
+          "message": "The workflow reached the completed stage and is now part of the history. This example is shown for Lila Santos so the demo is easy to explain.",
+          "type": "APPOINTMENT",
+          "readAt": "2026-05-23T02:28:28.224Z"
+        },
+        {
+          "id": "note_demo_user_client_1_022",
+          "userId": "user_client_1",
+          "title": "Step 1 of 3: Inquiry submitted for Lila Santos",
+          "message": "The client submitted the request and it is waiting for staff review. This example is shown for Lila Santos so the demo is easy to explain.",
+          "type": "APPOINTMENT",
+          "readAt": "2026-05-23T02:26:21.271Z"
+        },
+        {
+          "id": "note_demo_user_client_1_023",
+          "userId": "user_client_1",
+          "title": "Step 2 of 3: Schedule checked for Lila Santos",
+          "message": "Staff reviewed the requested date and matched it to a lawyer schedule. This example is shown for Lila Santos so the demo is easy to explain.",
+          "type": "APPOINTMENT",
+          "readAt": "2026-05-23T02:28:28.224Z"
+        },
+        {
+          "id": "note_demo_user_client_1_024",
+          "userId": "user_client_1",
+          "title": "Step 3 of 3: Lawyer review complete for Lila Santos",
+          "message": "The inquiry moved from intake to review and is ready for follow-up. This example is shown for Lila Santos so the demo is easy to explain.",
+          "type": "APPOINTMENT",
+          "readAt": "2026-05-23T02:26:21.271Z"
+        },
+        {
+          "id": "note_demo_user_client_1_025",
+          "userId": "user_client_1",
+          "title": "Schedule conflict found for Lila Santos",
+          "message": "A timing conflict was detected and the request is waiting for a revised slot. This example is shown for Lila Santos so the demo is easy to explain.",
+          "type": "CONFLICT",
+          "readAt": "2026-05-23T02:28:28.224Z"
+        },
+        {
+          "id": "note_demo_user_client_1_026",
+          "userId": "user_client_1",
+          "title": "Appointment rescheduled for Lila Santos",
+          "message": "The request moved to a new date and is back in the review process. This example is shown for Lila Santos so the demo is easy to explain.",
+          "type": "APPOINTMENT",
+          "readAt": "2026-05-23T02:26:21.271Z"
+        },
+        {
+          "id": "note_demo_user_client_1_027",
+          "userId": "user_client_1",
+          "title": "Request cancelled for Lila Santos",
+          "message": "The appointment was cancelled and the workflow was closed. This example is shown for Lila Santos so the demo is easy to explain.",
+          "type": "APPOINTMENT",
+          "readAt": "2026-05-23T02:28:28.224Z"
+        },
+        {
+          "id": "note_demo_user_client_1_028",
+          "userId": "user_client_1",
+          "title": "Consultation completed for Lila Santos",
+          "message": "The workflow reached the completed stage and is now part of the history. This example is shown for Lila Santos so the demo is easy to explain.",
+          "type": "APPOINTMENT",
+          "readAt": "2026-05-23T02:26:21.271Z"
+        },
+        {
+          "id": "note_demo_user_client_1_029",
+          "userId": "user_client_1",
+          "title": "Step 1 of 3: Inquiry submitted for Lila Santos",
+          "message": "The client submitted the request and it is waiting for staff review. This example is shown for Lila Santos so the demo is easy to explain.",
+          "type": "APPOINTMENT",
+          "readAt": "2026-05-23T02:28:28.224Z"
+        },
+        {
+          "id": "note_demo_user_client_1_030",
+          "userId": "user_client_1",
+          "title": "Step 2 of 3: Schedule checked for Lila Santos",
+          "message": "Staff reviewed the requested date and matched it to a lawyer schedule. This example is shown for Lila Santos so the demo is easy to explain.",
+          "type": "APPOINTMENT",
+          "readAt": "2026-05-23T02:26:21.271Z"
+        },
+        {
+          "id": "note_demo_user_client_1_031",
+          "userId": "user_client_1",
+          "title": "Step 3 of 3: Lawyer review complete for Lila Santos",
+          "message": "The inquiry moved from intake to review and is ready for follow-up. This example is shown for Lila Santos so the demo is easy to explain.",
+          "type": "APPOINTMENT",
+          "readAt": "2026-05-23T02:28:28.224Z"
+        },
+        {
+          "id": "note_demo_user_client_1_032",
+          "userId": "user_client_1",
+          "title": "Schedule conflict found for Lila Santos",
+          "message": "A timing conflict was detected and the request is waiting for a revised slot. This example is shown for Lila Santos so the demo is easy to explain.",
+          "type": "CONFLICT",
+          "readAt": "2026-05-23T02:26:21.271Z"
+        },
+        {
+          "id": "note_demo_user_client_1_033",
+          "userId": "user_client_1",
+          "title": "Appointment rescheduled for Lila Santos",
+          "message": "The request moved to a new date and is back in the review process. This example is shown for Lila Santos so the demo is easy to explain.",
+          "type": "APPOINTMENT",
+          "readAt": "2026-05-23T02:28:28.224Z"
+        },
+        {
+          "id": "note_demo_user_client_1_034",
+          "userId": "user_client_1",
+          "title": "Request cancelled for Lila Santos",
+          "message": "The appointment was cancelled and the workflow was closed. This example is shown for Lila Santos so the demo is easy to explain.",
+          "type": "APPOINTMENT",
+          "readAt": "2026-05-23T02:26:21.271Z"
+        },
+        {
+          "id": "note_demo_user_client_1_035",
+          "userId": "user_client_1",
+          "title": "Consultation completed for Lila Santos",
+          "message": "The workflow reached the completed stage and is now part of the history. This example is shown for Lila Santos so the demo is easy to explain.",
+          "type": "APPOINTMENT",
+          "readAt": "2026-05-23T02:28:28.224Z"
+        },
+        {
+          "id": "note_demo_user_client_1_036",
+          "userId": "user_client_1",
+          "title": "Step 1 of 3: Inquiry submitted for Lila Santos",
+          "message": "The client submitted the request and it is waiting for staff review. This example is shown for Lila Santos so the demo is easy to explain.",
+          "type": "APPOINTMENT",
+          "readAt": "2026-05-23T02:26:21.271Z"
+        },
+        {
+          "id": "note_demo_user_client_1_037",
+          "userId": "user_client_1",
+          "title": "Step 2 of 3: Schedule checked for Lila Santos",
+          "message": "Staff reviewed the requested date and matched it to a lawyer schedule. This example is shown for Lila Santos so the demo is easy to explain.",
+          "type": "APPOINTMENT",
+          "readAt": "2026-05-23T02:28:28.224Z"
+        },
+        {
+          "id": "note_demo_user_client_1_038",
+          "userId": "user_client_1",
+          "title": "Step 3 of 3: Lawyer review complete for Lila Santos",
+          "message": "The inquiry moved from intake to review and is ready for follow-up. This example is shown for Lila Santos so the demo is easy to explain.",
+          "type": "APPOINTMENT",
+          "readAt": "2026-05-23T02:26:21.271Z"
+        },
+        {
+          "id": "note_demo_user_client_1_039",
+          "userId": "user_client_1",
+          "title": "Schedule conflict found for Lila Santos",
+          "message": "A timing conflict was detected and the request is waiting for a revised slot. This example is shown for Lila Santos so the demo is easy to explain.",
+          "type": "CONFLICT",
+          "readAt": "2026-05-23T02:28:28.224Z"
+        },
+        {
+          "id": "note_demo_user_client_1_040",
+          "userId": "user_client_1",
+          "title": "Appointment rescheduled for Lila Santos",
+          "message": "The request moved to a new date and is back in the review process. This example is shown for Lila Santos so the demo is easy to explain.",
+          "type": "APPOINTMENT",
+          "readAt": "2026-05-23T02:26:21.271Z"
+        },
+        {
+          "id": "note_demo_user_client_1_041",
+          "userId": "user_client_1",
+          "title": "Request cancelled for Lila Santos",
+          "message": "The appointment was cancelled and the workflow was closed. This example is shown for Lila Santos so the demo is easy to explain.",
+          "type": "APPOINTMENT",
+          "readAt": "2026-05-23T02:28:28.224Z"
+        },
+        {
+          "id": "note_demo_user_client_1_042",
+          "userId": "user_client_1",
+          "title": "Consultation completed for Lila Santos",
+          "message": "The workflow reached the completed stage and is now part of the history. This example is shown for Lila Santos so the demo is easy to explain.",
+          "type": "APPOINTMENT",
+          "readAt": "2026-05-23T02:26:21.271Z"
+        },
+        {
+          "id": "note_demo_user_client_1_043",
+          "userId": "user_client_1",
+          "title": "Step 1 of 3: Inquiry submitted for Lila Santos",
+          "message": "The client submitted the request and it is waiting for staff review. This example is shown for Lila Santos so the demo is easy to explain.",
+          "type": "APPOINTMENT",
+          "readAt": "2026-05-23T02:28:28.224Z"
+        },
+        {
+          "id": "note_demo_user_client_1_044",
+          "userId": "user_client_1",
+          "title": "Step 2 of 3: Schedule checked for Lila Santos",
+          "message": "Staff reviewed the requested date and matched it to a lawyer schedule. This example is shown for Lila Santos so the demo is easy to explain.",
+          "type": "APPOINTMENT",
+          "readAt": "2026-05-23T02:26:21.271Z"
+        },
+        {
+          "id": "note_demo_user_client_1_045",
+          "userId": "user_client_1",
+          "title": "Step 3 of 3: Lawyer review complete for Lila Santos",
+          "message": "The inquiry moved from intake to review and is ready for follow-up. This example is shown for Lila Santos so the demo is easy to explain.",
+          "type": "APPOINTMENT",
+          "readAt": "2026-05-23T02:28:28.224Z"
+        },
+        {
+          "id": "note_demo_user_client_1_046",
+          "userId": "user_client_1",
+          "title": "Schedule conflict found for Lila Santos",
+          "message": "A timing conflict was detected and the request is waiting for a revised slot. This example is shown for Lila Santos so the demo is easy to explain.",
+          "type": "CONFLICT",
+          "readAt": "2026-05-23T02:26:21.271Z"
+        },
+        {
+          "id": "note_demo_user_client_1_047",
+          "userId": "user_client_1",
+          "title": "Appointment rescheduled for Lila Santos",
+          "message": "The request moved to a new date and is back in the review process. This example is shown for Lila Santos so the demo is easy to explain.",
+          "type": "APPOINTMENT",
+          "readAt": "2026-05-23T02:28:28.224Z"
+        },
+        {
+          "id": "note_demo_user_client_1_048",
+          "userId": "user_client_1",
+          "title": "Request cancelled for Lila Santos",
+          "message": "The appointment was cancelled and the workflow was closed. This example is shown for Lila Santos so the demo is easy to explain.",
+          "type": "APPOINTMENT",
+          "readAt": "2026-05-23T02:26:21.271Z"
+        },
+        {
+          "id": "note_demo_user_client_1_049",
+          "userId": "user_client_1",
+          "title": "Consultation completed for Lila Santos",
+          "message": "The workflow reached the completed stage and is now part of the history. This example is shown for Lila Santos so the demo is easy to explain.",
+          "type": "APPOINTMENT",
+          "readAt": "2026-05-23T02:28:28.224Z"
+        },
+        {
+          "id": "note_demo_user_client_1_050",
+          "userId": "user_client_1",
+          "title": "Step 1 of 3: Inquiry submitted for Lila Santos",
+          "message": "The client submitted the request and it is waiting for staff review. This example is shown for Lila Santos so the demo is easy to explain.",
+          "type": "APPOINTMENT",
+          "readAt": "2026-05-23T02:26:21.271Z"
+        },
+        {
+          "id": "note_appt_appt_1779503376751",
+          "userId": "user_client_1",
+          "title": "Step 1 of 3: Inquiry submitted",
+          "message": "Your request was saved. Staff will review the details, check the lawyer calendar, and follow up with the next step.",
+          "type": "APPOINTMENT",
+          "readAt": "2026-05-23T02:29:36.849Z"
+        },
+        {
+          "id": "note_appt_appt_1779503583523",
+          "userId": "user_client_1",
+          "title": "Step 1 of 3: Inquiry submitted",
+          "message": "Your request was saved. Staff will review the details, check the lawyer calendar, and follow up with the next step.",
+          "type": "APPOINTMENT",
+          "readAt": null
+        }
+      ]
+    }
+  }
+}

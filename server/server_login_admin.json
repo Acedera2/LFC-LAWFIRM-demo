@@ -1,0 +1,19 @@
+{
+  "status": 200,
+  "setCookie": "demo_user=user_admin; Path=/; HttpOnly; SameSite=Lax",
+  "body": {
+    "data": {
+      "user": {
+        "id": "user_admin",
+        "roleId": "role_admin",
+        "name": "Ariana Cruz",
+        "email": "admin@lfcfirm.com",
+        "role": {
+          "id": "role_admin",
+          "slug": "admin",
+          "name": "Administrator"
+        }
+      }
+    }
+  }
+}

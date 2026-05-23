@@ -1,0 +1,21 @@
+{
+  "status": 200,
+  "body": {
+    "data": {
+      "user": {
+        "id": "user_client_1",
+        "roleId": "role_client",
+        "name": "Client User Updated",
+        "email": "client+updated@demo.com",
+        "phone": "",
+        "title": "",
+        "bio": "",
+        "role": {
+          "id": "role_client",
+          "slug": "client",
+          "name": "Client"
+        }
+      }
+    }
+  }
+}

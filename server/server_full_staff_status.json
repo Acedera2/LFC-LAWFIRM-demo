@@ -1,0 +1,22 @@
+{
+  "status": 200,
+  "body": {
+    "data": {
+      "appointment": {
+        "id": "appt_1779504014413",
+        "clientId": "user_client_1",
+        "subject": "Lifecycle test appt",
+        "consultationType": "Lifecycle",
+        "preferredStart": "2026-06-02T09:00:00.000Z",
+        "preferredEnd": "2026-06-02T09:30:00.000Z",
+        "lawyerId": "lawyer_1",
+        "priority": "REGULAR",
+        "status": "SCHEDULED",
+        "conflictStatus": "CLEAR",
+        "createdAt": "2026-05-23T02:40:14.535Z",
+        "scheduledStart": "2026-06-02T09:00:00.000Z",
+        "scheduledEnd": "2026-06-02T09:30:00.000Z"
+      }
+    }
+  }
+}

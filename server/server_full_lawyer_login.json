@@ -1,0 +1,19 @@
+{
+  "status": 200,
+  "setCookie": "demo_user=user_lawyer_1; Path=/; HttpOnly; SameSite=Lax",
+  "body": {
+    "data": {
+      "user": {
+        "id": "user_lawyer_1",
+        "roleId": "role_lawyer",
+        "name": "Elena Rivera",
+        "email": "attorney.rivera@lfcfirm.com",
+        "role": {
+          "id": "role_lawyer",
+          "slug": "lawyer",
+          "name": "Lawyer"
+        }
+      }
+    }
+  }
+}

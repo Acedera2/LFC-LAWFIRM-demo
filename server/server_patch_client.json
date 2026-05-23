@@ -1,0 +1,22 @@
+{
+  "status": 200,
+  "body": {
+    "data": {
+      "appointment": {
+        "id": "appt_1779503583523",
+        "clientId": "user_client_1",
+        "subject": "Automated test appt",
+        "consultationType": "Test",
+        "preferredStart": "2026-06-01T10:00:00.000Z",
+        "preferredEnd": "2026-06-01T10:30:00.000Z",
+        "lawyerId": "lawyer_1",
+        "priority": "REGULAR",
+        "status": "SCHEDULED",
+        "conflictStatus": "CLEAR",
+        "createdAt": "2026-05-23T02:33:03.523Z",
+        "scheduledStart": "2026-06-01T10:00:00.000Z",
+        "scheduledEnd": "2026-06-01T10:30:00.000Z"
+      }
+    }
+  }
+}
