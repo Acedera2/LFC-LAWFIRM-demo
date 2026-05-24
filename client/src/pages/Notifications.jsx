@@ -3,7 +3,7 @@ import { Bell, CheckCheck, ShieldAlert } from "lucide-react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import api, { unwrap } from "../lib/api";
-import { subscribeRefresh } from "../lib/refreshBus";
+import { subscribeRefresh, publishRefresh } from "../lib/refreshBus";
 import EmptyState from "../components/EmptyState";
 import LoadingSkeleton from "../components/LoadingSkeleton";
 import Modal from "../components/Modal";
@@ -45,7 +45,7 @@ export default function Notifications() {
 
   const markAllRead = async () => {
     try {
-      if (isSupabaseEnabled && supabase && user?.id) {
+        if (isSupabaseEnabled && supabase && user?.id) {
         const { error } = await supabase
           .from("notifications")
           .update({ read_at: new Date().toISOString() })
@@ -56,6 +56,7 @@ export default function Notifications() {
         await api.patch("/notifications/read-all");
         setNotifications((current) => current.map((notification) => ({ ...notification, readAt: new Date().toISOString() })));
         toast.success("All notifications marked as read");
+          try { publishRefresh("notifications:updated"); } catch (err) { void err; }
       }
     } catch (error) {
       if (error.response?.status === 401) {
@@ -83,6 +84,7 @@ export default function Notifications() {
           await api.patch(`/notifications/${notification.id}/read`);
         }
         setNotifications((current) => current.map((item) => (item.id === notification.id ? { ...item, readAt: new Date().toISOString() } : item)));
+        try { publishRefresh("notifications:updated"); } catch (err) { void err; }
       } catch (error) {
         toast.error(error.response?.data?.message || "Unable to mark notification as read");
       }
