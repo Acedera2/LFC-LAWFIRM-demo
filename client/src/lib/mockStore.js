@@ -172,6 +172,7 @@ const MockStore = {
     appointments.push(appt);
     write("appointments", appointments);
     try { publishRefresh("appointments:updated"); } catch (err) { void err; }
+    try { publishRefresh("lawyers:updated"); } catch (err) { void err; }
     return appt;
   },
   updateAppointment(id, patch) {
@@ -195,6 +196,7 @@ const MockStore = {
     }
     write("appointments", appointments);
     try { publishRefresh("appointments:updated"); } catch (err) { void err; }
+    try { publishRefresh("lawyers:updated"); } catch (err) { void err; }
     return appointments[idx];
   },
   deleteAppointment(id) {
@@ -202,6 +204,7 @@ const MockStore = {
     appointments = appointments.filter(a => a.id !== id);
     write("appointments", appointments);
     try { publishRefresh("appointments:updated"); } catch (err) { void err; }
+    try { publishRefresh("lawyers:updated"); } catch (err) { void err; }
     return true;
   },
   getNotifications() { return read("notifications") || []; },
