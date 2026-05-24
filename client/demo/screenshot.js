@@ -1,7 +1,7 @@
 // Simple Playwright script to capture demo screenshots for presentation.
 // Run with: `node demo/screenshot.js` after installing Playwright and browsers.
 const { chromium } = require('playwright');
-const BASE = process.env.BASE_URL || 'http://127.0.0.1:5174';
+const BASE = process.env.BASE_URL || 'http://localhost:5173';
 (async () => {
   const browser = await chromium.launch();
   const page = await browser.newPage({ viewport: { width: 1280, height: 800 } });
