@@ -1,8 +1,6 @@
-import pkg from 'playwright/test';
+const { test, expect } = require('@playwright/test');
 
-const { test, expect } = pkg;
-
-const BASE = process.env.BASE_URL || 'http://127.0.0.1:5174';
+const BASE = process.env.BASE_URL || 'http://localhost:5173';
 
 test.describe('Role access checks', () => {
   const roles = [

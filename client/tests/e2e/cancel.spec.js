@@ -1,7 +1,5 @@
-import pkg from 'playwright/test';
-
-const { test, expect } = pkg;
-const BASE = process.env.BASE_URL || 'http://127.0.0.1:5174';
+const { test, expect } = require('@playwright/test');
+const BASE = process.env.BASE_URL || 'http://localhost:5173';
 
 test('client cancellation flow (mock-first)', async ({ page }) => {
   await page.goto(BASE);
