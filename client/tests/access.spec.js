@@ -1,4 +1,4 @@
-const { test, expect } = require('@playwright/test');
+import { test, expect } from '@playwright/test';
 
 test('client cannot access /appointments (redirected)', async ({ page }) => {
   const BASE = process.env.BASE_URL || 'http://localhost:5173';

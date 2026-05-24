@@ -1,4 +1,4 @@
-const { test, expect } = require('@playwright/test');
+import { test, expect } from '@playwright/test';
 
 test.describe('Full demo flow: client -> staff -> lawyer', () => {
   test('client submits request and staff approves', async ({ page, request }) => {

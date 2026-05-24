@@ -1,4 +1,4 @@
-const { test, expect } = require('@playwright/test');
+import { test, expect } from '@playwright/test';
 const BASE = process.env.BASE_URL || 'http://localhost:5173';
 
 test('full lifecycle: client request -> staff approve (mock-first)', async ({ page }) => {
