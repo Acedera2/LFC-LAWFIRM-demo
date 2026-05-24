@@ -63,7 +63,7 @@ export const create = asyncHandler(async (req, res) => {
         actor: req.user ? { id: req.user.id, role: req.user.role?.slug } : null,
         payload: req.validated?.body
       });
-    } catch (e) {
+    } catch {
       // ignore logging errors
     }
   }

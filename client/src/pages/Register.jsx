@@ -22,6 +22,21 @@ export default function Register() {
       toast.error("Passwords do not match");
       return;
     }
+    if (!form.name || form.name.trim().length < 2) {
+      toast.error('Enter your full name');
+      return;
+    }
+    const emailRe = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+    if (!emailRe.test(form.email)) {
+      toast.error('Enter a valid email address');
+      return;
+    }
+    // password strength: at least 8 chars, uppercase, lowercase, number
+    const pass = form.password || '';
+    if (pass.length < 8 || !/[A-Z]/.test(pass) || !/[a-z]/.test(pass) || !/[0-9]/.test(pass)) {
+      toast.error('Password must be 8+ characters and include upper/lowercase letters and a number');
+      return;
+    }
     try {
       await register(form);
       navigate("/client", { replace: true });
@@ -37,6 +52,7 @@ export default function Register() {
         <section className="rounded-lg border border-ink-100 bg-white p-6 shadow-sm dark:border-white/10 dark:bg-white/5 sm:p-8">
           <p className="text-sm font-extrabold uppercase text-jade-700 dark:text-jade-100">Client registration</p>
           <h1 className="mt-3 text-3xl font-extrabold text-ink-900 dark:text-white">Create your secure consultation workspace</h1>
+          <p className="mt-3 text-sm leading-6 text-ink-500 dark:text-ink-100">Registration is for clients only in the demo. After sign-up you can submit inquiries and track appointment status from the client dashboard.</p>
           <form onSubmit={submit} className="mt-8 grid gap-4 md:grid-cols-2">
             {[
               ["name", "Full name", "text"],

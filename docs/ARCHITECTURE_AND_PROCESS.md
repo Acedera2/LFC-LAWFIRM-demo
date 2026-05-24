@@ -4,12 +4,13 @@
 
 The system process for the proposed Priority-Based Appointment Scheduling and Conflict Monitoring System with Web-Based Inquiry for LFC Firm begins when a client submits an inquiry or appointment request through the web interface. The workflow proceeds as follows:
 
-- The client submits an appointment inquiry containing preferred time windows, consultation type, and optional supporting documents.
-- The system checks lawyer availability for the requested time windows and suggested lawyers.
-- The appointment is classified by priority (e.g., urgent, moderate, regular) based on consultation type, deadlines, and client-provided indicators.
-- The system performs conflict checking to detect overlapping schedules, double-bookings, or other constraints that would prevent confirmation.
-- If conflicts are detected, the system returns suggestions (alternative slots or staff-assisted scheduling) and notifies relevant staff and lawyers.
-- If the schedule is clear, the appointment is confirmed and stored, with notifications sent to the client, assigned lawyer, and staff as configured.
+- The client submits a web-based inquiry and selects the appointment date first.
+- The system checks lawyer availability, existing schedules, historical records, and workload balance.
+- The client selects a preferred lawyer based on availability.
+- The appointment is classified by priority as Urgent, Moderate, or Regular.
+- The system performs conflict checking to detect overlapping schedules, duplicate bookings, recurring conflicts, and lawyer overload.
+- If conflicts are detected, the system returns alternatives, notifies staff/admin, and blocks confirmation until the issue is resolved.
+- If the schedule is clear, the appointment is confirmed and stored, with notifications sent to the client, assigned lawyer, staff, and administrators as needed.
 
 This process helps make scheduling more organized, efficient, and easier to monitor compared to manual processes.
 
@@ -17,11 +18,11 @@ This process helps make scheduling more organized, efficient, and easier to moni
 
 The proposed architecture for the Priority-Based Appointment Scheduling and Conflict Monitoring System with Web-Based Inquiry for LFC Firm is a web-based platform comprising client-facing and role-based dashboards for Clients, Staff, Lawyers, and Administrators. Key components include:
 
-- A React + Vite frontend that provides the public inquiry form and role-based dashboards for managing appointments, priorities, conflict detection feedback, and notifications.
-- An Express.js API that exposes endpoints for appointment creation, conflict-checking, availability queries, notifications, and analytics.
-- A relational database (MySQL/MariaDB or PostgreSQL) managed with Prisma ORM that stores users, roles, lawyers, schedules, availability windows, appointments, conflict scans, notifications, and audit logs.
-- Authentication and authorization layers (JWT access + refresh tokens, cookies, CSRF protection, and role-based access control) to secure operations.
-- Background services and notifications to deliver email/SMS/web notifications, and to run periodic analytics and conflict scans if required.
+- A React + Tailwind CSS frontend that provides the public inquiry form, landing page, and role-based dashboards for Clients, Staff, Lawyers, and Administrators.
+- An Express.js API that exposes endpoints for appointment creation, conflict-checking, availability queries, notifications, analytics, and settings.
+- A MySQL relational database managed with Prisma ORM that stores users, roles, lawyers, schedules, availability windows, appointments, conflict logs, notifications, activity logs, and audit history.
+- Authentication and authorization layers that use session cookies, CSRF protection, and role-based access control to secure operations.
+- Notification services that deliver web alerts and can be extended to email or SMS if required by the firm.
 
 Through this architecture, appointment management becomes faster, more organized, and easier to monitor. Role-specific dashboards let staff and lawyers react to conflicts, while clients get immediate feedback on availability and priority-driven scheduling options.
 
@@ -62,4 +63,4 @@ flowchart LR
 
 ## Wording refinement
 
-This system implements a priority-driven appointment workflow with automated conflict detection. When a client submits an inquiry, the platform classifies the request by urgency, checks lawyer availability, runs a conflict scan against existing schedules, and then either suggests alternatives or confirms the booking. Role-based dashboards present prioritized queues, conflict alerts, and scheduling controls to staff and lawyers while administrative dashboards provide oversight, settings, and analytics.
+This system implements a priority-driven appointment workflow with automated conflict detection. When a client submits an inquiry, the platform classifies the request by urgency, checks lawyer availability, runs a conflict scan against existing schedules and workload patterns, and then either suggests alternatives or confirms the booking. Role-based dashboards present prioritized queues, conflict alerts, scheduling controls, and analytics to staff, lawyers, and administrators.

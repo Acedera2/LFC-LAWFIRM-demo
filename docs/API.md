@@ -6,11 +6,11 @@ Base URL:
 http://localhost:5000/api
 ```
 
-Authentication uses short-lived JWT access cookies plus rotating JWT refresh cookies. Both are HTTP-only. Mutating requests must include the CSRF token from the `lfc_csrf` cookie in the `X-CSRF-Token` header.
+Authentication uses session cookies with CSRF protection. Mutating requests must include the CSRF token from the `lfc_csrf` cookie in the `X-CSRF-Token` header.
 
 ## Scope Limits
 
-This API intentionally excludes AI automation, machine learning, payment gateways, court case management, video conferencing, mobile apps, and external government integrations. It focuses on appointment scheduling, lawyer availability, rule-based conflict monitoring, workload analytics, notifications, web inquiry, and role-based access.
+This API intentionally excludes AI automation, machine learning, payment gateways, court case management, video conferencing, mobile apps, and external government integrations. It focuses on web inquiry, appointment scheduling, lawyer availability, rule-based conflict monitoring, historical analysis, notifications, and role-based access.
 
 ## Auth
 
@@ -46,19 +46,19 @@ This API intentionally excludes AI automation, machine learning, payment gateway
 | PATCH | `/appointments/:id/reschedule` | Client, Staff, Admin | Request a new schedule |
 | DELETE | `/appointments/:id` | Client, Staff, Admin | Cancel appointment |
 | GET | `/appointments/:id/receipt` | Authenticated | Download PDF appointment receipt |
-| POST | `/appointments/:appointmentId/documents` | Client, Staff, Admin | Upload supporting documents |
+| POST | `/appointments/:appointmentId/documents` | Not used | Document upload is intentionally removed from the client inquiry workflow |
 
 Query options include `page`, `limit`, `search`, `status`, `priority`, `lawyerId`, `sortBy`, and `sortOrder`.
 
 ## Priority Rules
 
-High Priority:
+Urgent Priority:
 
 - Emergency consultations
 - Court deadlines
 - Urgent legal filings
 
-Medium Priority:
+Moderate Priority:
 
 - Ongoing legal processing
 - Scheduled follow-ups
@@ -74,7 +74,7 @@ Regular Priority:
 {
   "lawyerId": "clw_example_lawyer_id",
   "consultationType": "Court deadline preparation",
-  "priority": "HIGH",
+  "priority": "URGENT",
   "subject": "Urgent filing review",
   "description": "Court deadline is approaching and documents need review.",
   "preferredStart": "2026-05-14T09:00:00.000Z",
@@ -83,7 +83,7 @@ Regular Priority:
 }
 ```
 
-The backend suggests priority by rule, records the selected priority, detects overlaps, unavailable lawyers, excessive workload, duplicate requests, and returns alternative schedule options when conflicts exist.
+The backend suggests priority by rule, records the selected priority, detects overlaps, unavailable lawyers, excessive workload, recurring conflicts, and duplicate requests, and returns alternative schedule options when conflicts exist.
 
 ## Users, Analytics, and Audit
 

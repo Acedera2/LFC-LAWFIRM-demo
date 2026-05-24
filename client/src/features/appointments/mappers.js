@@ -73,3 +73,16 @@ export function buildClientTimeline(appointments = []) {
     })
     .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
 }
+
+export function sortAppointmentsByPriority(items = []) {
+  const rank = { URGENT: 1, HIGH: 1, MODERATE: 2, MEDIUM: 2, REGULAR: 3 };
+  return [...items].sort((a, b) => {
+    const ra = rank[a.priority] || rank[a.displayPriority] || 3;
+    const rb = rank[b.priority] || rank[b.displayPriority] || 3;
+    if (ra !== rb) return ra - rb;
+    // Next by soonest start
+    const ta = new Date(a.scheduledStart || a.preferredStart || 0).getTime();
+    const tb = new Date(b.scheduledStart || b.preferredStart || 0).getTime();
+    return ta - tb;
+  });
+}

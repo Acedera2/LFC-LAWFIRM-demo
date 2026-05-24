@@ -34,20 +34,8 @@ export default function CalendarGrid({ appointments = [] }) {
     return acc;
   }, {});
 
-  const visibleCounts = appointments.reduce((acc, appointment) => {
-    const bucket = appointment.conflictStatus || appointment.status || "PENDING";
-    acc[bucket] = (acc[bucket] || 0) + 1;
-    return acc;
-  }, {});
-
   return (
     <div className="grid gap-4">
-      <div className="flex flex-wrap gap-2 text-xs font-extrabold uppercase text-ink-500 dark:text-ink-100">
-        <span className="rounded-full bg-jade-100 px-3 py-1 text-jade-800">Approved schedules: {visibleCounts.APPROVED || visibleCounts.SCHEDULED || 0}</span>
-        <span className="rounded-full bg-brass-100 px-3 py-1 text-brass-700">Pending requests: {visibleCounts.PENDING || visibleCounts.RESCHEDULE_REQUESTED || 0}</span>
-        <span className="rounded-full bg-signal-coral/12 px-3 py-1 text-signal-coral">Conflicts: {visibleCounts.CONFLICT || 0}</span>
-        <span className="rounded-full bg-ink-100 px-3 py-1 text-ink-600 dark:bg-white/10 dark:text-ink-100">Cancellations: {visibleCounts.CANCELLED || visibleCounts.CANCEL_REQUESTED || 0}</span>
-      </div>
       <div className="overflow-x-auto">
       <div className="min-w-[840px] rounded-lg border border-ink-100 dark:border-white/10">
         <div className="grid grid-cols-[90px_repeat(7,1fr)] border-b border-ink-100 bg-ink-50 text-xs font-extrabold uppercase text-ink-500 dark:border-white/10 dark:bg-white/5 dark:text-ink-100">

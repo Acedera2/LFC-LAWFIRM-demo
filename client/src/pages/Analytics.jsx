@@ -3,6 +3,7 @@ import { Bar, BarChart, CartesianGrid, Line, LineChart, ResponsiveContainer, Too
 import ChartCard from "../components/ChartCard";
 import api, { unwrap } from "../lib/api";
 import toast from "react-hot-toast";
+import LoadingSkeleton from "../components/LoadingSkeleton";
 
 export default function Analytics() {
   const [summary, setSummary] = useState(null);
@@ -12,7 +13,7 @@ export default function Analytics() {
     let active = true;
     const loadSummary = async () => {
       try {
-        const response = await api.get("/api/analytics/summary");
+        const response = await api.get("/analytics/summary");
         const data = unwrap(response);
         if (active) setSummary(data);
       } catch (error) {
@@ -33,13 +34,16 @@ export default function Analytics() {
   const services = summary?.mostRequestedServices || [];
   const lawyers = summary?.appointmentsPerLawyer || [];
   const statusBreakdown = summary?.statusBreakdown || [];
+  const hasData = daily.length > 0 || services.length > 0 || lawyers.length > 0 || statusBreakdown.length > 0;
 
   return (
     <div className="grid gap-6">
       <div>
         <p className="text-sm font-extrabold uppercase text-jade-700 dark:text-jade-100">Analytics</p>
         <h1 className="mt-1 text-2xl font-extrabold text-ink-900 dark:text-white">Scheduling intelligence and firm performance</h1>
+        <p className="mt-2 text-sm text-ink-500 dark:text-ink-100">This view summarizes appointment volume, workload pressure, peak hours, and conflict frequency in a form that is easy to explain during defense.</p>
       </div>
+      {loading ? <LoadingSkeleton rows={5} /> : null}
       <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
         <div className="rounded-lg border border-ink-100 bg-white p-4 dark:border-white/10 dark:bg-white/5">
           <p className="text-sm font-semibold text-ink-500 dark:text-ink-100">Most requested service</p>
@@ -58,6 +62,13 @@ export default function Analytics() {
           <p className="mt-2 text-lg font-extrabold text-ink-900 dark:text-white">{statusBreakdown[0]?.status || "—"}</p>
         </div>
       </div>
+
+      {!loading && !hasData ? (
+        <ChartCard title="No analytics data yet" subtitle="Generate appointments and the charts will fill automatically.">
+          <p className="text-sm text-ink-500 dark:text-ink-100">The analytics summary reads from the current demo appointments. Add, approve, and reschedule a few appointments to see the charts populate.</p>
+        </ChartCard>
+      ) : null}
+
       <div className="grid gap-6 xl:grid-cols-2">
         <ChartCard title="Daily and monthly appointments" subtitle="Live appointment volume from the last 30 days.">
           <div className="h-80">

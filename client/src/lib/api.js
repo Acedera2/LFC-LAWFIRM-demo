@@ -1,30 +1,46 @@
 import axios from "axios";
+import MockApi from "./mockApi";
 
+// Force mock mode in-browser for demo: always use MockApi when running locally
 function resolveApiUrl() {
-  const configuredUrl = import.meta.env.VITE_API_URL;
-  if (configuredUrl) return configuredUrl.replace(/\/$/, "");
+  try {
+    const configuredUrl = import.meta.env.VITE_API_URL;
+    // If a URL is explicitly provided at build time, respect it.
+    if (configuredUrl) return configuredUrl.replace(/\/$/, "");
+  } catch {
+    // import.meta may not be accessible in some runtime contexts; ignore.
+  }
+  // Otherwise, return empty string to enable MockApi
   return "";
 }
 
 const API_URL = resolveApiUrl();
 
-const api = axios.create({
-  baseURL: API_URL,
-  timeout: 15000,
-  withCredentials: true,
-  headers: {
-    "Accept": "application/json"
-  }
-});
+// If no API_URL is configured, use the in-browser mock API to allow demo-mode
+let api;
+let rawApi;
+if (!API_URL) {
+  api = MockApi;
+  rawApi = MockApi;
+} else {
+  api = axios.create({
+    baseURL: API_URL,
+    timeout: 15000,
+    withCredentials: true,
+    headers: {
+      "Accept": "application/json"
+    }
+  });
 
-const rawApi = axios.create({
-  baseURL: API_URL,
-  timeout: 15000,
-  withCredentials: true,
-  headers: {
-    "Accept": "application/json"
-  }
-});
+  rawApi = axios.create({
+    baseURL: API_URL,
+    timeout: 15000,
+    withCredentials: true,
+    headers: {
+      "Accept": "application/json"
+    }
+  });
+}
 
 function readCookie(name) {
   return document.cookie
@@ -74,62 +90,64 @@ async function ensureCsrfToken() {
   return data.data?.csrfToken || readCookie("lfc_csrf");
 }
 
-api.interceptors.request.use(async (config) => {
-  const method = (config.method || "get").toLowerCase();
-  if (!["get", "head", "options"].includes(method) && !config.url?.includes("auth/csrf")) {
-    config.headers["X-CSRF-Token"] = await ensureCsrfToken();
-  }
-  return config;
-});
-
-api.interceptors.response.use(
-  (response) => response,
-  async (error) => {
-    const original = error.config;
-    const status = error.response?.status;
-
-    if (
-      status === 401 &&
-      original &&
-      !original._retry &&
-      !original.url?.includes("auth/refresh") &&
-      !original.url?.includes("auth/login") &&
-      !original.url?.includes("auth/csrf")
-    ) {
-      if (isRefreshing) {
-        return new Promise((resolve, reject) => {
-          refreshQueue.push((refreshError) => {
-            if (refreshError) {
-              reject(refreshError);
-            } else {
-              resolve(api(original));
-            }
-          });
-        });
-      }
-
-      original._retry = true;
-      isRefreshing = true;
-
-      try {
-        await api.post("/auth/refresh");
-        notifyRefreshQueue(null);
-        return api(original);
-      } catch (refreshError) {
-        notifyRefreshQueue(refreshError);
-        localStorage.removeItem("lfc_user");
-        if (!original.url?.includes("auth/me")) {
-          window.dispatchEvent(new Event("lfc:session-expired"));
-        }
-        return Promise.reject(refreshError);
-      } finally {
-        isRefreshing = false;
-      }
+if (API_URL) {
+  api.interceptors.request.use(async (config) => {
+    const method = (config.method || "get").toLowerCase();
+    if (!["get", "head", "options"].includes(method) && !config.url?.includes("auth/csrf")) {
+      config.headers["X-CSRF-Token"] = await ensureCsrfToken();
     }
+    return config;
+  });
 
-    return Promise.reject(error);
-  }
-);
+  api.interceptors.response.use(
+    (response) => response,
+    async (error) => {
+      const original = error.config;
+      const status = error.response?.status;
+
+      if (
+        status === 401 &&
+        original &&
+        !original._retry &&
+        !original.url?.includes("auth/refresh") &&
+        !original.url?.includes("auth/login") &&
+        !original.url?.includes("auth/csrf")
+      ) {
+        if (isRefreshing) {
+          return new Promise((resolve, reject) => {
+            refreshQueue.push((refreshError) => {
+              if (refreshError) {
+                reject(refreshError);
+              } else {
+                resolve(api(original));
+              }
+            });
+          });
+        }
+
+        original._retry = true;
+        isRefreshing = true;
+
+        try {
+          await api.post("/auth/refresh");
+          notifyRefreshQueue(null);
+          return api(original);
+        } catch (refreshError) {
+          notifyRefreshQueue(refreshError);
+          localStorage.removeItem("lfc_user");
+          if (!original.url?.includes("auth/me")) {
+            window.dispatchEvent(new Event("lfc:session-expired"));
+          }
+          return Promise.reject(refreshError);
+        } finally {
+          isRefreshing = false;
+        }
+      }
+
+      return Promise.reject(error);
+    }
+  );
+}
 
 export function unwrap(response) {
   return response.data?.data ?? response.data;

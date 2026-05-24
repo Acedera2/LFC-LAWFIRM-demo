@@ -7,10 +7,10 @@ import Navbar from "../components/Navbar";
 import { useAuth } from "../context/AuthContext";
 
 const demos = [
-  ["Admin", "admin@lfcfirm.com"],
-  ["Staff", "staff@lfcfirm.com"],
-  ["Lawyer", "attorney.rivera@lfcfirm.com"],
-  ["Client", "client@demo.com"]
+  ["Admin", "admin@demo.local"],
+  ["Staff", "staff@demo.local"],
+  ["Lawyer", "elena.rivera@demo.local"],
+  ["Client", "client@demo.local"]
 ];
 
 function rolePath(user) {
@@ -22,13 +22,16 @@ export default function Login() {
   const { login, loading } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-  const [form, setForm] = useState({ email: "admin@lfcfirm.com", password: "Password123!" });
+  const [form, setForm] = useState({ email: "admin@demo.local", password: "Password123!" });
 
   const submit = async (event) => {
     event.preventDefault();
     try {
       const user = await login(form);
-      navigate(location.state?.from?.pathname || rolePath(user), { replace: true });
+      // support location.state.from being either a string or a location-like object
+      const fromState = location.state?.from;
+      const fromPath = typeof fromState === "string" ? fromState : fromState?.pathname;
+      navigate(fromPath || rolePath(user), { replace: true });
     } catch (error) {
       toast.error(error.response?.data?.message || "Login failed. Check your credentials.");
     }
@@ -49,6 +52,7 @@ export default function Login() {
         <section className="rounded-lg border border-ink-100 bg-white p-6 shadow-sm dark:border-white/10 dark:bg-white/5 sm:p-8">
           <p className="text-sm font-extrabold uppercase text-jade-700 dark:text-jade-100">Login</p>
           <h1 className="mt-3 text-3xl font-extrabold text-ink-900 dark:text-white">Welcome back</h1>
+          <p className="mt-3 text-sm leading-6 text-ink-500 dark:text-ink-100">Use a seeded demo account to enter the dashboard for your role. All demo accounts use <span className="font-bold">Password123!</span>.</p>
           <form onSubmit={submit} className="mt-8 grid gap-4">
             <label className="grid gap-2 text-sm font-bold text-ink-700 dark:text-white">
               Email
@@ -76,6 +80,7 @@ export default function Login() {
           </form>
           <div className="mt-6">
             <p className="text-xs font-extrabold uppercase text-ink-500 dark:text-ink-100">Demo accounts</p>
+            <p className="mt-2 text-xs text-ink-500 dark:text-ink-100">Click a role to fill the email field, then sign in.</p>
             <div className="mt-3 flex flex-wrap gap-2">
               {demos.map(([label, email]) => (
                 <button key={email} type="button" onClick={() => setForm({ email, password: "Password123!" })} className="focus-ring rounded-lg border border-ink-100 px-3 py-2 text-xs font-extrabold text-ink-700 hover:border-jade-400 hover:text-jade-700 dark:border-white/10 dark:text-white">

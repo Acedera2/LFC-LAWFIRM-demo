@@ -152,5 +152,14 @@
 			],
 			"group": "build"
 		}
+		,
+		{
+			"label": "test:e2e client",
+			"type": "shell",
+			"command": "npm",
+			"args": ["run", "test:e2e", "--workspace", "client"],
+			"group": "test",
+			"presentation": { "reveal": "always", "panel": "shared" }
+		}
 	]
 }

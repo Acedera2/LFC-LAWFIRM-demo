@@ -14,8 +14,8 @@ async function findApiTarget() {
       // try the next port
     }
   }
-
-  return "http://127.0.0.1:5000";
+  // If no running backend is found, return empty to indicate no proxy should be used.
+  return "";
 }
 
 export default defineConfig(async () => {
@@ -37,18 +37,13 @@ export default defineConfig(async () => {
     },
     server: {
       port: 5173,
-      proxy: {
-        "/api": {
-          target: apiTarget,
-          changeOrigin: true,
-          secure: false
-        },
-        "/auth": {
-          target: apiTarget,
-          changeOrigin: true,
-          secure: false
-        }
-      }
+      // Only configure proxy when an apiTarget was discovered
+      proxy: apiTarget
+        ? {
+            "/api": { target: apiTarget, changeOrigin: true, secure: false },
+            "/auth": { target: apiTarget, changeOrigin: true, secure: false }
+          }
+        : {}
     },
     preview: {
       port: 4173

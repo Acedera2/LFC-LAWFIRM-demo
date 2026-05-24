@@ -9,6 +9,16 @@ const AUTH_PREFIXES = ["/auth", "/api/auth"];
 async function requestAuth(method, path, data) {
   let lastError;
 
+  // If a MockApi is available in the browser, prefer it for auth calls
+  try {
+    if (typeof window !== "undefined" && window.MockApi) {
+      return await window.MockApi.request({ method, url: `/auth${path}`, data });
+    }
+  } catch (error) {
+    lastError = error;
+    // fall through to try network endpoints
+  }
+
   for (const prefix of AUTH_PREFIXES) {
     try {
       return await api.request({ method, url: `${prefix}${path}`, data });
@@ -27,7 +37,14 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(() => {
     if (typeof window === "undefined") return null;
     const stored = localStorage.getItem(LOCAL_STORAGE_KEY);
-    return stored ? JSON.parse(stored) : null;
+    if (!stored) return null;
+    try {
+      const parsed = JSON.parse(stored);
+      // support both shapes: { user: {...} } and legacy raw user object
+      return parsed.user || parsed;
+    } catch {
+      return null;
+    }
   });
   const [initializing, setInitializing] = useState(true);
   const [loading, setLoading] = useState(false);
@@ -36,7 +53,12 @@ export function AuthProvider({ children }) {
     setUser(nextUser);
     if (typeof window === "undefined") return;
     if (nextUser) {
-      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(nextUser));
+      // persist as { user: ... } to be compatible with MockApi and MockStore
+      try {
+        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify({ user: nextUser }));
+      } catch {
+        // ignore storage failures
+      }
     } else {
       localStorage.removeItem(LOCAL_STORAGE_KEY);
     }
@@ -44,6 +66,10 @@ export function AuthProvider({ children }) {
 
   const clearSession = useCallback(() => {
     saveUser(null);
+  }, [saveUser]);
+
+  const updateProfile = useCallback((nextUser) => {
+    saveUser(nextUser);
   }, [saveUser]);
 
   useEffect(() => {
@@ -139,9 +165,10 @@ export function AuthProvider({ children }) {
       hasRole: (...roles) => roles.includes(user?.role?.slug || user?.role),
       login,
       register,
-      logout
+      logout,
+      updateProfile
     }),
-    [user, initializing, loading, login, logout, register]
+    [user, initializing, loading, login, logout, register, updateProfile]
   );
 
   return <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>;

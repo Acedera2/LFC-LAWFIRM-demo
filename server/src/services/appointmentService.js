@@ -43,6 +43,22 @@ export async function createAppointment({ data, actor, req }) {
     include: appointmentInclude
   });
 
+  const staffRecipients = await prisma.user.findMany({
+    where: { role: { slug: { in: ["staff", "admin"] } } },
+    select: { id: true }
+  });
+
+  const staffNotifications = staffRecipients.map((recipient) =>
+    createNotification({
+      userId: recipient.id,
+      title: "New appointment inquiry",
+      message: `${appointment.client.name} submitted ${appointment.consultationType}.`,
+      type: "APPOINTMENT",
+      actionUrl: `/appointments?id=${appointment.id}`,
+      metadata: { appointmentId: appointment.id, actorId: actor.id }
+    })
+  );
+
   await Promise.all([
     createNotification({
       userId: appointment.clientId,
@@ -52,6 +68,7 @@ export async function createAppointment({ data, actor, req }) {
       actionUrl: `/appointments?id=${appointment.id}`,
       metadata: { appointmentId: appointment.id }
     }),
+    ...staffNotifications,
     simulateEmail({
       to: appointment.client.email,
       subject: "Appointment inquiry received",

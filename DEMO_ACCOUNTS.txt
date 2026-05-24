@@ -1,0 +1,31 @@
+DEMO ACCOUNTS (for local demo only)
+
+---
+Seeded / Explicit demo accounts (from server/dev-data.json and README):
+
+- Admin: admin@lfcfirm.com  | Password: Password123!
+- Staff: staff@lfcfirm.com  | Password: Password123!
+- Lawyer: attorney.rivera@lfcfirm.com  | Password: Password123!
+- Client: client@demo.com  | Password: Password123!
+
+---
+Login demo buttons (client/src/pages/Login.jsx) — prefill values used in UI:
+
+- Admin demo button: admin@demo.local  | Password: Password123!
+- Staff demo button: staff@demo.local  | Password: Password123!
+- Lawyer demo button: elena.rivera@demo.local  | Password: Password123!
+- Client demo button: client@demo.local  | Password: Password123!
+
+---
+Auto-generated demo accounts (pattern from server/dev-server.js):
+
+- Pattern: roleSlug.NNN@demo.local  (zero-padded 3-digit index)
+  Examples: admin.001@demo.local, staff.001@demo.local, lawyer.001@demo.local, client.001@demo.local
+- Default password for generated accounts: Password123!
+
+Notes:
+- The server's demo auth accepts the password "Password123!" for seeded/generated demo users.
+- Lawyers in the concise demo seeding are limited to three named attorneys (Elena Rivera, Victor Santos, Bianca Cruz) in addition to any generated lawyer.NNN@demo.local addresses.
+- For running locally, start the demo server (npm run dev or npm run dev:demo) and use these credentials at the login page.
+
+SECURITY NOTE: These credentials are for local demo/testing only. Do NOT use them in production or commit real passwords.

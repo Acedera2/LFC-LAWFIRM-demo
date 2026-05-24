@@ -76,29 +76,48 @@ export default function ClientManagement() {
   }, [selectedClient?.id]);
 
   const timeline = useMemo(() => buildClientTimeline(appointments), [appointments]);
+  const totalClients = meta.totalItems || clients.length;
+  const totalPages = meta.totalPages || 1;
+  const currentPage = Math.min(meta.page || 1, totalPages);
+
+  useEffect(() => {
+    setMeta((current) => (current.page === 1 ? current : { ...current, page: 1 }));
+  }, [query]);
 
   return (
     <div className="grid gap-6">
       <div>
         <p className="text-sm font-extrabold uppercase text-jade-700 dark:text-jade-100">Client management</p>
         <h1 className="mt-1 text-2xl font-extrabold text-ink-900 dark:text-white">Client records, inquiry history, and consultation timelines</h1>
+        <p className="mt-2 max-w-3xl text-sm text-ink-500 dark:text-ink-100">Search by name or email, open a client to view their timeline, and use pagination to browse the full list without losing your place.</p>
       </div>
 
       <ChartCard title="Client records" subtitle="Search and review consultation history by client profile.">
         <div className="grid gap-4">
-          <label className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-ink-400" size={18} />
-            <input
-              value={query}
-              onChange={(event) => {
-                setMeta((current) => ({ ...current, page: 1 }));
-                setQuery(event.target.value);
-              }}
-              placeholder="Search client name or email"
-              className="focus-ring w-full rounded-lg border border-ink-100 py-3 pl-10 pr-3 text-sm font-medium dark:border-white/10 dark:bg-ink-950"
-            />
-          </label>
-
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+            <label className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-ink-400" size={18} />
+              <input
+                value={query}
+                onChange={(event) => {
+                  setMeta((current) => ({ ...current, page: 1 }));
+                  setQuery(event.target.value);
+                }}
+                placeholder="Search client name or email"
+                className="focus-ring w-full rounded-lg border border-ink-100 py-3 pl-10 pr-3 text-sm font-medium dark:border-white/10 dark:bg-ink-950"
+              />
+            </label>
+            {query ? (
+              <button
+                type="button"
+                onClick={() => setQuery("")}
+                className="rounded-lg border border-ink-100 px-4 py-3 text-sm font-bold dark:border-white/10"
+              >
+                Clear search
+              </button>
+            ) : null}
+          </div>
+          <p className="text-xs font-semibold text-ink-500 dark:text-ink-100">Showing {clients.length} of {totalClients} clients on page {currentPage} of {totalPages}.</p>
           {loading ? (
             <LoadingSkeleton rows={5} />
           ) : clients.length === 0 ? (
@@ -128,7 +147,7 @@ export default function ClientManagement() {
                           onClick={() => setSelectedClient(client)}
                           className="focus-ring inline-flex items-center gap-2 rounded-lg border border-ink-100 px-3 py-1.5 text-xs font-extrabold text-ink-700 dark:border-white/10 dark:text-white"
                         >
-                          <UsersRound size={14} /> View
+                          <UsersRound size={14} /> Open timeline
                         </button>
                       </td>
                     </tr>
@@ -139,21 +158,21 @@ export default function ClientManagement() {
           )}
 
           <div className="flex items-center justify-between text-xs font-semibold text-ink-500 dark:text-ink-100">
-            <span>Total clients: {meta.totalItems || clients.length}</span>
+            <span>Total clients: {totalClients}</span>
             <div className="flex items-center gap-2">
               <button
                 type="button"
-                disabled={meta.page <= 1}
-                onClick={() => setMeta((current) => ({ ...current, page: current.page - 1 }))}
+                disabled={currentPage <= 1}
+                onClick={() => setMeta((current) => ({ ...current, page: Math.max(1, current.page - 1) }))}
                 className="rounded border border-ink-100 px-2.5 py-1 disabled:cursor-not-allowed disabled:opacity-60 dark:border-white/10"
               >
                 Prev
               </button>
-              <span>Page {meta.page} / {meta.totalPages || 1}</span>
+              <span>Page {currentPage} / {totalPages}</span>
               <button
                 type="button"
-                disabled={meta.page >= (meta.totalPages || 1)}
-                onClick={() => setMeta((current) => ({ ...current, page: current.page + 1 }))}
+                disabled={currentPage >= totalPages}
+                onClick={() => setMeta((current) => ({ ...current, page: Math.min(totalPages, current.page + 1) }))}
                 className="rounded border border-ink-100 px-2.5 py-1 disabled:cursor-not-allowed disabled:opacity-60 dark:border-white/10"
               >
                 Next
@@ -174,9 +193,9 @@ export default function ClientManagement() {
               <button
                 type="button"
                 onClick={() => setSelectedClient(null)}
-                className="text-xs font-extrabold text-ink-500 dark:text-ink-100"
+                className="text-xs font-extrabold text-ink-500 transition hover:text-jade-700 dark:text-ink-100 dark:hover:text-jade-100"
               >
-                Close timeline
+                Close details
               </button>
             </div>
             {timeline.length === 0 ? (

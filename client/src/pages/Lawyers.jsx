@@ -36,6 +36,7 @@ export default function Lawyers() {
         <div className="max-w-3xl">
           <p className="text-sm font-extrabold uppercase text-jade-700 dark:text-jade-100">Lawyers</p>
           <h1 className="mt-3 font-display text-4xl font-extrabold text-ink-900 dark:text-white sm:text-5xl">Counsel profiles with real availability and workload intelligence.</h1>
+          <p className="mt-6 text-lg leading-8 text-ink-600 dark:text-ink-100">This page helps explain how clients choose counsel while staff monitors availability, load, and schedule status before confirming an appointment.</p>
         </div>
         <div className="mt-12">
           {loading ? (

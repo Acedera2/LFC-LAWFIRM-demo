@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useLocation } from 'react-router-dom';
 import {
   CalendarPlus,
   Clock3,
@@ -16,8 +17,9 @@ import LoadingSkeleton from "../../components/LoadingSkeleton";
 import Modal from "../../components/Modal";
 import PriorityBadge from "../../components/PriorityBadge";
 import StatCard from "../../components/StatCard";
-import { mapAppointment } from "../../features/appointments/mappers";
+import { mapAppointment, sortAppointmentsByPriority } from "../../features/appointments/mappers";
 import api, { unwrap } from "../../lib/api";
+import { publishRefresh } from "../../lib/refreshBus";
 import { useNavigate } from "react-router-dom";
 
 const consultationTypes = [
@@ -77,6 +79,18 @@ export default function ClientDashboard() {
     preferredDate: ""
   });
 
+  const location = useLocation();
+
+  useEffect(() => {
+    try {
+      const params = new URLSearchParams(location.search);
+      const type = params.get('type');
+      if (type) setForm((current) => ({ ...current, consultationType: decodeURIComponent(type) }));
+    } catch {
+      /* ignore malformed query */
+    }
+  }, [location.search]);
+
   const selectedPriority = useMemo(() => suggestedPriorityFor(form.consultationType), [form.consultationType]);
 
   useEffect(() => {
@@ -86,7 +100,7 @@ export default function ClientDashboard() {
       .then(([lawyersResponse, appointmentsResponse]) => {
         if (!active) return;
         setLawyers(unwrap(lawyersResponse).lawyers || lawyersResponse.data?.data || []);
-        setAppointments((unwrap(appointmentsResponse).appointments || []).map(mapAppointment).filter(Boolean));
+        setAppointments(sortAppointmentsByPriority((unwrap(appointmentsResponse).appointments || []).map(mapAppointment).filter(Boolean)));
       })
       .catch(() => {
         if (!active) return;
@@ -123,13 +137,34 @@ export default function ClientDashboard() {
       const data = unwrap(response);
       // the demo API returns { conflict, available } — adapt into a scan-like object
       setScan({ status: data.available ? "CLEAR" : "CONFLICT", reason: data.conflict ? "Conflicting appointment exists" : null, suggestions: [] });
-      toast.success(data.available ? "Lawyer appears available on selected date" : "Lawyer has conflicts on selected date");
-    } catch (error) { toast.error(error.response?.data?.message || "Could not check availability"); } finally { setChecking(false); }
+      toast.success(data.available ? "Lawyer appears available on selected date" : "Selected lawyer has scheduling conflicts on that date");
+    } catch (error) { toast.error(error.response?.data?.message || "Could not check availability — try a different date or lawyer"); } finally { setChecking(false); }
   };
 
   const submit = async (event) => {
     event.preventDefault();
     try {
+      // Basic client-side validations
+      if (!form.preferredDate) {
+        toast.error('Please select a preferred appointment date');
+        return;
+      }
+      const selectedDay = new Date(form.preferredDate);
+      selectedDay.setHours(0,0,0,0);
+      const today = new Date();
+      today.setHours(0,0,0,0);
+      if (selectedDay < today) {
+        toast.error('Preferred date cannot be in the past');
+        return;
+      }
+      if (!form.consultationType) {
+        toast.error('Select a consultation type');
+        return;
+      }
+      if (!form.subject && !form.description) {
+        toast.error('Provide a subject or a brief description for the consultation');
+        return;
+      }
       // translate preferredDate into a day range for backend
       const payload = { ...form, lawyerId: form.lawyerId || undefined };
       if (form.preferredDate) {
@@ -143,13 +178,16 @@ export default function ClientDashboard() {
       const response = await api.post("/appointments", payload);
       const appointment = unwrap(response).appointment;
       const normalized = mapAppointment(appointment);
-      toast.success("Appointment inquiry submitted");
+      toast.success("Appointment request submitted — staff will review and confirm a slot");
       setForm({ consultationType: "General consultation", priority: "REGULAR", lawyerId: "", locationMode: "IN_PERSON", subject: "", description: "", preferredDate: "" });
       setScan(null);
       if (normalized) setAppointments((current) => [normalized, ...current].slice(0, 5));
 
       const refreshResponse = await api.get("/appointments?limit=5");
       setAppointments((unwrap(refreshResponse).appointments || []).map(mapAppointment).filter(Boolean));
+      // notify other pages (appointments list, notifications, staff dashboards)
+      publishRefresh("appointments:updated");
+      publishRefresh("notifications:updated");
     } catch (error) {
       const status = error?.response?.status;
       if (status === 401) {
@@ -157,7 +195,7 @@ export default function ClientDashboard() {
         navigate('/login', { state: { from: '/client' } });
         return;
       }
-      toast.error(error.response?.data?.message || "Could not submit appointment");
+      toast.error(error.response?.data?.message || "Could not submit appointment — ensure required fields are filled or try again")
     }
   };
 
@@ -168,23 +206,31 @@ export default function ClientDashboard() {
       await api.delete(`/appointments/${cancellationTarget.id}`, {
         data: { reason: cancellationReason || "Client requested cancellation" }
       });
-      toast.success("Cancellation request sent to staff");
+      toast.success("Cancellation request submitted — staff will confirm");
       setAppointments((current) => current.map((item) => item.id === cancellationTarget.id ? { ...item, status: "CANCELLED", displayStatus: "Cancelled" } : item));
       setCancellationTarget(null);
       setCancellationReason("");
+      publishRefresh("appointments:updated");
+      publishRefresh("notifications:updated");
     } catch (error) {
       if (error?.response?.status === 401) {
         toast.error("Please sign in to request a cancellation");
         navigate('/login', { state: { from: '/client' } });
         return;
       }
-      toast.error(error.response?.data?.message || "Could not request cancellation");
+      toast.error(error.response?.data?.message || "Could not request cancellation — please try again")
     }
   };
 
   return (
     <DashboardLayout>
       <div className="grid gap-6">
+        <section className="rounded-3xl border border-ink-100 bg-white p-6 shadow-sm dark:border-white/10 dark:bg-white/5">
+          <p className="text-sm font-extrabold uppercase text-jade-700 dark:text-jade-100">Client dashboard</p>
+          <h2 className="mt-2 text-2xl font-extrabold text-ink-900 dark:text-white">Request, check, and track your consultation</h2>
+          <p className="mt-2 max-w-3xl text-sm leading-6 text-ink-500 dark:text-ink-100">This page is the client’s main workflow: submit a request, check availability, see the latest appointment status, and review cancellations in one place.</p>
+        </section>
+
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           <StatCard icon={CalendarPlus} label="Open requests" value={loading ? "..." : `${requestsOpen}`} trend="1 needs verification" />
           <StatCard icon={Clock3} label="Next consult" value={loading ? "..." : nextLabel.split(",")[0]} trend={loading ? "Loading..." : nextLabel.split(",")[1]?.trim() || nextLabel} tone="brass" />
@@ -202,6 +248,11 @@ export default function ClientDashboard() {
               <PriorityBadge priority={priorityLabels[form.priority]} />
             </div>
 
+            <div className="mt-4 rounded-2xl border border-jade-200 bg-jade-50 p-4 text-sm text-ink-900 dark:border-white/10 dark:bg-white/5 dark:text-white">
+              <p className="font-extrabold uppercase text-jade-700 dark:text-jade-100">Quick guide</p>
+              <p className="mt-2 leading-6">1. Pick a date. 2. Check availability. 3. Submit the inquiry. 4. Track the result below.</p>
+            </div>
+
             <form onSubmit={submit} className="mt-6 grid gap-4">
               <label className="grid gap-2">
                 <span className="text-sm font-bold">Appointment date</span>
@@ -214,6 +265,7 @@ export default function ClientDashboard() {
                 <select value={form.consultationType} onChange={(event) => setForm((current) => ({ ...current, consultationType: event.target.value }))} className="rounded-2xl border border-ink-100 px-4 py-3 dark:border-white/10 dark:bg-ink-950">
                   {consultationTypes.map((type) => <option key={type.label} value={type.label}>{type.label}</option>)}
                 </select>
+                <p className="text-xs text-ink-500 dark:text-ink-100">The system will set a priority based on your choice.</p>
               </label>
 
               <label className="grid gap-2">
@@ -240,8 +292,8 @@ export default function ClientDashboard() {
               </div>
 
               <div className="flex flex-wrap gap-3">
-                <button type="button" onClick={checkAvailability} disabled={checking} className="inline-flex items-center justify-center gap-2 rounded-2xl bg-jade-700 px-4 py-3 text-sm font-bold text-white"><SearchCheck size={16} />{checking ? "Checking..." : "Check availability"}</button>
-                <button type="submit" className="rounded-2xl bg-ink-900 px-5 py-3 text-sm font-bold text-white dark:bg-jade-400 dark:text-ink-950">Submit inquiry</button>
+                <button type="button" onClick={checkAvailability} disabled={checking} className="inline-flex items-center justify-center gap-2 rounded-2xl bg-jade-700 px-4 py-3 text-sm font-bold text-white disabled:cursor-not-allowed disabled:opacity-70"><SearchCheck size={16} />{checking ? "Checking availability..." : "Check availability"}</button>
+                <button type="submit" className="rounded-2xl bg-ink-900 px-5 py-3 text-sm font-bold text-white dark:bg-jade-400 dark:text-ink-950">Submit inquiry for review</button>
               </div>
             </form>
 
@@ -264,11 +316,11 @@ export default function ClientDashboard() {
                       onClick={() => { setCancellationTarget(appointment); setCancellationReason(""); }}
                       className="inline-flex items-center justify-center gap-2 rounded-2xl border border-signal-coral/20 px-4 py-3 text-sm font-bold text-signal-coral transition hover:bg-signal-coral/10"
                     >
-                      <Trash2 size={16} /> Request for Cancellation
+                      <Trash2 size={16} /> Request cancellation
                     </button>
                   ) : null}
                 </div>
-              )) : <EmptyState title="No appointments yet" message="Your consultation requests and schedules will appear here." />}
+              )) : <EmptyState title="No appointments yet" message="Submit your first inquiry and it will appear here with status, lawyer assignment, and schedule updates." />}
             </div>
           </section>
         </div>

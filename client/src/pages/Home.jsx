@@ -67,6 +67,10 @@ export default function Home() {
               <p className="mt-6 max-w-2xl text-lg leading-8 text-white">
                 A secure appointment, lawyer availability, conflict monitoring, and analytics platform for modern legal operations.
               </p>
+              <div className="mt-6 grid max-w-2xl gap-3 rounded-3xl border border-white/15 bg-white/10 p-4 text-sm text-white backdrop-blur-xl">
+                <p className="font-extrabold uppercase tracking-[0.18em] text-jade-100">How the prototype works</p>
+                <p className="leading-6 text-white/85">Client inquiries move from intake to conflict check, then to staff validation, schedule confirmation, notifications, and reporting. Every step is visible in the demo.</p>
+              </div>
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                 <Link to="/register" className="focus-ring inline-flex items-center justify-center gap-2 rounded-lg bg-jade-400 px-5 py-3 text-sm font-extrabold text-ink-950 transition hover:bg-jade-100">
                   Start client inquiry <ArrowRight size={18} />
@@ -96,6 +100,7 @@ export default function Home() {
             <div>
               <p className="text-sm font-extrabold uppercase text-jade-700 dark:text-jade-100">About the firm</p>
               <h2 className="mt-3 font-display text-3xl font-extrabold text-ink-900 dark:text-white sm:text-4xl">Designed for legal work that cannot afford scheduling drift.</h2>
+              <p className="mt-4 text-base leading-7 text-ink-500 dark:text-ink-100">This section explains the system purpose first so the reviewer can see how the research paper maps to the prototype workflow.</p>
             </div>
             <div className="grid gap-5 text-base leading-7 text-ink-600 dark:text-ink-100">
               <p>
@@ -141,6 +146,7 @@ export default function Home() {
                   <div className="grid h-16 w-16 place-items-center rounded-lg bg-ink-900 text-xl font-extrabold text-brass-300 dark:bg-white dark:text-ink-900">{lawyer.initials}</div>
                   <h3 className="mt-5 text-lg font-extrabold text-ink-900 dark:text-white">{lawyer.name}</h3>
                   <p className="mt-1 text-sm font-semibold text-jade-700 dark:text-jade-100">{lawyer.specialty}</p>
+                  <p className="mt-3 text-sm text-ink-500 dark:text-ink-100">Availability: {lawyer.availability}</p>
                   <p className="mt-4 text-sm text-ink-500 dark:text-ink-100">{lawyer.availability}</p>
                   <div className="mt-5 h-2 rounded-full bg-ink-100 dark:bg-white/10">
                     <div className="h-2 rounded-full bg-jade-400" style={{ width: `${lawyer.workload}%` }} />

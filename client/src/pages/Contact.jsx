@@ -6,7 +6,7 @@ import Navbar from "../components/Navbar";
 export default function Contact() {
   const submit = (event) => {
     event.preventDefault();
-    toast.success("Message queued for intake staff");
+    toast.success("Inquiry sent — intake staff will follow up");
     event.currentTarget.reset();
   };
 
@@ -18,6 +18,10 @@ export default function Contact() {
           <p className="text-sm font-extrabold uppercase text-jade-700 dark:text-jade-100">Contact</p>
           <h1 className="mt-3 font-display text-4xl font-extrabold text-ink-900 dark:text-white sm:text-5xl">Talk with the intake team.</h1>
           <p className="mt-6 text-lg leading-8 text-ink-600 dark:text-ink-100">Send a general inquiry or create a secure account to book and track a consultation.</p>
+          <div className="mt-8 rounded-3xl border border-ink-100 bg-white p-6 shadow-sm dark:border-white/10 dark:bg-white/5">
+            <p className="text-sm font-extrabold uppercase text-jade-700 dark:text-jade-100">What happens next</p>
+            <p className="mt-2 text-sm leading-6 text-ink-500 dark:text-ink-100">Your message goes to intake, gets classified by urgency, and is routed to the right lawyer or staff member for follow-up.</p>
+          </div>
           <div className="mt-8 rounded-lg border border-ink-100 bg-white p-5 shadow-sm dark:border-white/10 dark:bg-white/5">
             <p className="text-sm font-extrabold uppercase text-jade-700 dark:text-jade-100">Consultation information</p>
             <p className="mt-3 text-sm leading-6 text-ink-500 dark:text-ink-100">The inquiry form is designed for appointment requests, lawyer matching, and general service questions. Staff will review the request, classify urgency, and route it to the appropriate counsel.</p>

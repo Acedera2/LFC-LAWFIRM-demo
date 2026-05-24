@@ -12,5 +12,7 @@ export async function fetchAppointments(params = {}) {
 
 export async function fetchAppointmentById(id) {
   const response = await api.get(`/appointments/${id}`);
-  return mapAppointment(unwrap(response).appointment);
+  const payload = unwrap(response) || {};
+  const appt = payload.appointment || null;
+  return appt ? mapAppointment(appt) : null;
 }

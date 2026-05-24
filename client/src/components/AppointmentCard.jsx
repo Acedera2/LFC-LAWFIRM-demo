@@ -2,7 +2,7 @@ import { format } from "date-fns";
 import { CalendarClock, ShieldAlert } from "lucide-react";
 import PriorityBadge from "./PriorityBadge";
 
-export default function AppointmentCard({ appointment = {} }) {
+export default function AppointmentCard({ appointment = {}, onOpenTimeline = null }) {
   const title = appointment.consultationType || appointment.type || appointment.subject || "Consultation request";
   const client = appointment.client?.name || appointment.client || "Client";
   const lawyer = appointment.lawyer?.user?.name || appointment.lawyer?.name || appointment.lawyer || "Unassigned";
@@ -28,9 +28,13 @@ export default function AppointmentCard({ appointment = {} }) {
 
       <div className="mt-4 flex items-center justify-between">
         <span className="rounded-lg bg-ink-50 px-2.5 py-1 text-xs font-extrabold text-ink-600 dark:bg-white/10 dark:text-white">{status}</span>
-        <button type="button" className="focus-ring rounded-lg border border-ink-100 px-3 py-2 text-xs font-extrabold text-ink-700 transition hover:border-jade-400 hover:text-jade-700 dark:border-white/10 dark:text-white">
-          View timeline
-        </button>
+        {onOpenTimeline ? (
+          <button type="button" onClick={onOpenTimeline} className="focus-ring rounded-lg border border-ink-100 px-3 py-2 text-xs font-extrabold text-ink-700 transition hover:border-jade-400 hover:text-jade-700 dark:border-white/10 dark:text-white">
+            View timeline
+          </button>
+        ) : (
+          <span className="rounded-lg border border-ink-100 px-3 py-2 text-xs font-extrabold text-ink-400 dark:border-white/10 dark:text-ink-100">View timeline</span>
+        )}
       </div>
     </article>
   );

@@ -20,6 +20,10 @@ export default function About() {
           <p className="mt-6 text-lg leading-8 text-ink-600 dark:text-ink-100">
             LFC Legal Appointment System centralizes the operational work around consultation requests so clients, lawyers, staff, and administrators can coordinate without losing context.
           </p>
+          <div className="mt-8 rounded-3xl border border-ink-100 bg-white p-6 shadow-sm dark:border-white/10 dark:bg-white/5">
+            <p className="text-sm font-extrabold uppercase text-jade-700 dark:text-jade-100">System purpose</p>
+            <p className="mt-2 text-sm leading-6 text-ink-500 dark:text-ink-100">The prototype demonstrates priority scheduling, lawyer availability checking, conflict prevention, and notification routing exactly as described in the research workflow.</p>
+          </div>
           <div className="mt-8 rounded-lg border border-ink-100 bg-white p-6 shadow-sm dark:border-white/10 dark:bg-white/5">
             <div className="flex items-start gap-3">
               <Target className="mt-1 text-jade-700 dark:text-jade-100" size={24} />
