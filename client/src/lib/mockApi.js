@@ -104,7 +104,15 @@ const MockApi = {
             err.response = { status: 404 };
             throw err;
           }
-          return respond({ appointment: appt });
+          // hydrate client and lawyer objects for UI convenience
+          try {
+            const client = MockStore.getUsers().find(u => u.id === appt.clientId) || null;
+            const lawyer = MockStore.getLawyers().find(l => l.id === appt.lawyerId) || null;
+            const hydrated = { ...appt, client: client ? { id: client.id, name: client.name, email: client.email } : null, lawyer: lawyer ? { ...lawyer, user: MockStore.getUsers().find(u => u.id === lawyer.userId) || null } : null };
+            return respond({ appointment: hydrated });
+          } catch {
+            return respond({ appointment: appt });
+          }
         }
 
         const parts = url.split("?");
@@ -141,11 +149,20 @@ const MockApi = {
           const start = (page - 1) * limit;
           return respond({ appointments: filtered.slice(start, start + limit), meta: { page, limit, totalItems, totalPages } });
         }
-        // staff/admin
+        // staff/admin — hydrate appointment objects with client/lawyer for UI
         const totalItems = filteredAll.length;
         const totalPages = Math.max(1, Math.ceil(totalItems / limit));
         const start = (page - 1) * limit;
-        return respond({ appointments: filteredAll.slice(start, start + limit), meta: { page, limit, totalItems, totalPages } });
+        const pageItems = filteredAll.slice(start, start + limit).map((a) => {
+          try {
+            const client = MockStore.getUsers().find(u => u.id === a.clientId) || null;
+            const lawyer = MockStore.getLawyers().find(l => l.id === a.lawyerId) || null;
+            return { ...a, client: client ? { id: client.id, name: client.name, email: client.email } : null, lawyer: lawyer ? { ...lawyer, user: MockStore.getUsers().find(u => u.id === lawyer.userId) || null } : null };
+          } catch {
+            return a;
+          }
+        });
+        return respond({ appointments: pageItems, meta: { page, limit, totalItems, totalPages } });
       }
 
       if (m === "post") {
@@ -161,7 +178,14 @@ const MockApi = {
           staff.forEach(s => MockStore.createNotification({ userId: s.id, title: "Conflict alert", message: `Conflict detected for ${appt.id} — please review.` }));
         }
 
-        return respond({ appointment: appt });
+        try {
+          const client = MockStore.getUsers().find(u => u.id === appt.clientId) || null;
+          const lawyer = MockStore.getLawyers().find(l => l.id === appt.lawyerId) || null;
+          const hydrated = { ...appt, client: client ? { id: client.id, name: client.name, email: client.email } : null, lawyer: lawyer ? { ...lawyer, user: MockStore.getUsers().find(u => u.id === lawyer.userId) || null } : null };
+          return respond({ appointment: hydrated });
+        } catch {
+          return respond({ appointment: appt });
+        }
       }
       if (m === "delete") {
         // URL: /appointments/:id
@@ -177,8 +201,17 @@ const MockApi = {
       if (m === "get") {
         const user = currentUser();
         const all = MockStore.getNotifications();
-        if (!user) return respond({ notifications: all });
-        return respond({ notifications: all.filter(n => n.userId === user.user.id) });
+        // hydrate notifications with simple user display info for convenience
+        const hydrated = all.map((n) => {
+          try {
+            const u = MockStore.getUsers().find(x => x.id === n.userId) || null;
+            return { ...n, user: u ? { id: u.id, name: u.name, email: u.email } : null };
+          } catch {
+            return n;
+          }
+        });
+        if (!user) return respond({ notifications: hydrated });
+        return respond({ notifications: hydrated.filter(n => n.userId === user.user.id) });
       }
 
       if (m === "patch") {

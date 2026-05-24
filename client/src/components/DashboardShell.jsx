@@ -26,7 +26,6 @@ export default function DashboardShell() {
   };
   const navItems = [
     { label: "Dashboard", to: roleHome[role] || "/client", icon: LayoutDashboard },
-    ...(role === "client" ? [{ label: "Appointments", to: "/appointments", icon: CalendarDays }] : []),
     ...(role === "staff" || role === "admin" ? [{ label: "Appointments", to: "/appointments", icon: CalendarDays }] : []),
     ...(role === "staff" || role === "admin" ? [{ label: "Clients", to: "/clients", icon: Users }] : []),
     { label: "Notifications", to: "/notifications", icon: Bell },

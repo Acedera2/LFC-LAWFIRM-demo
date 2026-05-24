@@ -10,6 +10,7 @@ import Modal from "../components/Modal";
 import PriorityBadge from "../components/PriorityBadge";
 import api, { unwrap } from "../lib/api";
 import { subscribeRefresh, publishRefresh } from "../lib/refreshBus";
+import { useAuth } from "../context/AuthContext";
 
 const statusLabels = {
   PENDING: "Pending",
@@ -33,6 +34,23 @@ export default function AppointmentManagement() {
   const [selected, setSelected] = useState(null);
   const [lawyers, setLawyers] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
+
+  // determine whether current user has management roles (staff/admin)
+  let canManage = false;
+  try {
+    const auth = useAuth();
+    canManage = auth.hasRole('staff', 'admin');
+  } catch {
+    // fallback to localStorage session if AuthContext isn't available
+    try {
+      const raw = localStorage.getItem('lfc_user');
+      const sess = raw ? JSON.parse(raw) : null;
+      const slug = sess?.user?.role?.slug || sess?.user?.role;
+      canManage = ['staff', 'admin'].includes(slug);
+    } catch {
+      canManage = false;
+    }
+  }
 
   const setSummaryFilter = (nextStatus) => {
     setMeta((current) => ({ ...current, page: 1 }));
@@ -127,6 +145,16 @@ export default function AppointmentManagement() {
     acc[conflictKey] = (acc[conflictKey] || 0) + 1;
     return acc;
   }, { total: 0 }), [appointments]);
+
+  const conflictClass = (status) => {
+    if (!status) return 'rounded-lg bg-ink-50 px-2.5 py-1 text-xs font-extrabold text-ink-600 dark:bg-white/10 dark:text-white';
+    switch (status) {
+      case 'CONFLICT': return 'rounded-lg bg-signal-coral/12 px-2.5 py-1 text-xs font-extrabold text-signal-coral';
+      case 'PENDING_ASSIGNMENT': return 'rounded-lg bg-ink-50 px-2.5 py-1 text-xs font-extrabold text-ink-600 dark:bg-white/10 dark:text-white';
+      case 'CLEAR': return 'rounded-lg bg-ink-50 px-2.5 py-1 text-xs font-extrabold text-ink-600 dark:bg-white/10 dark:text-white';
+      default: return 'rounded-lg bg-ink-50 px-2.5 py-1 text-xs font-extrabold text-ink-600 dark:bg-white/10 dark:text-white';
+    }
+  };
 
   const calendarAppointments = paginatedAppointments.slice(0, 30);
 
@@ -247,9 +275,15 @@ export default function AppointmentManagement() {
                 </div>
             ) : paginatedAppointments.length > 0 ? (
               paginatedAppointments.map((appointment) => (
-                <button key={appointment.id} type="button" onClick={() => setSelected(appointment)} className="text-left">
-                  <AppointmentCard appointment={appointment} />
-                </button>
+                canManage ? (
+                  <button key={appointment.id} type="button" onClick={() => setSelected(appointment)} className="text-left">
+                    <AppointmentCard appointment={appointment} />
+                  </button>
+                ) : (
+                  <div key={appointment.id} className="text-left">
+                    <AppointmentCard appointment={appointment} />
+                  </div>
+                )
               ))
             ) : (
               <EmptyState title="No appointments found" message="Refine your search or refresh the queue to see the latest scheduling requests." />
@@ -274,13 +308,13 @@ export default function AppointmentManagement() {
             <tbody className="divide-y divide-ink-100 dark:divide-white/10">
               {(loading ? [...Array(5)] : filtered).map((appointment, index) => (
                 appointment ? (
-                  <tr key={appointment.id} className="hover:bg-ink-50 dark:hover:bg-white/5">
+                  <tr key={appointment.id} className={`hover:bg-ink-50 dark:hover:bg-white/5 ${!canManage ? 'opacity-90' : ''}`}>
                     <td className="px-4 py-4 font-extrabold text-ink-900 dark:text-white">{appointment.id}</td>
                     <td className="px-4 py-4 text-ink-600 dark:text-ink-100">{appointment.client?.name || appointment.client || "—"}</td>
                     <td className="px-4 py-4 text-ink-600 dark:text-ink-100">{appointment.lawyer?.user?.name || appointment.lawyer?.name || "Unassigned"}</td>
                     <td className="px-4 py-4"><PriorityBadge priority={appointment.priority} /></td>
                     <td className="px-4 py-4 font-bold text-ink-600 dark:text-ink-100">{statusLabels[appointment.status] || appointment.status}</td>
-                    <td className="px-4 py-4 text-ink-600 dark:text-ink-100">{appointment.conflictStatus || "Pending"}</td>
+                    <td className="px-4 py-4 text-ink-600 dark:text-ink-100"><span className={conflictClass(appointment.conflictStatus)}>{appointment.conflictStatus || "Pending"}</span></td>
                   </tr>
                 ) : (
                   <tr key={index} className="animate-pulse bg-ink-50 dark:bg-white/5">
@@ -325,57 +359,62 @@ export default function AppointmentManagement() {
                 </div>
               ))}
             </div>
-            <div className="flex gap-2">
-              <button type="button" onClick={async () => {
-                try {
-                  await api.patch(`/appointments/${selected.id}`, { status: 'APPROVED' });
-                  toast.success('Appointment approved — notifications sent');
-                  publishRefresh('appointments:updated');
-                  setSelected((s) => ({ ...s, status: 'APPROVED' }));
-                } catch { toast.error('Could not approve appointment'); }
-              }} className="rounded bg-jade-700 px-3 py-2 text-sm font-bold text-white">Approve</button>
+            {canManage ? (
+              <div className="flex gap-2">
+                <button type="button" onClick={async () => {
+                  try {
+                    await api.patch(`/appointments/${selected.id}`, { status: 'APPROVED' });
+                    toast.success('Appointment approved — notifications sent');
+                    publishRefresh('appointments:updated');
+                    setSelected((s) => ({ ...s, status: 'APPROVED' }));
+                  } catch { toast.error('Could not approve appointment'); }
+                }} className="rounded bg-jade-700 px-3 py-2 text-sm font-bold text-white">Approve</button>
 
-              <button type="button" onClick={async () => {
-                  try {
-                  // quick schedule: set scheduledStart to preferredStart if available
-                  const scheduledStart = selected.preferredStart || new Date().toISOString();
-                  const scheduledEnd = selected.preferredEnd || new Date(Date.parse(scheduledStart) + 30*60*1000).toISOString();
-                  const lawyerId = selected.lawyerId || selected.lawyer?.id || null;
-                  // perform conflict check before scheduling
-                  try {
-                    const check = await api.post('/appointments/conflict-check', { lawyerId, preferredStart: scheduledStart, preferredEnd: scheduledEnd });
-                    const result = unwrap(check);
-                    if (result.conflict) {
-                      const cont = window.confirm('A conflict was detected for this time. Schedule anyway?');
-                      if (!cont) return;
+                <button type="button" onClick={async () => {
+                    try {
+                    // quick schedule: set scheduledStart to preferredStart if available
+                    const scheduledStart = selected.preferredStart || new Date().toISOString();
+                    const scheduledEnd = selected.preferredEnd || new Date(Date.parse(scheduledStart) + 30*60*1000).toISOString();
+                    const lawyerId = selected.lawyerId || selected.lawyer?.id || null;
+                    // perform conflict check before scheduling
+                    try {
+                      const check = await api.post('/appointments/conflict-check', { lawyerId, preferredStart: scheduledStart, preferredEnd: scheduledEnd });
+                      const result = unwrap(check);
+                      if (result.conflict) {
+                        const cont = window.confirm('A conflict was detected for this time. Schedule anyway?');
+                        if (!cont) return;
+                      }
+                    } catch (err) {
+                      // if conflict-check fails, allow operator to proceed but warn
+                      console.warn('Conflict check failed, proceeding to schedule', err);
                     }
-                  } catch (err) {
-                    // if conflict-check fails, allow operator to proceed but warn
-                    console.warn('Conflict check failed, proceeding to schedule', err);
-                  }
 
-                  await api.patch(`/appointments/${selected.id}`, { status: 'SCHEDULED', scheduledStart, scheduledEnd });
-                  toast.success('Appointment scheduled — participants notified');
-                  publishRefresh('appointments:updated');
-                  setSelected((s) => ({ ...s, status: 'SCHEDULED', scheduledStart, scheduledEnd }));
-                } catch { toast.error('Could not schedule appointment'); }
-              }} className="rounded border border-ink-100 px-3 py-2 text-sm font-bold">Schedule</button>
+                    await api.patch(`/appointments/${selected.id}`, { status: 'SCHEDULED', scheduledStart, scheduledEnd });
+                    toast.success('Appointment scheduled — participants notified');
+                    publishRefresh('appointments:updated');
+                    setSelected((s) => ({ ...s, status: 'SCHEDULED', scheduledStart, scheduledEnd }));
+                  } catch { toast.error('Could not schedule appointment'); }
+                }} className="rounded border border-ink-100 px-3 py-2 text-sm font-bold">Schedule</button>
 
-              <button type="button" onClick={async () => {
-                try {
-                  await api.patch(`/appointments/${selected.id}`, { status: 'REJECTED' });
-                  toast.success('Appointment rejected — staff updated');
-                  publishRefresh('appointments:updated');
-                  setSelected((s) => ({ ...s, status: 'REJECTED' }));
-                } catch { toast.error('Could not reject appointment'); }
-              }} className="rounded bg-brass-700 px-3 py-2 text-sm font-bold text-white">Reject</button>
-            </div>
+                <button type="button" onClick={async () => {
+                  try {
+                    await api.patch(`/appointments/${selected.id}`, { status: 'REJECTED' });
+                    toast.success('Appointment rejected — staff updated');
+                    publishRefresh('appointments:updated');
+                    setSelected((s) => ({ ...s, status: 'REJECTED' }));
+                  } catch { toast.error('Could not reject appointment'); }
+                }} className="rounded bg-brass-700 px-3 py-2 text-sm font-bold text-white">Reject</button>
+              </div>
+            ) : (
+              <div className="rounded-lg border border-ink-100 bg-ink-50 p-3 text-sm text-ink-600">You do not have permission to perform scheduling actions. Contact staff for assistance.</div>
+            )}
 
             <div className="mt-3 grid gap-2">
               <label className="grid gap-2">
                 <span className="text-sm font-bold">Assign lawyer</span>
                 <select value={selected?.lawyerId || ''} onChange={async (e) => {
                   const lawyerId = e.target.value || null;
+                  if (!canManage) { toast.error('You are not authorized to assign lawyers'); return; }
                   try {
                     const lawyer = lawyers.find(l => l.id === lawyerId);
                     await api.patch(`/appointments/${selected.id}`, { lawyerId, historyItem: { action: 'ASSIGNED', note: lawyer ? `Assigned to ${lawyer.user?.name || lawyerId}` : 'Unassigned' } });
@@ -390,7 +429,13 @@ export default function AppointmentManagement() {
               </label>
 
               <div className="flex gap-2">
+                {selected?.conflictStatus === 'CONFLICT' && (
+                  <div className="rounded-lg border border-signal-coral/30 bg-signal-coral/10 p-3 text-sm text-signal-coral">
+                    <strong>Conflict detected:</strong> This appointment overlaps an existing booking for the assigned lawyer. Proceed with caution.
+                  </div>
+                )}
                 <button type="button" onClick={async () => {
+                  if (!canManage) { toast.error('You are not authorized to request a reschedule'); return; }
                   const note = window.prompt('Enter reschedule note or preferred date/time (optional):', 'Client requested different date');
                   try {
                     await api.patch(`/appointments/${selected.id}`, { status: 'RESCHEDULE_REQUESTED', historyItem: { action: 'RESCHEDULE_REQUESTED', note: note || 'Reschedule requested' } });
@@ -401,6 +446,7 @@ export default function AppointmentManagement() {
                 }} className="rounded border border-ink-100 px-3 py-2 text-sm font-bold">Request reschedule</button>
 
                 <button type="button" onClick={async () => {
+                  if (!canManage) { toast.error('You are not authorized to delete appointments'); return; }
                   if (!selected) return;
                   const confirmed = window.confirm('Delete this appointment? This will remove it from the demo store.');
                   if (!confirmed) return;

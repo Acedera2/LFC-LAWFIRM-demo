@@ -5,6 +5,7 @@ import PriorityBadge from "./PriorityBadge";
 const conflictVariants = {
   CONFLICT: 'rounded-lg bg-signal-coral/12 px-2.5 py-1 text-xs font-extrabold text-signal-coral',
   PENDING_ASSIGNMENT: 'rounded-lg bg-ink-50 px-2.5 py-1 text-xs font-extrabold text-ink-600 dark:bg-white/10 dark:text-white',
+  CLEAR: 'rounded-lg bg-ink-50 px-2.5 py-1 text-xs font-extrabold text-ink-600 dark:bg-white/10 dark:text-white',
   None: 'rounded-lg bg-ink-50 px-2.5 py-1 text-xs font-extrabold text-ink-600 dark:bg-white/10 dark:text-white'
 };
 

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { subscribeRefresh } from "../../lib/refreshBus";
 import { Server, Users, PieChart } from "lucide-react";
 import DashboardLayout from "../../components/DashboardLayout";
 import StatCard from "../../components/StatCard";
@@ -14,7 +15,15 @@ export default function AdminDashboard() {
       .then((res) => { if (!active) return; setMetrics(unwrap(res)); })
       .catch(() => { if (!active) setMetrics({}); })
       .finally(() => { if (active) setLoading(false); });
-    return () => { active = false; };
+    const onUpdated = async () => {
+      try {
+        const res = await api.get('/admin/metrics');
+        if (!active) return;
+        setMetrics(unwrap(res));
+      } catch { /* best-effort */ }
+    };
+    const unsub = subscribeRefresh('appointments:updated', onUpdated);
+    return () => { active = false; unsub(); };
   }, []);
 
   return (
