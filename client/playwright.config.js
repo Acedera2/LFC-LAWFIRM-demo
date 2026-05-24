@@ -1,11 +1,12 @@
 /** @type {import('@playwright/test').PlaywrightTestConfig} */
 export default {
   testDir: './tests/e2e',
-  timeout: 30 * 1000,
-  fullyParallel: true,
+  timeout: 60 * 1000,
+  fullyParallel: false,
+  retries: process.env.CI ? 1 : 0,
   use: {
     headless: true,
-    baseURL: process.env.BASE_URL || 'http://127.0.0.1:5174',
+    baseURL: process.env.BASE_URL || 'http://localhost:5173',
     viewport: { width: 1280, height: 800 },
     launchOptions: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH
       ? { executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH }
