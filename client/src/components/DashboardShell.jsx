@@ -4,6 +4,7 @@ import clsx from "clsx";
 import Logo from "./Logo";
 import ThemeToggle from "./ThemeToggle";
 import { useAuth } from "../context/AuthContext";
+import { subscribeRefresh } from "../lib/refreshBus";
 
 const roleHome = {
   client: "/client",
@@ -14,6 +15,7 @@ const roleHome = {
 
 export default function DashboardShell() {
   const { user, logout } = useAuth();
+  const { updateProfile } = useAuth();
   const role = user?.role?.slug || user?.role || "client";
   const roleLabel = role === "admin" ? "Admin" : role === "staff" ? "Staff" : role === "lawyer" ? "Lawyer" : "Client";
   const roleSummary = {
@@ -35,6 +37,10 @@ export default function DashboardShell() {
   return (
     <div className="min-h-screen bg-ink-50 dark:bg-ink-950">
       <aside className="fixed inset-y-0 left-0 z-30 hidden w-72 border-r border-ink-100 bg-white p-5 dark:border-white/10 dark:bg-ink-900 lg:block">
+        {/* listen for profile updates from other tabs/windows */}
+        {typeof window !== 'undefined' && (
+          <ProfileSync />
+        )}
         <Logo />
         <div className="mt-6 rounded-2xl border border-ink-100 bg-ink-50 p-4 dark:border-white/10 dark:bg-white/5">
           <p className="text-[11px] font-extrabold uppercase tracking-[0.2em] text-ink-500 dark:text-ink-100">Current role</p>
@@ -100,4 +106,25 @@ export default function DashboardShell() {
       </div>
     </div>
   );
+}
+
+function ProfileSync() {
+  const { updateProfile } = useAuth();
+  // subscribe to profile updates published by other tabs
+  useEffect(() => {
+    const handler = () => {
+      try {
+        const raw = localStorage.getItem('lfc_user');
+        if (!raw) return;
+        const parsed = JSON.parse(raw);
+        const u = parsed.user || parsed;
+        if (u) updateProfile(u);
+      } catch {
+        // ignore
+      }
+    };
+    const unsub = subscribeRefresh('profile:updated', handler);
+    return unsub;
+  }, [updateProfile]);
+  return null;
 }

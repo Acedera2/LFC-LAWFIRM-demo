@@ -4,6 +4,7 @@ import { Save, ShieldCheck, Users } from "lucide-react";
 import toast from "react-hot-toast";
 
 import api, { unwrap } from "../lib/api";
+import { publishRefresh } from "../lib/refreshBus";
 import { useAuth } from "../context/AuthContext";
 
 import ChartCard from "../components/ChartCard";
@@ -88,6 +89,8 @@ export default function Settings() {
     try {
       const response = await api.put("/profile", profileForm);
       updateProfile(unwrap(response).user);
+      // notify other tabs/windows to refresh profile from storage
+      try { publishRefresh("profile:updated"); } catch {}
       toast.success("Profile updated successfully");
     } catch (error) {
       toast.error(error.response?.data?.message || "Unable to save profile");
