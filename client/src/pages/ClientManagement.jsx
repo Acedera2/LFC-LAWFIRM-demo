@@ -5,6 +5,7 @@ import ChartCard from "../components/ChartCard";
 import EmptyState from "../components/EmptyState";
 import LoadingSkeleton from "../components/LoadingSkeleton";
 import api, { unwrap } from "../lib/api";
+import { subscribeRefresh } from "../lib/refreshBus";
 import { buildClientTimeline } from "../features/appointments/mappers";
 
 export default function ClientManagement() {
@@ -53,25 +54,29 @@ export default function ClientManagement() {
     }
 
     let active = true;
-    api
-      .get("/appointments", {
-        params: {
-          clientId: selectedClient.id,
-          limit: 40,
-          sortBy: "createdAt",
-          sortOrder: "asc"
-        }
-      })
-      .then((response) => {
+    const loadAppointments = async () => {
+      try {
+        const response = await api.get("/appointments", {
+          params: {
+            clientId: selectedClient.id,
+            limit: 40,
+            sortBy: "createdAt",
+            sortOrder: "asc"
+          }
+        });
         if (!active) return;
         setAppointments(unwrap(response).appointments || []);
-      })
-      .catch(() => {
+      } catch {
         if (active) setAppointments([]);
-      });
+      }
+    };
+
+    loadAppointments();
+    const unsubscribe = subscribeRefresh("appointments:updated", loadAppointments);
 
     return () => {
       active = false;
+      unsubscribe();
     };
   }, [selectedClient?.id]);
 

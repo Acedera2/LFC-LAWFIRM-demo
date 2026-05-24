@@ -2,6 +2,12 @@ import { format } from "date-fns";
 import { CalendarClock, ShieldAlert } from "lucide-react";
 import PriorityBadge from "./PriorityBadge";
 
+const conflictVariants = {
+  CONFLICT: 'rounded-lg bg-signal-coral/12 px-2.5 py-1 text-xs font-extrabold text-signal-coral',
+  PENDING_ASSIGNMENT: 'rounded-lg bg-ink-50 px-2.5 py-1 text-xs font-extrabold text-ink-600 dark:bg-white/10 dark:text-white',
+  None: 'rounded-lg bg-ink-50 px-2.5 py-1 text-xs font-extrabold text-ink-600 dark:bg-white/10 dark:text-white'
+};
+
 export default function AppointmentCard({ appointment = {}, onOpenTimeline = null }) {
   const title = appointment.consultationType || appointment.type || appointment.subject || "Consultation request";
   const client = appointment.client?.name || appointment.client || "Client";
@@ -23,7 +29,9 @@ export default function AppointmentCard({ appointment = {}, onOpenTimeline = nul
 
       <div className="mt-4 grid gap-2 text-sm text-ink-600 dark:text-ink-100">
         <span className="flex items-center gap-2"><CalendarClock size={16} /> {start ? format(new Date(start), "MMM d, h:mm a") : 'TBD'}</span>
-        <span className="flex items-center gap-2"><ShieldAlert size={16} /> {conflict}</span>
+        <span className="flex items-center gap-2">
+          <ShieldAlert size={16} /> <span className={conflictVariants[conflict] || conflictVariants.None}>{conflict}</span>
+        </span>
       </div>
 
       <div className="mt-4 flex items-center justify-between">

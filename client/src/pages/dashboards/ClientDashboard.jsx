@@ -19,7 +19,7 @@ import PriorityBadge from "../../components/PriorityBadge";
 import StatCard from "../../components/StatCard";
 import { mapAppointment, sortAppointmentsByPriority } from "../../features/appointments/mappers";
 import api, { unwrap } from "../../lib/api";
-import { publishRefresh } from "../../lib/refreshBus";
+import { publishRefresh, subscribeRefresh } from "../../lib/refreshBus";
 import { useNavigate } from "react-router-dom";
 
 const consultationTypes = [
@@ -110,6 +110,26 @@ export default function ClientDashboard() {
       .finally(() => { if (active) setLoading(false); });
 
     return () => { active = false; };
+  }, []);
+
+  // subscribe for cross-tab/page updates to keep client dashboard in sync
+  useEffect(() => {
+    const onAppointments = async () => {
+      try {
+        const resp = await api.get('/appointments?limit=5');
+        setAppointments(sortAppointmentsByPriority((unwrap(resp).appointments || []).map(mapAppointment).filter(Boolean)));
+      } catch (err) { void err; }
+    };
+    const onNotifications = async () => {
+      try {
+        // no local notifications state here; optionally trigger a refresh elsewhere
+        await api.get('/notifications');
+      } catch (err) { void err; }
+    };
+
+    const unsubA = subscribeRefresh('appointments:updated', onAppointments);
+    const unsubN = subscribeRefresh('notifications:updated', onNotifications);
+    return () => { unsubA(); unsubN(); };
   }, []);
 
   useEffect(() => { setForm((current) => ({ ...current, priority: selectedPriority })); setScan(null); }, [selectedPriority]);

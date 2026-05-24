@@ -57,7 +57,9 @@ export default function ProtectedRoute({ roles = [] }) {
 
   const slug = user.role?.slug || user.role;
   if (roles.length > 0 && !roles.includes(slug)) {
-    return <Navigate to="/" replace />;
+    const roleHome = { client: "/client", lawyer: "/lawyer", staff: "/staff", admin: "/admin" };
+    const dest = roleHome[slug] || "/";
+    return <Navigate to={dest} replace />;
   }
 
   return <Outlet />;

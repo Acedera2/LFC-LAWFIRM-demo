@@ -1,5 +1,6 @@
 // Simple in-browser mock data store backed by localStorage for demo mode
 const LS_PREFIX = "lfc_mock_";
+import { publishRefresh } from "./refreshBus";
 
 function read(key) {
   const raw = localStorage.getItem(LS_PREFIX + key);
@@ -143,6 +144,7 @@ const MockStore = {
     const user = { id, roleId: roleObj?.id || "role_client", name, email, password, createdAt: new Date().toISOString() };
     users.push(user);
     write("users", users);
+    try { publishRefresh("users:updated"); } catch (err) { void err; }
     return user;
   },
   updateUser(id, patch) {
@@ -151,6 +153,7 @@ const MockStore = {
     if (index === -1) return null;
     users[index] = { ...users[index], ...patch };
     write("users", users);
+    try { publishRefresh("users:updated"); } catch (err) { void err; }
     return users[index];
   },
   getLawyers() { return read("lawyers") || []; },
@@ -168,6 +171,7 @@ const MockStore = {
     }
     appointments.push(appt);
     write("appointments", appointments);
+    try { publishRefresh("appointments:updated"); } catch (err) { void err; }
     return appt;
   },
   updateAppointment(id, patch) {
@@ -190,12 +194,14 @@ const MockStore = {
       a.conflictStatus = detectConflictForLawyer(a.lawyerId, a.preferredStart, a.preferredEnd) ? "CONFLICT" : "CLEAR";
     }
     write("appointments", appointments);
+    try { publishRefresh("appointments:updated"); } catch (err) { void err; }
     return appointments[idx];
   },
   deleteAppointment(id) {
     let appointments = read("appointments") || [];
     appointments = appointments.filter(a => a.id !== id);
     write("appointments", appointments);
+    try { publishRefresh("appointments:updated"); } catch (err) { void err; }
     return true;
   },
   getNotifications() { return read("notifications") || []; },
@@ -204,6 +210,7 @@ const MockStore = {
     const note = { id: uid("note"), ...n, createdAt: new Date().toISOString(), readAt: n.readAt || null };
     notes.unshift(note);
     write("notifications", notes);
+    try { publishRefresh("notifications:updated"); } catch (err) { void err; }
     return note;
   },
   markNotificationRead(id) {
@@ -211,12 +218,14 @@ const MockStore = {
     const note = notes.find(n => n.id === id);
     if (note) note.readAt = new Date().toISOString();
     write("notifications", notes);
+    try { publishRefresh("notifications:updated"); } catch (err) { void err; }
     return note;
   },
   markAllNotificationsRead(userId) {
     const notes = read("notifications") || [];
     for (const n of notes.filter(x => x.userId === userId)) n.readAt = new Date().toISOString();
     write("notifications", notes);
+    try { publishRefresh("notifications:updated"); } catch (err) { void err; }
     return true;
   },
   detectConflictForLawyer
