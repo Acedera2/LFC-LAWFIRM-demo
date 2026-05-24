@@ -129,7 +129,14 @@ export default function ClientDashboard() {
 
     const unsubA = subscribeRefresh('appointments:updated', onAppointments);
     const unsubN = subscribeRefresh('notifications:updated', onNotifications);
-    return () => { unsubA(); unsubN(); };
+    const onLawyers = async () => {
+      try {
+        const resp = await api.get('/lawyers');
+        setLawyers(unwrap(resp).lawyers || []);
+      } catch (err) { void err; }
+    };
+    const unsubL = subscribeRefresh('lawyers:updated', onLawyers);
+    return () => { unsubA(); unsubN(); try { unsubL(); } catch (err) { void err; } };
   }, []);
 
   useEffect(() => { setForm((current) => ({ ...current, priority: selectedPriority })); setScan(null); }, [selectedPriority]);

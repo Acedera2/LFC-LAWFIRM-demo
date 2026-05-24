@@ -3,29 +3,37 @@ import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 import { unwrap } from "../lib/api";
 import api from "../lib/api";
+import { subscribeRefresh } from "../lib/refreshBus";
 import EmptyState from "../components/EmptyState";
 import { lawyers as fallbackLawyers } from "../data/mockData";
 
 export default function Lawyers() {
   const [lawyers, setLawyers] = useState(fallbackLawyers);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     let active = true;
-    api
-      .get("/lawyers")
-      .then((response) => {
+
+    const load = async () => {
+      setLoading(true);
+      try {
+        const response = await api.get("/lawyers");
         const payload = unwrap(response);
         if (active && payload.lawyers?.length) setLawyers(payload.lawyers);
-      })
-      .catch(() => {
+      } catch {
         if (active) setLawyers(fallbackLawyers);
-      })
-      .finally(() => {
+      } finally {
         if (active) setLoading(false);
-      });
+      }
+    };
+
+    load();
+
+    const unsubscribe = subscribeRefresh("lawyers:updated", load);
+
     return () => {
       active = false;
+      try { unsubscribe(); } catch (err) { void err; }
     };
   }, []);
 
