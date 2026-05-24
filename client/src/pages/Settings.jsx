@@ -90,7 +90,7 @@ export default function Settings() {
       const response = await api.put("/profile", profileForm);
       updateProfile(unwrap(response).user);
       // notify other tabs/windows to refresh profile from storage
-      try { publishRefresh("profile:updated"); } catch {}
+      try { publishRefresh("profile:updated"); } catch (err) { void err; }
       toast.success("Profile updated successfully");
     } catch (error) {
       toast.error(error.response?.data?.message || "Unable to save profile");

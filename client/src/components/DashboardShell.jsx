@@ -5,6 +5,7 @@ import Logo from "./Logo";
 import ThemeToggle from "./ThemeToggle";
 import { useAuth } from "../context/AuthContext";
 import { subscribeRefresh } from "../lib/refreshBus";
+import { useEffect } from "react";
 
 const roleHome = {
   client: "/client",
@@ -15,7 +16,6 @@ const roleHome = {
 
 export default function DashboardShell() {
   const { user, logout } = useAuth();
-  const { updateProfile } = useAuth();
   const role = user?.role?.slug || user?.role || "client";
   const roleLabel = role === "admin" ? "Admin" : role === "staff" ? "Staff" : role === "lawyer" ? "Lawyer" : "Client";
   const roleSummary = {
