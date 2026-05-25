@@ -1,6 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import toast from "react-hot-toast";
 import api, { unwrap } from "../lib/api";
+import { publishRefresh } from "../lib/refreshBus";
 
 const AuthContext = createContext(null);
 const LOCAL_STORAGE_KEY = "lfc_user";
@@ -56,6 +57,7 @@ export function AuthProvider({ children }) {
       // persist as { user: ... } to be compatible with MockApi and MockStore
       try {
         localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify({ user: nextUser }));
+        try { publishRefresh('profile:updated'); } catch (err) { void err; }
       } catch {
         // ignore storage failures
       }
