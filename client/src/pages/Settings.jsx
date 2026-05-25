@@ -34,7 +34,11 @@ export default function Settings() {
     email: user?.email || "",
     phone: user?.phone || "",
     title: user?.title || "",
-    bio: user?.bio || ""
+    bio: user?.bio || "",
+    avatarUrl: user?.avatarUrl || "",
+    currentPassword: "",
+    newPassword: "",
+    confirmPassword: ""
   });
   const [usersList, setUsersList] = useState([]);
 
@@ -44,7 +48,11 @@ export default function Settings() {
       email: user?.email || "",
       phone: user?.phone || "",
       title: user?.title || "",
-      bio: user?.bio || ""
+      bio: user?.bio || "",
+      avatarUrl: user?.avatarUrl || "",
+      currentPassword: "",
+      newPassword: "",
+      confirmPassword: ""
     });
   }, [user]);
 
@@ -87,13 +95,36 @@ export default function Settings() {
     event.preventDefault();
     setSubmitting(true);
     try {
-      const response = await api.put("/profile", profileForm);
+      // client-side validation
+      const emailOk = /\S+@\S+\.\S+/.test(profileForm.email);
+      if (!profileForm.name || !emailOk) throw new Error("Please provide a valid name and email.");
+      if (profileForm.newPassword || profileForm.currentPassword || profileForm.confirmPassword) {
+        if (!profileForm.currentPassword) throw new Error("Please provide your current password to change it.");
+        if (profileForm.newPassword.length < 8) throw new Error("New password must be at least 8 characters.");
+        if (profileForm.newPassword !== profileForm.confirmPassword) throw new Error("Password confirmation does not match.");
+      }
+
+      // prepare payload (don't send empty password fields)
+      const payload = {
+        name: profileForm.name,
+        email: profileForm.email,
+        phone: profileForm.phone,
+        title: profileForm.title,
+        bio: profileForm.bio,
+        avatarUrl: profileForm.avatarUrl
+      };
+      if (profileForm.currentPassword && profileForm.newPassword) {
+        payload.currentPassword = profileForm.currentPassword;
+        payload.newPassword = profileForm.newPassword;
+      }
+
+      const response = await api.put("/profile", payload);
       updateProfile(unwrap(response).user);
       // notify other tabs/windows to refresh profile from storage
       try { publishRefresh("profile:updated"); } catch (err) { void err; }
       toast.success("Profile updated successfully");
     } catch (error) {
-      toast.error(error.response?.data?.message || "Unable to save profile");
+      toast.error(error.message || error.response?.data?.message || "Unable to save profile");
     } finally {
       setSubmitting(false);
     }
@@ -136,6 +167,27 @@ export default function Settings() {
             <label className="grid gap-2 text-sm font-bold text-ink-700 dark:text-white">
               Phone
               <input value={profileForm.phone} onChange={(event) => setProfileForm((current) => ({ ...current, phone: event.target.value }))} className="rounded-xl border border-ink-100 px-3 py-3 dark:border-white/10 dark:bg-ink-950" placeholder="Optional phone number" />
+            </label>
+            <label className="grid gap-2 text-sm font-bold text-ink-700 dark:text-white">
+              Avatar
+              <div className="flex items-center gap-3">
+                <div className="h-14 w-14 overflow-hidden rounded-full bg-ink-50">
+                  {profileForm.avatarUrl ? <img src={profileForm.avatarUrl} alt="avatar" className="h-14 w-14 object-cover" /> : <div className="h-14 w-14" />}
+                </div>
+                <input type="file" accept="image/*" onChange={async (e) => {
+                  const f = e.target.files && e.target.files[0];
+                  if (!f) return;
+                  const reader = new FileReader();
+                  reader.onload = () => setProfileForm((c) => ({ ...c, avatarUrl: reader.result }));
+                  reader.readAsDataURL(f);
+                }} />
+              </div>
+            </label>
+            <label className="grid gap-2 text-sm font-bold text-ink-700 dark:text-white">
+              Change password (optional)
+              <input type="password" value={profileForm.currentPassword} onChange={(event) => setProfileForm((current) => ({ ...current, currentPassword: event.target.value }))} placeholder="Current password" className="rounded-xl border border-ink-100 px-3 py-3 dark:border-white/10 dark:bg-ink-950" />
+              <input type="password" value={profileForm.newPassword} onChange={(event) => setProfileForm((current) => ({ ...current, newPassword: event.target.value }))} placeholder="New password (min. 8 chars)" className="rounded-xl border border-ink-100 px-3 py-3 dark:border-white/10 dark:bg-ink-950" />
+              <input type="password" value={profileForm.confirmPassword} onChange={(event) => setProfileForm((current) => ({ ...current, confirmPassword: event.target.value }))} placeholder="Confirm new password" className="rounded-xl border border-ink-100 px-3 py-3 dark:border-white/10 dark:bg-ink-950" />
             </label>
             <label className="grid gap-2 text-sm font-bold text-ink-700 dark:text-white">
               Title / position

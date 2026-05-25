@@ -332,16 +332,31 @@ const MockApi = {
           err.response = { status: 401 };
           throw err;
         }
-
         const patch = data || {};
+        // Support password change: currentPassword + newPassword
+        if (patch.currentPassword) {
+          // find stored user record
+          const stored = MockStore.getUsers().find(u => u.id === user.id);
+          if (!stored || stored.password !== patch.currentPassword) {
+            const err = new Error("Current password is incorrect");
+            err.response = { status: 400 };
+            throw err;
+          }
+        }
         const updated = MockStore.updateUser(user.id, {
           name: patch.name ?? user.name,
           email: patch.email ?? user.email,
           phone: patch.phone ?? user.phone,
           bio: patch.bio ?? user.bio,
           avatarUrl: patch.avatarUrl ?? user.avatarUrl,
+          password: patch.newPassword ? patch.newPassword : storedPasswordOr(user.id, user),
           title: patch.title ?? user.title
         });
+
+        function storedPasswordOr(id, fallbackUser) {
+          const s = MockStore.getUsers().find(u => u.id === id);
+          return s?.password || fallbackUser?.password || null;
+        }
 
         const role = MockStore.getRoles().find((r) => r.id === updated.roleId);
         const payload = { ...updated, role: { slug: role?.slug || "client", name: role?.name || "Client" } };
