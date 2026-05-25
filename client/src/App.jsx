@@ -60,6 +60,15 @@ export default function App() {
             <Route element={<ProtectedRoute roles={["admin"]} />}>
               <Route path="/settings" element={<Settings />} />
             </Route>
+            <Route element={<ProtectedRoute roles={["client"]} />}>
+              <Route path="/client/settings" element={<Settings />} />
+            </Route>
+            <Route element={<ProtectedRoute roles={["staff"]} />}>
+              <Route path="/staff/settings" element={<Settings />} />
+            </Route>
+            <Route element={<ProtectedRoute roles={["lawyer"]} />}>
+              <Route path="/lawyer/settings" element={<Settings />} />
+            </Route>
           </Route>
         </Route>
 

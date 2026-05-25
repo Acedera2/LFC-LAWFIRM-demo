@@ -30,7 +30,7 @@ export default function DashboardShell() {
     ...(role === "staff" || role === "admin" ? [{ label: "Clients", to: "/clients", icon: Users }] : []),
     { label: "Notifications", to: "/notifications", icon: Bell },
     ...(role === "lawyer" || role === "staff" || role === "admin" ? [{ label: "Analytics", to: "/analytics", icon: ChartNoAxesCombined }] : []),
-    { label: "Settings", to: "/settings", icon: Cog }
+    { label: "Settings", to: `/${role}/settings`, icon: Cog }
   ];
 
   return (
